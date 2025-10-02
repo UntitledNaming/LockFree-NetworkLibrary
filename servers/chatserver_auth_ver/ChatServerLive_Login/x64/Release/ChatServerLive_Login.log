@@ -1,0 +1,133 @@
+﻿  ChatServer.cpp
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\util\ProcessMonitor.h(3,9): warning C4005: 'MAX_PATH': 매크로 재정의
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+      C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\minwindef.h(60,9):
+      'MAX_PATH'의 이전 정의를 참조하십시오.
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(33,23): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(36,36): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(50,36): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(53,22): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(93,23): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(95,29): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(110,24): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(113,28): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(127,21): warning C4244: '=': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(143,20): warning C4244: '=': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(458,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(485,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(499,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(507,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(517,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(574,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(588,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(604,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(610,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(620,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(650,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(666,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(678,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(702,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(811,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(820,3): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(867,5): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(882,5): warning C4129: ' ': 인식할 수 없는 문자 이스케이프 시퀀스입니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(1113,11): warning C4476: 'wprintf' : 서식 지정자에 알 수 없는 형식 필드 문자 ']'이(가) 있습니다.
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\memorypool\LockFreeMemoryPoolLive.h(74,9): warning C4101: 'tempTop' :참조되지 않은 지역 변수입니다.
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+      C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\memorypool\LockFreeMemoryPoolLive.h(74,9):
+      템플릿 인스턴스화 컨텍스트(가장 오래된 인스턴스화 컨텍스트)가
+          C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(154,2):
+          컴파일되는 클래스 템플릿 인스턴스화 'CMemoryPool<ChatServer::JOB>'에 대한 참조를 확인하세요.
+          C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\memorypool\LockFreeMemoryPoolLive.h(70,3):
+          클래스 템플릿 멤버 함수 'CMemoryPool<ChatServer::JOB>::~CMemoryPool(void)'을(를) 컴파일하는 중입니다.
+              C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\memorypool\LockFreeMemoryPoolLive.h(308,1):
+              'CMemoryPool<ChatServer::JOB>::~CMemoryPool'에서 'CMemoryPool<ChatServer::JOB>::~CMemoryPool'에 대한 첫 번째 참조를 확인하세요.
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\memorypool\MemoryPoolTLS.h(219,10): warning C4244: 'return': 'UINT64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServer.cpp'을(를) 컴파일하는 중)
+      C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\memorypool\MemoryPoolTLS.h(219,10):
+      템플릿 인스턴스화 컨텍스트(가장 오래된 인스턴스화 컨텍스트)가
+          C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(1070,25):
+          컴파일되는 클래스 템플릿 인스턴스화 'CMPoolTLS<CMessage>'에 대한 참조를 확인하세요.
+          C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\memorypool\MemoryPoolTLS.h(217,13):
+          클래스 템플릿 멤버 함수 'int CMPoolTLS<CMessage>::GetUseCnt(void)'을(를) 컴파일하는 중입니다.
+              C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\ChatServerLive_Login\ChatServer.cpp(1070,12):
+              'ChatServer::MonitorThread'에서 'CMPoolTLS<CMessage>::GetUseCnt'에 대한 첫 번째 참조를 확인하세요.
+  
+  ChatServerLive_Login.cpp
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(33,23): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServerLive_Login.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(36,36): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServerLive_Login.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(50,36): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServerLive_Login.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(53,22): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServerLive_Login.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(93,23): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServerLive_Login.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(95,29): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServerLive_Login.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(110,24): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServerLive_Login.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(113,28): warning C4244: 'return': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServerLive_Login.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(127,21): warning C4244: '=': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServerLive_Login.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer\Ring_Buffer.h(143,20): warning C4244: '=': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 'ChatServerLive_Login.cpp'을(를) 컴파일하는 중)
+  
+  코드를 생성하고 있습니다.
+  1 of 9366 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
+  코드를 생성했습니다.
+cpp_redis.lib(client.obj) : warning LNK4099: 'cpp_redis.pdb' PDB를 'cpp_redis.lib(client.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\cpp_redis.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+cpp_redis.lib(reply.obj) : warning LNK4099: 'cpp_redis.pdb' PDB를 'cpp_redis.lib(reply.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\cpp_redis.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+cpp_redis.lib(redis_connection.obj) : warning LNK4099: 'cpp_redis.pdb' PDB를 'cpp_redis.lib(redis_connection.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\cpp_redis.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+cpp_redis.lib(sentinel.obj) : warning LNK4099: 'cpp_redis.pdb' PDB를 'cpp_redis.lib(sentinel.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\cpp_redis.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+cpp_redis.lib(tcp_client.obj) : warning LNK4099: 'cpp_redis.pdb' PDB를 'cpp_redis.lib(tcp_client.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\cpp_redis.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+cpp_redis.lib(reply_builder.obj) : warning LNK4099: 'cpp_redis.pdb' PDB를 'cpp_redis.lib(reply_builder.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\cpp_redis.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+cpp_redis.lib(builders_factory.obj) : warning LNK4099: 'cpp_redis.pdb' PDB를 'cpp_redis.lib(builders_factory.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\cpp_redis.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+cpp_redis.lib(bulk_string_builder.obj) : warning LNK4099: 'cpp_redis.pdb' PDB를 'cpp_redis.lib(bulk_string_builder.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\cpp_redis.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+cpp_redis.lib(error_builder.obj) : warning LNK4099: 'cpp_redis.pdb' PDB를 'cpp_redis.lib(error_builder.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\cpp_redis.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+cpp_redis.lib(array_builder.obj) : warning LNK4099: 'cpp_redis.pdb' PDB를 'cpp_redis.lib(array_builder.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\cpp_redis.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+cpp_redis.lib(integer_builder.obj) : warning LNK4099: 'cpp_redis.pdb' PDB를 'cpp_redis.lib(integer_builder.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\cpp_redis.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+cpp_redis.lib(simple_string_builder.obj) : warning LNK4099: 'cpp_redis.pdb' PDB를 'cpp_redis.lib(simple_string_builder.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\cpp_redis.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+tacopie.lib(tcp_client.obj) : warning LNK4099: 'tacopie.pdb' PDB를 'tacopie.lib(tcp_client.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\tacopie.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+tacopie.lib(io_service.obj) : warning LNK4099: 'tacopie.pdb' PDB를 'tacopie.lib(io_service.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\tacopie.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+tacopie.lib(error.obj) : warning LNK4099: 'tacopie.pdb' PDB를 'tacopie.lib(error.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\tacopie.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+tacopie.lib(tcp_socket.obj) : warning LNK4099: 'tacopie.pdb' PDB를 'tacopie.lib(tcp_socket.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\tacopie.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+tacopie.lib(windows_tcp_socket.obj) : warning LNK4099: 'tacopie.pdb' PDB를 'tacopie.lib(windows_tcp_socket.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\tacopie.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+tacopie.lib(thread_pool.obj) : warning LNK4099: 'tacopie.pdb' PDB를 'tacopie.lib(thread_pool.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\tacopie.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+tacopie.lib(windows_self_pipe.obj) : warning LNK4099: 'tacopie.pdb' PDB를 'tacopie.lib(windows_self_pipe.obj)' 또는 'C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\tacopie.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
+  ChatServerLive_Login.vcxproj -> C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\chatserver_auth_ver\x64\Release\ChatServerLive_Login.exe

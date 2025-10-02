@@ -1,0 +1,4 @@
+
+        
+         MONITOR_IP = "127.0.0.1";
+         MONITOR_PORT = 10000;

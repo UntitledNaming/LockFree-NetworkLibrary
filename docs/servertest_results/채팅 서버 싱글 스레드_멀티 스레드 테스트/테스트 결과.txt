@@ -1,0 +1,4 @@
+1. 멀티 스레드 채팅 서버
+- OnRecv에서 Update 스레드로 Job을 던져서 Update 스레드가 메세지를 싱글로 처리하는 방식이 아니라
+- OnRecv에서 바로 Lock을 사용해서 클라이언트가 보낸 메세지를 병렬로 처리함.
+- 결과를 보면 Multi 버전이 Action Delay Avg가 상대적으로 낮은게 보임. 

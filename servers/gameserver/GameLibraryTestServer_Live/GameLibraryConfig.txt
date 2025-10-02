@@ -1,0 +1,18 @@
+
+         BIND_IP = "0.0.0.0";
+         BIND_PORT = 11213;
+         IOCP_WORKER_THREAD = 10;
+         IOCP_ACTIVE_THREAD = 5;
+         SESSION_MAX = 7000;
+         PACKET_CODE = 119;
+         PACKET_KEY = 50;
+         NAGLE = 0;
+
+
+         /* Send 스레드 생성 플래그 및 Send 스레드 Sleep 값 */
+         SEND_FRAME = 20;
+         SEND_TH_FLAG = 1;  // 0 : SendThread 생성 x , 1: SendThread 생성 o
+
+
+         /* DEBUG = 0, ERROR = 1, SYSTEM = 2 */
+         LOG_LEVEL = 1;

@@ -1,0 +1,6 @@
+<테스트 조건>
+- Accept TPS : 800
+- 인원 : 5천명
+- 메모리 사용량 : 500 mb 이하
+- Update TPS : 12000 ~ 16000 사이 ( 실질 부하 수치 )
+- Action Delay Avg : 150ms 이하

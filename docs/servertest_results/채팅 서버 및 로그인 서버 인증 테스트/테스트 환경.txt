@@ -1,0 +1,5 @@
+<테스트 조건>
+- 인원 : 5천명
+- Accept TPS : 200 이상
+- Update TPS : 5000 이상
+- Action Delay Avg : 60ms 이하
