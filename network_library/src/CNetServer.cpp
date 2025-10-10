@@ -70,7 +70,7 @@ bool CNetServer::Disconnect(UINT64 SessionID)
 
 	if (InterlockedExchange(&pSession->m_DCFlag, 1) != 0)
 	{
-		Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+		Release(pSession, InterlockedDecrement64(&pSession->m_RefCnt));
 		return false;
 	}
 
@@ -78,7 +78,7 @@ bool CNetServer::Disconnect(UINT64 SessionID)
 	CancelIoEx((HANDLE)pSession->m_Socket, &pSession->m_RecvOverlapped);
 	CancelIoEx((HANDLE)pSession->m_Socket, &pSession->m_SendOverlapped);
 
-	Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+	Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
 
 	return true;
 }
@@ -105,7 +105,7 @@ bool CNetServer::SendPacket(UINT64 SessionID, CMessage* pMessage)
 	{
 		Disconnect(pSession->m_SessionID);
 		LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPacket SendQ Full \ SessionID : %lld , Time : %d ", pSession->m_SessionID, timeGetTime());
-		Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+		Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
 
 		return false;
 	}
@@ -149,7 +149,7 @@ bool CNetServer::SendPacket(UINT64 SessionID, CMessage* pMessage)
 	}
 
 
-	Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+	Release(pSession, InterlockedDecrement64(&pSession->m_RefCnt));
 
 	return true;
 }
@@ -188,7 +188,7 @@ bool CNetServer::FindIP(UINT64 SessionID, WCHAR* OutIP)
 
 	InetNtop(AF_INET, &ClientAddr.sin_addr, (PWSTR)OutIP, IP_LEN);
 
-	Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+	Release(pSession,InterlockedDecrement64(&pSession->m_RefCnt));
 
 	return true;
 }
@@ -390,7 +390,7 @@ void CNetServer::AcceptThread()
 		//Recv 등록
 		RecvPost(&m_SessionTable[Index]);
 
-		Release(&m_SessionTable[Index], m_SessionTable[Index].m_SessionID, InterlockedDecrement64(&m_SessionTable[Index].m_RefCnt));
+		Release(&m_SessionTable[Index],  InterlockedDecrement64(&m_SessionTable[Index].m_RefCnt));
 
 	}
 
@@ -428,13 +428,13 @@ void CNetServer::SendThread()
 			// Send 플래그 및 SendQ 체크 시 보내면 안되는 상황에서 세션 포기
 			if (m_SessionTable[i].m_SendFlag != 0 || m_SessionTable[i].m_SendQ.GetUseSize() == 0)
 			{
-				Release(&m_SessionTable[i], m_SessionTable[i].m_SessionID, InterlockedDecrement64(&m_SessionTable[i].m_RefCnt));
+				Release(&m_SessionTable[i], InterlockedDecrement64(&m_SessionTable[i].m_RefCnt));
 				continue;
 			}
 
 			SendPost(&m_SessionTable[i]);
 
-			Release(&m_SessionTable[i], m_SessionTable[i].m_SessionID, InterlockedDecrement64(&m_SessionTable[i].m_RefCnt));
+			Release(&m_SessionTable[i],  InterlockedDecrement64(&m_SessionTable[i].m_RefCnt));
 		}
 
 		endtime = timeGetTime();
@@ -642,7 +642,7 @@ bool CNetServer::RecvPost(CSession* pSession)
 				LOG(L"NetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed \ Error Code : %d \ SessionID  : %d ", err, pSession->m_SessionID);
 			}
 
-			Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+			Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
 			return false;
 		}
 
@@ -758,7 +758,7 @@ bool CNetServer::SendPost(CSession* pSession)
 			}
 
 
-			Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+			Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
 			return false;
 		}
 
@@ -781,21 +781,21 @@ bool CNetServer::SessionInvalid(CSession* pSession, UINT64 SessionID)
 	//그런데 이미 누가 Release 하고 있으면 쓰면 안되니 감소 시키고 Release 
 	if (pSession->m_RelFlag == 1)
 	{
-		Release(pSession, pSession->m_SessionID, InterlockedDecrement64((long long*)&pSession->m_RefCnt));
+		Release(pSession,  InterlockedDecrement64((long long*)&pSession->m_RefCnt));
 		return false;
 	}
 
 	//내가 찾던 세션이 아니라면 증가시킨것 감소
 	if (SessionID != pSession->m_SessionID)
 	{
-		Release(pSession, pSession->m_SessionID, InterlockedDecrement64((long long*)&pSession->m_RefCnt));
+		Release(pSession,  InterlockedDecrement64((long long*)&pSession->m_RefCnt));
 		return false;
 	}
 
 	return true;
 }
 
-bool CNetServer::Release(CSession* pSession, UINT64 CheckID, long retIOCount)
+bool CNetServer::Release(CSession* pSession, long retIOCount)
 {
 
 	CMessage* peek = nullptr;
@@ -949,7 +949,7 @@ void CNetServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 	}
 
 
-	Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+	Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
 	return;
 }
 
@@ -974,7 +974,7 @@ void CNetServer::SendIOProc(CSession* pSession, DWORD cbTransferred)
 	}
 
 
-	Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+	Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
 
 }
 

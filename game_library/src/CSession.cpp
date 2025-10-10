@@ -4,7 +4,7 @@
 #include "CMessage.h"
 #include "Ring_Buffer.h"
 #include "LFQMultiLive.h"
-#include "CSession.h"
+#include "GameSession.h"
 
 CSession::CSession()
 {

@@ -153,7 +153,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	bool          RecvPost(CSession* pSession);
 	bool          SendPost(CSession* pSession);
-	bool          Release(CSession* pSession, UINT64 CheckID, long long retIOCount);
+	bool          Release(CSession* pSession,long long retIOCount);
 	bool          SessionInvalid(CSession* pSession, UINT64 CheckID);                         // 세션 유효성 체크 함수(true면 Count 하나 올림)
 																	                          
 	void          RecvIOProc(CSession* pSession, DWORD cbTransferred);                        

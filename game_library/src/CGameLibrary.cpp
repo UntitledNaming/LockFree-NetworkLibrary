@@ -24,7 +24,7 @@
 
 #include "LFQMultiLive.h"
 #include "Ring_Buffer.h"
-#include "CSession.h"
+#include "GameSession.h"
 #include "CGameLibrary.h"
 #include "CGroup.h"
 
@@ -434,13 +434,13 @@ void CGameLibrary::SendThread()
 
 			if (m_SessionTable[i].m_SendFlag != 0 || m_SessionTable[i].m_SendQ.GetUseSize() == 0)
 			{
-				Release(&m_SessionTable[i], m_SessionTable[i].m_SessionID, InterlockedDecrement64(&m_SessionTable[i].m_RefCnt));
+				Release(&m_SessionTable[i],  InterlockedDecrement64(&m_SessionTable[i].m_RefCnt));
 				continue;
 			}
 
 			SendPost(&m_SessionTable[i]);
 
-			Release(&m_SessionTable[i], m_SessionTable[i].m_SessionID, InterlockedDecrement64(&m_SessionTable[i].m_RefCnt));
+			Release(&m_SessionTable[i],  InterlockedDecrement64(&m_SessionTable[i].m_RefCnt));
 		}
 
 		endtime = timeGetTime();
@@ -553,7 +553,7 @@ void CGameLibrary::AcceptThread()
 		//Recv 등록
 		RecvPost(&m_SessionTable[Index]);
 
-		Release(&m_SessionTable[Index], m_SessionTable[Index].m_SessionID, InterlockedDecrement64(&m_SessionTable[Index].m_RefCnt));
+		Release(&m_SessionTable[Index],  InterlockedDecrement64(&m_SessionTable[Index].m_RefCnt));
 	}
 
 
@@ -580,7 +580,7 @@ bool CGameLibrary::SendPacket(UINT64 SessionID, CMessage* pMessage)
 	{
 		Disconnect(pSession->m_SessionID);
 		LOG(L"CGameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPacket SendQ Full \ SessionID : %lld , Time : %d ", pSession->m_SessionID, timeGetTime());
-		Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+		Release(pSession, InterlockedDecrement64(&pSession->m_RefCnt));
 		return false;
 	}
 
@@ -621,7 +621,7 @@ bool CGameLibrary::SendPacket(UINT64 SessionID, CMessage* pMessage)
 		SendPost(pSession);
 	}
 
-	Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+	Release(pSession, InterlockedDecrement64(&pSession->m_RefCnt));
 
 	return true;
 }
@@ -653,7 +653,7 @@ bool CGameLibrary::Disconnect(UINT64 SessionID)
 		LOG(L"Contents", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CNetServer::Disconnect()_CancelIOEx Send Failed / Session ID : %llu / Error Code : %d", SessionID, GetLastError());
 	}
 
-	Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+	Release(pSession, InterlockedDecrement64(&pSession->m_RefCnt));
 
 	return true;
 }
@@ -680,7 +680,7 @@ bool CGameLibrary::FindIP(UINT64 SessionID, std::wstring& OutIP)
 	InetNtop(AF_INET, &ClientAddr.sin_addr, (PWSTR)OutIP.c_str(), df_GAMELIB_IP_LEN);
 
 
-	Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+	Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
 
 	return true;
 }
@@ -813,7 +813,7 @@ bool CGameLibrary::RecvPost(CSession* pSession)
 				LOG(L"NetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed \ Error Code : %d \ SessionID  : %d ", err, pSession->m_SessionID);
 			}
 
-			Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+			Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
 
 		}
 
@@ -932,7 +932,7 @@ bool CGameLibrary::SendPost(CSession* pSession)
 			}
 
 
-			Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+			Release(pSession, InterlockedDecrement64(&pSession->m_RefCnt));
 
 			return false;
 		}
@@ -948,7 +948,7 @@ bool CGameLibrary::SendPost(CSession* pSession)
 	return false;
 }
 
-bool CGameLibrary::Release(CSession* pSession, UINT64 CheckID, long long retIOCount)
+bool CGameLibrary::Release(CSession* pSession,long long retIOCount)
 {
 	CMessage* peek = nullptr;
 	st_IOFLAG check;
@@ -973,14 +973,14 @@ bool CGameLibrary::SessionInvalid(CSession* pSession, UINT64 CheckID)
 	//그런데 이미 누가 Release 하고 있으면 쓰면 안되니 감소 시키고 Release 
 	if (pSession->m_RelFlag == 1)
 	{
-		Release(pSession, pSession->m_SessionID, InterlockedDecrement64((long long*)&pSession->m_RefCnt));
+		Release(pSession,  InterlockedDecrement64((long long*)&pSession->m_RefCnt));
 		return false;
 	}
 
 	//내가 찾던 세션이 아니라면 증가시킨것 감소
 	if (CheckID != pSession->m_SessionID)
 	{
-		Release(pSession, pSession->m_SessionID, InterlockedDecrement64((long long*)&pSession->m_RefCnt));
+		Release(pSession, InterlockedDecrement64((long long*)&pSession->m_RefCnt));
 		return false;
 	}
 
@@ -1140,7 +1140,7 @@ void CGameLibrary::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 	}
 
 
-	Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+	Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
 
 	return;
 }
@@ -1167,7 +1167,7 @@ void CGameLibrary::SendIOProc(CSession* pSession, DWORD cbTransferred)
 		SendPost(pSession);
 	}
 
-	Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+	Release(pSession, InterlockedDecrement64(&pSession->m_RefCnt));
 }
 
 void CGameLibrary::Encoding(char* ptr, int len, UCHAR randkey)
@@ -1304,6 +1304,6 @@ void CGameLibrary::GroupMoveProc(CMessage* pMessage)
 
 	pSession->m_GroupID = groupid;
 
-	Release(pSession, pSession->m_SessionID, InterlockedDecrement64(&pSession->m_RefCnt));
+	Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
 }
 

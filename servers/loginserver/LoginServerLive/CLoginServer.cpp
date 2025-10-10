@@ -419,7 +419,6 @@ void CLoginServer::LoginRequest(CMessage* pMessage, UINT64 sessionid)
 	Status = dfLOGIN_STATUS_OK;
 
 	//로그인 서버 로그인 응답 패킷 생성 및 전송
-	WCHAR* OutIP;
 	CMessage* pPacket = CMessage::Alloc();
 	pPacket->Clear();
 

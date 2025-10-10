@@ -40,10 +40,6 @@
 
 5. 데이터 크기 설정
 - send할 데이터 크기가 1만정도 일때는 오히려 fast io가 더 좋았음. wsasend 리턴시간, gqcs tps에서다 좋았음. 그러나 데이터 크기가 더 커져서 10만정도가 되었을 때 direct io가 더 우세해 졌음.
-- 
 
-6. CLanclient 파일에서 소켓 생성 -> 연결 -> iocp 등록인데 순서가 이상함. 소켓 생성 및 초기화 -> iocp 등록 -> 연결 이렇게 하는게 자연스러울줄 알았는데 iocp 등록은 connect 후에 해야 함.  recv 등록은 recv 준비가 완료 되었을 때 해야 함. 그런데 connect를 하고 3wayhandshaking해서
-  연결을 해야지 Recv로 받을 준비가 된 것임. 그래서 연결도 하기 전에 recv 등록하려고 하면 10045 에러남.
-
-7. 결론
-- datasize가 작을 때는 확실히 fast io가 direct io보다 이득이다. fast io의 copy 비용 < irp 생성 및 page lock, io 큐 삽입/삭제 비용 이다.
+6. 결론
+- datasize가 작을 때는 확실히 fast io가 direct io보다 이득이다. fast io의 copy 비용 < irp 생성 및 page lock 이다.

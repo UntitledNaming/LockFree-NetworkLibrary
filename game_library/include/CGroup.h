@@ -13,7 +13,7 @@ private:
 	CGameLibrary*       m_pGameLib;            // 게임 라이브러리 네트워크 및 그룹 등 함수 사용하기 위한 멤버
 	SRWLOCK             m_GroupLock;           // 그룹을 상속 받는 컨텐츠 직렬 처리를 위한 Lock
 	DWORD               m_GroupID;             // 그룹을 상속 받는 컨텐츠의 실제 타입 구분자
-	UINT64              m_GroupFrameTime;      // 프레임 로직 돌릴때 프레임(ms로 변환)
+	UINT64              m_GroupFrameTime;      // 프레임 로직 돌릴때 프레임(ms 단위)
 	DWORD               m_OldTime;             // 프레임 스레드에서 체크할 시간
 	BOOL                m_Shared;              // 멀티 스레드가 그룹에 접근 가능해도 되는지 제어 플래그
 

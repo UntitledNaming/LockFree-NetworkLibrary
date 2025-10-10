@@ -74,6 +74,9 @@
     <IncludePath>$(ProjectDir);C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\protocol\include;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\list;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\lockfree;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\memorypool;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\util;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\network_library\include;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\clients\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\clients\include;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\list;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\lockfree;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\memorypool;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\util;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\network_library\include;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\protocol\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>

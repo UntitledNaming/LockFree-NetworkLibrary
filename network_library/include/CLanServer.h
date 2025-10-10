@@ -108,7 +108,7 @@ private:
 	bool          RecvPost(CSession* pSession);              //WSARecv해서 수신 데이터 받는 함수
 	bool          SendPost(CSession* pSession);              //WSASend해서 데이터 송신하는 함수
 	bool          SessionInvalid(CSession* pSession, UINT64 SessionID);        //세션 유효성 체크
-	bool          Release(CSession* pSession, UINT64 CheckID, long retIOCount);
+	bool          Release(CSession* pSession, long retIOCount);
 
 	void          RecvIOProc(CSession* pSession, DWORD cbTransferred);
 	void          SendIOProc(CSession* pSession, DWORD cbTransferred);
