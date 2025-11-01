@@ -42,7 +42,6 @@ public:
 
 
 	public:
-		DB_Query();
 		DB_Query(DBTLS* parent, const CHAR* DBip, UINT DBPort);
 		~DB_Query();
 

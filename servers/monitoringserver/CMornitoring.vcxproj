@@ -72,13 +72,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer;C:\Program Files\MySQL\MySQL Server 8.0\include;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\dbltls;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\list;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\lockfree;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\memorypool;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\util;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\network_library\include;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\mysql\MySQL Server 8.0\include;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\protocol\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\MySQL\MySQL Server 8.0\lib;C:\mysql\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer;C:\Program Files\MySQL\MySQL Server 8.0\include;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\dbltls;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\list;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\lockfree;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\memorypool;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\util;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\network_library\include;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\protocol\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
     <ExternalIncludePath>$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\mysql\include;C:\Users\sdj53\Documents\GitHub\Procademy_Assignment\Procademy_Assignment\포트폴리오\ServerTest\ChatServer\mysql\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\sdj53\Documents\GitHub\Procademy_Assignment\Procademy_Assignment\포트폴리오\ServerTest\ChatServer\mysql\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -138,7 +138,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\mysql\lib;C:\Program Files\MySQL\MySQL Server 8.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files\MySQL\MySQL Server 8.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

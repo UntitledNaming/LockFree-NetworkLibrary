@@ -39,8 +39,6 @@ int main()
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8001)
         {
 
-            ////종료 메세지 보내기(이 함수로 IOCP 완료 통지 큐에 lpOverlapped 가 nullptr이고 key NULL인 완료 통지가 들어감)
-            //PostQueuedCompletionStatus(pServer->getIOCPHandle(), NULL, NULL, nullptr);
             ESC = true;
             continue;
         }

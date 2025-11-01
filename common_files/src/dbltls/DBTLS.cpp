@@ -8,10 +8,6 @@
 #include "LogClass.h"
 #include "DBTLS.h"
 
-DBTLS::DBTLS()
-{
-
-}
 
 DBTLS::DBTLS(const CHAR* DBip, INT DBPort)
 {
@@ -88,11 +84,6 @@ void DBTLS::DB_Free_Result()
 	DB_Query* ret = nullptr;
 	ret = (DB_Query*)TlsGetValue(m_TlsIdx);
 	ret->DB_Free_Result();
-}
-
-DBTLS::DB_Query::DB_Query()
-{
-
 }
 
 DBTLS::DB_Query::DB_Query(DBTLS* parent, const CHAR* DBip, UINT DBPort) : m_Parent(parent)
