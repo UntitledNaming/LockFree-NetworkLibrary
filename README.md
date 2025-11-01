@@ -60,6 +60,7 @@ Stable IOCP-based network library designed without session lock
    - 폴더 경로 : C:\Program Files에 설치되어야 함.
    - 비밀번호 : 1q2w3e4r로 설정
    - DB 폴더 참조해 accountDB, logDB 스키마 설정하기
+   - User And Privileges의 root 유저 클릭, Limit to Hosts Matching 항목을 %로 변경 후 저장.
 
 1. 더미 프로그램 Config 설정
    - 서버 IP, Port 설정하기
@@ -80,6 +81,8 @@ Stable IOCP-based network library designed without session lock
 
 5. 채팅 서버(인증) 및 로그인 서버 연동 테스트 전 체크
    - chatserver_auth Config 파일에 Redis IP, Port와 모니터링 서버 IP, Port 설정
+   - 로그인 서버 LServerConfig 파일에서 DB IP, PORT와 REDIS IP, PORT 설정
+   - SERVERRoutingConfig 파일에 더미 프로그램 동작 시킬 시스템의 IP를 설정하고 해당 IP를 로그인 서버가 확인시 로그인 응답으로 전달할 IP(채팅 서버, 게임 서버 IP) 저장 및 채팅 서버, 게임 서버 포트 번호 저장
    - 모니터링 서버 및 Redis 서버 먼저 구동
      
 6. 게임 서버 테스트 전 체크
