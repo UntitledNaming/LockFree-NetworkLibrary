@@ -70,8 +70,6 @@ public:
 	~CMemoryPool()
 	{
 		// Free에서 소멸자 호출 안했으니 소멸자 호출해주고 메모리 풀 노드 지우기
-
-		Node* tempTop;
 		Node* newTop;
 		Node* realTop = (Node*)((UINT64)m_pTopNode & BITMASK);
 
@@ -251,9 +249,6 @@ public:
 
 		InterlockedIncrement(&m_iUseCnt);
 		
-		if (&real->s_data == nullptr)
-			__debugbreak();
-
 		return &(real->s_data);
 	}
 

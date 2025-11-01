@@ -30,7 +30,9 @@
 
 
 
-CGameLibrary::CGameLibrary()
+CGameLibrary::CGameLibrary() : m_AcceptTPS(0), m_AcceptTotal(0), m_AllocID(0), m_ConcurrentCnt(0), m_CreateWorkerCnt(0), m_CurSessionCnt(0), m_Endflag(false),
+m_FixedKey(-1), m_GroupID(0), m_IOCP(INVALID_HANDLE_VALUE), m_Listen(INVALID_SOCKET), m_MaxSessionCnt(0), m_Nagle(0), m_PacketCode(-1), m_Port(-1), m_RecvIOTPS(0),
+m_SendFrame(-1), m_SendIOTPS(0), m_SendThFL(-1), m_SessionTable(nullptr), m_pSessionIdxStack(nullptr)
 {
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
@@ -99,6 +101,9 @@ bool CGameLibrary::Run()
 
 	// 네트워크 초기화 및 연결
 	Net_Init((WCHAR*)wstr.c_str(), port);
+
+	// 게임 라이브러리 스레드 생성
+	Thread_Create(m_SendThFL);
 
 	return true;
 }
@@ -169,7 +174,7 @@ void CGameLibrary::Stop()
 
 }
 
-bool CGameLibrary::Attach(CGroup* pContents, wstring contentsType, UINT64 groupframe, BOOL shared)
+bool CGameLibrary::Attach(CGroup* pContents, wstring contentsType, UINT groupframe, BOOL shared)
 {
 	m_GroupArray.push_back(pContents);
 	pContents->SetGroupFrame(groupframe);
@@ -219,9 +224,6 @@ void CGameLibrary::Mem_Init(INT sessionmax, INT createiothread, INT activethread
 	// 모니터링 변수 초기화
 	Monitoring_Init();
 
-	// 게임 라이브러리 스레드 생성
-	Thread_Create(m_SendThFL);
-
 }
 
 void CGameLibrary::Net_Init(WCHAR* serverIp, INT serverport)
@@ -238,6 +240,31 @@ void CGameLibrary::Net_Init(WCHAR* serverIp, INT serverport)
 	}
 	wprintf(L"socket() Complete... \n");
 
+
+	//네이글 On/Off
+	if (m_Nagle == 1)
+	{
+		//네이글 키고 싶을 때
+		int flag = 0;
+		if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
+		{
+			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
+			__debugbreak();
+		}
+		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanLibrary::Start()_Nagle On Complete...");
+	}
+	else
+	{
+		//네이글 끄고 싶을 때
+		int flag = 1;
+		if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
+		{
+			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
+			__debugbreak();
+		}
+		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanLibrary::Start()_Nagle Off Complete...");
+	}
+
 	//bind() 처리
 	SOCKADDR_IN serveraddr;
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
@@ -248,15 +275,15 @@ void CGameLibrary::Net_Init(WCHAR* serverIp, INT serverport)
 	ret = bind(m_Listen, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (ret == SOCKET_ERROR)
 	{
-		LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CGameLibrary::Net_Init bind() Error... \ Error Code :", WSAGetLastError());
+		LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CGameLibrary::Net_Init bind() Error... / Error Code :", WSAGetLastError());
 		__debugbreak();
 	}
 
 
-	ret = listen(m_Listen, SOMAXCONN_HINT(5000));
+	ret = listen(m_Listen, SOMAXCONN);
 	if (ret == SOCKET_ERROR)
 	{
-		LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CGameLibrary::Net_Init listen() Error... \ Error Code :", WSAGetLastError());
+		LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CGameLibrary::Net_Init listen() Error... / Error Code :", WSAGetLastError());
 		__debugbreak();
 	}
 
@@ -315,7 +342,7 @@ void CGameLibrary::FrameThread()
 	DWORD curTime;
 	DWORD oldTime;
 	INT   cnt;
-	UINT64 frametime;
+	UINT frametime;
 
 	LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"FrameThread Start : %d ", GetCurrentThreadId());
 	while (!m_Endflag)
@@ -366,7 +393,7 @@ void CGameLibrary::WorkerThread()
 			if (pOverlapped == nullptr)
 			{
 				err = GetLastError();
-				LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"WorkerThread GQCS IOCP Failed \ Error Code : %d", err);
+				LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"WorkerThread GQCS IOCP Failed / Error Code : %d", err);
 
 				ESC = true;
 				break;
@@ -376,7 +403,7 @@ void CGameLibrary::WorkerThread()
 			else
 			{
 				err = GetLastError();
-				LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"WorkerThread GQCS IO Failed \ Error Code : %d", err);
+				LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"WorkerThread GQCS IO Failed / Error Code : %d", err);
 			}
 
 		}
@@ -461,6 +488,7 @@ void CGameLibrary::AcceptThread()
 {
 	DWORD curThreadID = GetCurrentThreadId();
 	LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"AcceptThread Start : %d ", GetCurrentThreadId());
+	wprintf(L"AcceptThread Start : %d\n", GetCurrentThreadId());
 	bool ESC = false;
 
 	while (!ESC)
@@ -474,7 +502,7 @@ void CGameLibrary::AcceptThread()
 		client_socket = accept(m_Listen, (SOCKADDR*)&clientAddr, &addlen);
 		if (client_socket == INVALID_SOCKET)
 		{
-			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"AcceptThread accept() Failed \ Error Code : %d", WSAGetLastError());
+			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"AcceptThread accept() Failed / Error Code : %d", WSAGetLastError());
 			ESC = true;
 			continue;
 		}
@@ -500,9 +528,9 @@ void CGameLibrary::AcceptThread()
 		setsockopt(client_socket, SOL_SOCKET, SO_SNDBUF, (char*)&sendBufferSize, sizeof(sendBufferSize));
 
 		//네이글 On/Off
-		if (m_Nagle == true)
+		if (m_Nagle == 1)
 		{
-			int flag = 1;
+			int flag = 0;
 			if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
 			{
 				LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CGameLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
@@ -540,7 +568,7 @@ void CGameLibrary::AcceptThread()
 		retCIOCP = CreateIoCompletionPort((HANDLE)client_socket, m_IOCP, (ULONG_PTR)&m_SessionTable[Index], 0);
 		if (retCIOCP == NULL)
 		{
-			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"AcceptThread RegisterSocketHANDLE Failed \ Session ID : %lld \ Error Code : %d ", m_SessionTable[Index].m_SessionID, GetLastError());
+			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"AcceptThread RegisterSocketHANDLE Failed / Session ID : %lld / Error Code : %d ", m_SessionTable[Index].m_SessionID, GetLastError());
 			break;
 		}
 
@@ -556,13 +584,12 @@ void CGameLibrary::AcceptThread()
 		Release(&m_SessionTable[Index],  InterlockedDecrement64(&m_SessionTable[Index].m_RefCnt));
 	}
 
-
+	wprintf(L"AcceptThread End : %d\n", GetCurrentThreadId());
 	LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"AcceptThread End : %d ", GetCurrentThreadId());
 }
 
 bool CGameLibrary::SendPacket(UINT64 SessionID, CMessage* pMessage)
 {
-	int retrel;
 	CSession* pSession;
 	DWORD curThreadID = GetCurrentThreadId();
 
@@ -579,7 +606,7 @@ bool CGameLibrary::SendPacket(UINT64 SessionID, CMessage* pMessage)
 	if (pSession->m_SendQ.GetUseSize() >= df_SENDQ_MAX_SIZE)
 	{
 		Disconnect(pSession->m_SessionID);
-		LOG(L"CGameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPacket SendQ Full \ SessionID : %lld , Time : %d ", pSession->m_SessionID, timeGetTime());
+		LOG(L"CGameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPacket SendQ Full / SessionID : %lld , Time : %d ", pSession->m_SessionID, timeGetTime());
 		Release(pSession, InterlockedDecrement64(&pSession->m_RefCnt));
 		return false;
 	}
@@ -628,7 +655,6 @@ bool CGameLibrary::SendPacket(UINT64 SessionID, CMessage* pMessage)
 
 bool CGameLibrary::Disconnect(UINT64 SessionID)
 {
-	int retrel;
 	CSession* pSession = nullptr;
 
 
@@ -660,10 +686,8 @@ bool CGameLibrary::Disconnect(UINT64 SessionID)
 
 bool CGameLibrary::FindIP(UINT64 SessionID, std::wstring& OutIP)
 {
-	int retrel;
 	SOCKADDR_IN ClientAddr;
 	INT         len;
-	INT64       ret;
 	CSession* pSession;
 
 	FindSession(SessionID, &pSession);
@@ -774,15 +798,14 @@ bool CGameLibrary::RecvPost(CSession* pSession)
 {
 	int ret;
 	int err;
-	int retrel;
 	DWORD bytesReceived = 0;
 	DWORD flags = 0;
 	DWORD curThreadID = GetCurrentThreadId();
 	WSABUF wsa[2];
 	wsa[0].buf = pSession->m_RecvQ.GetWritePtr();
-	wsa[0].len = pSession->m_RecvQ.DirectEnqueueSize();
+	wsa[0].len = static_cast<ULONG>(pSession->m_RecvQ.DirectEnqueueSize());
 	wsa[1].buf = pSession->m_RecvQ.GetAllocPtr();
-	wsa[1].len = pSession->m_RecvQ.GetFreeSize() - wsa[0].len;
+	wsa[1].len = static_cast<ULONG>(pSession->m_RecvQ.GetFreeSize() - wsa[0].len);
 
 
 	if (pSession->m_DCFlag == 1)
@@ -810,7 +833,7 @@ bool CGameLibrary::RecvPost(CSession* pSession)
 			//비정상적인 에러시 로그 남기기
 			if (err != WSAECONNRESET && err != WSAECONNABORTED && err != WSAEINTR)
 			{
-				LOG(L"NetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed \ Error Code : %d \ SessionID  : %d ", err, pSession->m_SessionID);
+				LOG(L"NetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed / Error Code : %d / SessionID  : %d ", err, pSession->m_SessionID);
 			}
 
 			Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
@@ -830,7 +853,6 @@ bool CGameLibrary::SendPost(CSession* pSession)
 {
 	int ret;
 	int err;
-	int retrel;
 	int usesize;
 	DWORD bytesSend = 0;
 	DWORD flags = 0;
@@ -878,7 +900,6 @@ bool CGameLibrary::SendPost(CSession* pSession)
 	WSABUF wsa[df_SERVER_WSABUFSIZE];
 
 	//송신 락프리큐에서 데이터 꺼내기(없으면 false 리턴)
-	CMessage* temp;
 	int index;
 	for (index = 0; index < df_SERVER_WSABUFSIZE; index++)
 	{
@@ -916,7 +937,7 @@ bool CGameLibrary::SendPost(CSession* pSession)
 		if (err == ERROR_IO_PENDING)
 		{
 
-			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SendPost_IO_PENDING \ Session ID : %llu ", pSession->m_SessionID);
+			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SendPost_IO_PENDING / Session ID : %llu ", pSession->m_SessionID);
 			return true;
 		}
 
@@ -928,7 +949,7 @@ bool CGameLibrary::SendPost(CSession* pSession)
 			//비정상적인 에러시 로그 남기기
 			if (err != WSAECONNRESET && err != WSAECONNABORTED && err != WSAEINTR)
 			{
-				LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed \ Error Code : %d \ SessionID  : %llu ", err, pSession->m_SessionID);
+				LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed / Error Code : %d / SessionID  : %llu ", err, pSession->m_SessionID);
 			}
 
 
@@ -967,7 +988,7 @@ bool CGameLibrary::Release(CSession* pSession,long long retIOCount)
 
 bool CGameLibrary::SessionInvalid(CSession* pSession, UINT64 CheckID)
 {
-	int retrel;
+	LONG64 retrel;
 	retrel = InterlockedIncrement64(&pSession->m_RefCnt);
 
 	//그런데 이미 누가 Release 하고 있으면 쓰면 안되니 감소 시키고 Release 
@@ -992,7 +1013,6 @@ void CGameLibrary::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 	INT retPeekHeader = 0;
 	INT retPeekPayload = 0;
 	BOOL RecvError = false;
-	LONGLONG retrel;
 
 	if (cbTransferred == 0)
 	{
@@ -1018,7 +1038,7 @@ void CGameLibrary::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 
 
 		//수신 링버퍼에 len이 네트워크 헤더인데 이정도도 없으면 그냥 끝내기
-		int usesize = pSession->m_RecvQ.GetUseSize();
+		unsigned long long usesize = pSession->m_RecvQ.GetUseSize();
 		if (usesize <= sizeof(st_NETHEADER))
 		{
 			CMessage::Free(pPacket);
@@ -1104,7 +1124,7 @@ void CGameLibrary::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 		if (header.s_checksum != (sum % 256))
 		{
 			RecvError = true;
-			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CNetServer::WorkerThread RecvIO CheckSum Error \ Session ID : %llu ...", pSession->m_SessionID);
+			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CNetServer::WorkerThread RecvIO CheckSum Error / Session ID : %llu ...", pSession->m_SessionID);
 			Disconnect(pSession->m_SessionID);
 			CMessage::Free(pPacket);
 			break;
@@ -1147,8 +1167,6 @@ void CGameLibrary::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 
 void CGameLibrary::SendIOProc(CSession* pSession, DWORD cbTransferred)
 {
-	LONGLONG retrel;
-
 
 	//사용한 직렬화 버퍼 메세지 메모리 풀에 반납
 	for (int i = 0; i < pSession->m_SendMsgCnt; i++)

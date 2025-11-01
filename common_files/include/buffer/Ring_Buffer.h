@@ -22,7 +22,7 @@ public:
 
 
 	//현재 사용중인 용량 얻기
-	inline int GetUseSize()
+	inline __int64 GetUseSize()
 	{
 		char* oldWritePos = _writePos;
 		char* oldReadPos = _readPos;
@@ -38,7 +38,7 @@ public:
 	}
 
 	//현재 버퍼에 남은 용량 얻기
-	inline int GetFreeSize()
+	inline __int64 GetFreeSize()
 	{
 		char* oldWritePos = _writePos;
 		char* oldReadPos = _readPos;
@@ -81,7 +81,7 @@ public:
 	// 1차원 메모리 배열 상 WritePos가 ReadPos 앞에 올 수 있음. 이러면 ReadPos와 WritePos 사이 길이
 	// DirectDequeueSize도 마찬가지로
 	//반환값 : 사용가능한 용량
-	inline int DirectEnqueueSize()
+	inline __int64 DirectEnqueueSize()
 	{
 		char* oldReadPos = _readPos;
 		char* oldWritePos = _writePos;
@@ -94,12 +94,12 @@ public:
 
 		return (_allocPos + _size - oldWritePos);
 	}
-	inline int DirectDequeueSize()
+	inline __int64 DirectDequeueSize()
 	{
 		char* oldReadPos = _readPos;
 		char* oldWritePos = _writePos;
 
-		int useSize = GetUseSize();
+		long long useSize = GetUseSize();
 
 		if (useSize == 0)
 			return 0;
@@ -119,7 +119,7 @@ public:
 	//반환값 : 이동 크기
 	inline int MoveWritePos(int iSize)
 	{
-		int left;
+		__int64 left;
 
 		_writePos += iSize;
 		if (_writePos >= _allocPos + _size)
@@ -135,7 +135,7 @@ public:
 
 	inline int MoveReadPos(int iSize)
 	{
-		int left;
+		__int64 left;
 
 		_readPos += iSize;
 		if (_readPos >= _allocPos + _size)

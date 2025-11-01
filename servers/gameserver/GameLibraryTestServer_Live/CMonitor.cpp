@@ -31,7 +31,7 @@
 
 #pragma warning(disable:4996)
 
-CMonitor::CMonitor()
+CMonitor::CMonitor() : m_MonitorFrameTPSSum(0)
 {
 	m_pPDH = new ProcessMonitor;
 	m_pMonitorClient = new CMonitorClient(GAME_SERVER_NO);
@@ -142,14 +142,14 @@ void CMonitor::OnUpdate()
 		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_SERVER_CPU, (int)m_pPDH->ProcessTotal());
 		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
 		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_SESSION, GetCurSessionCount());
-		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_AUTH_PLAYER, authptr->GetUserCount());
-		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_GAME_PLAYER, echoptr->GetUserCount());
+		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_AUTH_PLAYER, static_cast<INT>(authptr->GetUserCount()));
+		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_GAME_PLAYER, static_cast<INT>(echoptr->GetUserCount()));
 		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_ACCEPT_TPS, GetAcceptTPS());
 		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_PACKET_RECV_TPS, authptr->GetRecvTPS() + echoptr->GetRecvTPS());
 		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_PACKET_SEND_TPS, authptr->GetSendTPS() + echoptr->GetSendTPS());
 		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_AUTH_THREAD_FPS, authptr->GetFrameTPS());
 		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_GAME_THREAD_FPS, echoptr->GetFrameTPS());
-		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_PACKET_POOL, CMessage::m_pMessagePool->GetUseCnt());
+		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
 
 	}
 	else
@@ -160,14 +160,14 @@ void CMonitor::OnUpdate()
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_SERVER_CPU, (int)m_pPDH->ProcessTotal());
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_SESSION, GetCurSessionCount());
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_AUTH_PLAYER, authptr->GetUserCount());
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_GAME_PLAYER, echoptr->GetUserCount());
+			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_AUTH_PLAYER, static_cast<INT>(authptr->GetUserCount()));
+			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_GAME_PLAYER, static_cast<INT>(echoptr->GetUserCount()));
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_ACCEPT_TPS, GetAcceptTPS());
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_PACKET_RECV_TPS, authptr->GetRecvTPS() + echoptr->GetRecvTPS());
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_PACKET_SEND_TPS, authptr->GetSendTPS() + echoptr->GetSendTPS());
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_AUTH_THREAD_FPS, authptr->GetFrameTPS());
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_GAME_THREAD_FPS, echoptr->GetFrameTPS());
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_PACKET_POOL, CMessage::m_pMessagePool->GetUseCnt());
+			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_GAME_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
 		}
 	}
 
@@ -201,8 +201,8 @@ void CMonitor::OnUpdate()
 	wprintf(L"Accept  Total                          Count   : %lld \n", GetAcceptTotal());
 
 	wprintf(L"====================== 사용량 모니터링 ==============================\n");
-	wprintf(L" CMessagePool           Avg  UseCnt : %lld  / Count : %d \n", m_CMessagePoolSum / m_loopCnt, CMessage::m_pMessagePool->GetUseCnt());
-	wprintf(L"     UserPool           Avg  UseCnt : %lld  / Count : %d \n", m_UserPoolSum / m_loopCnt, CUser::m_pUserPool->GetUseCnt());
+	wprintf(L" CMessagePool           Avg  UseCnt : %lld  / Count : %lld \n", m_CMessagePoolSum / m_loopCnt, CMessage::m_pMessagePool->GetUseCnt());
+	wprintf(L"     UserPool           Avg  UseCnt : %lld  / Count : %lld \n", m_UserPoolSum / m_loopCnt, CUser::m_pUserPool->GetUseCnt());
 
 
 	wprintf(L"[ CPU Usage : T[%f%] U[%f%] K[%f%]]\n", m_Processtotalsum / m_loopCnt, m_Processusersum / m_loopCnt, m_Processkernelsum / m_loopCnt);

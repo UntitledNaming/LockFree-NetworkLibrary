@@ -33,7 +33,7 @@
 
 #pragma warning(disable : 4996) 
 
-CLoginServer::CLoginServer()
+CLoginServer::CLoginServer() : m_DBTLS(nullptr), m_EndFlag(false), m_LoginComTPS(0), m_MaxUserCnt(0), m_pMonitorClient(nullptr), m_pPDH(nullptr), m_pRedisClient(nullptr), m_pUserPool(nullptr)
 {
 
 }
@@ -319,7 +319,7 @@ void CLoginServer::OnRecv(UINT64 SessionID, CMessage* pMessage)
 	{
 		//프로토콜 보다 보낸 데이터 크기가 적으면 플래그 켜짐.
 		Disconnect(SessionID);
-		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"OnRecv::CMessage Flag Error... \ UniqID : %lld ", SessionID);
+		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"OnRecv::CMessage Flag Error... / UniqID : %lld ", SessionID);
 		return;
 	}
 
@@ -331,7 +331,7 @@ void CLoginServer::OnRecv(UINT64 SessionID, CMessage* pMessage)
 
 	default:
 		Disconnect(SessionID);
-		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"OnRecv::Message Type Error... \ UniqID : %lld ", SessionID);
+		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"OnRecv::Message Type Error... / UniqID : %lld ", SessionID);
 		break;
 	}
 
@@ -363,7 +363,7 @@ void CLoginServer::LoginRequest(CMessage* pMessage, UINT64 sessionid)
 	if (pMessage->GetData(SessionKey, SESSION_KEY_MAX) == 0)
 	{
 		Disconnect(sessionid);
-		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"LoginRequest::GetData Error... \ UniqID : %lld ", sessionid);
+		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"LoginRequest::GetData Error... / UniqID : %lld ", sessionid);
 		return;
 	}
 
@@ -371,7 +371,7 @@ void CLoginServer::LoginRequest(CMessage* pMessage, UINT64 sessionid)
 	{
 		//프로토콜 보다 보낸 데이터 크기가 적으면 플래그 켜짐.
 		Disconnect(sessionid);
-		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"LoginRequest::CMessage Flag Error... \ UniqID : %lld ", sessionid);
+		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"LoginRequest::CMessage Flag Error... / UniqID : %lld ", sessionid);
 		return;
 	}
 
@@ -379,7 +379,7 @@ void CLoginServer::LoginRequest(CMessage* pMessage, UINT64 sessionid)
 	{
 		//프로토콜 보다 보낸 데이터 크기가 크면 끊기
 		Disconnect(sessionid);
-		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"LoginRequest::CMessage Size Overflow Error... \ UniqID : %lld / Account No : %lld", sessionid, AccountNo);
+		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"LoginRequest::CMessage Size Overflow Error... / UniqID : %lld / Account No : %lld", sessionid, AccountNo);
 		return;
 	}
 
@@ -441,7 +441,7 @@ void CLoginServer::LoginRequest(CMessage* pMessage, UINT64 sessionid)
 	// 로그인 요청 처리 시간 체크
 	if (endTime - startTime >= 2000)
 	{
-		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"LoginRequest::LoginRequest Proc Time Too Long \ UniqID : %lld / Account No : %lld / Time : %lld", sessionid, pUser->s_AccountNo, endTime - startTime);
+		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"LoginRequest::LoginRequest Proc Time Too Long / UniqID : %lld / Account No : %lld / Time : %lld", sessionid, pUser->s_AccountNo, endTime - startTime);
 	}
 
 	InterlockedIncrement((long*)&m_LoginComTPS);
@@ -486,8 +486,8 @@ void CLoginServer::GetDBData(WCHAR* id, WCHAR* nick, UINT64 accountNo)
 
 
 	// sql_row[0]에 userid 컬럼 데이터가 문자열 형태로 저장되어 있는데 그 주소값이 저장됨.
-	IDLen = strlen((*sql_row)[0]);
-	NICKLen = strlen((*sql_row)[1]);
+	IDLen = static_cast<INT>(strlen((*sql_row)[0]));
+	NICKLen = static_cast<INT>(strlen((*sql_row)[1]));
 
 
 	for (int i = 0; i < IDLen; i++)
@@ -667,7 +667,7 @@ void CLoginServer::MonitorThread()
 			local_time->tm_sec);
 		wprintf(L"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\n");
 		wprintf(L"[ User      / NonUser     Count :  %lld / %lld ]\n", m_UserMap.size(), m_NonUserMap.size());
-		wprintf(L"[ MessagePool             Count :  %d ]\n", CMessage::m_pMessagePool->GetUseCnt());
+		wprintf(L"[ MessagePool             Count :  %lld ]\n", CMessage::m_pMessagePool->GetUseCnt());
 		wprintf(L"[ Login Complte            TPS  :  %d]\n\n", m_LoginComTPS);
 		wprintf(L"[ Accept Total             TPS  :  %lld]\n\n", m_AcceptTotal);
 		wprintf(L"[ CPU Usage : T[%f%] U[%f%] K[%f%]]\n", processtotalsum / loopCnt, processusersum / loopCnt, processkernelsum / loopCnt);
@@ -684,7 +684,7 @@ void CLoginServer::MonitorThread()
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_LOGIN_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_LOGIN_SESSION, m_CurSessionCnt);
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_LOGIN_AUTH_TPS, m_LoginComTPS);
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_LOGIN_PACKET_POOL, CMessage::m_pMessagePool->GetUseCnt());
+			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_LOGIN_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
 		}
 		else
 		{
@@ -695,7 +695,7 @@ void CLoginServer::MonitorThread()
 				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_LOGIN_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
 				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_LOGIN_SESSION, m_CurSessionCnt);
 				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_LOGIN_AUTH_TPS, m_LoginComTPS);
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_LOGIN_PACKET_POOL, CMessage::m_pMessagePool->GetUseCnt());
+				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_LOGIN_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
 			}
 		}
 

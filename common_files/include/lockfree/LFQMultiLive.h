@@ -160,6 +160,9 @@ public:
 		UINT64   retCnt;
 
 
+		if (m_size <= 0)
+			return false;
+
 		//사전 작업
 		while (1)
 		{
@@ -181,7 +184,7 @@ public:
 			localHead = m_pHead;
 			realHead = (Node*)((UINT64)localHead & BITMASK);
 			realHeadNext = realHead->_next;
-			if (realHeadNext == nullptr)
+			if (realHeadNext == nullptr || realHeadNext == (Node*)0xFFFFFFFFFFFFFFFF)
 				return false;
 
 

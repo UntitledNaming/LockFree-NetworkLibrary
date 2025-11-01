@@ -35,7 +35,8 @@
 
 #pragma warning(disable:4996)
 
-CMonitor::CMonitor()
+CMonitor::CMonitor() : m_DBEvent{ INVALID_HANDLE_VALUE ,INVALID_HANDLE_VALUE ,INVALID_HANDLE_VALUE }, m_EndFlag(false), m_pAgentMgr(nullptr), m_pDBQueue(nullptr), m_pDBTLS(nullptr),
+m_pMonitorPool(nullptr), m_pPDH(nullptr), m_pUserPool(nullptr)
 {
 
 }
@@ -123,6 +124,7 @@ BOOL CMonitor::RunServer()
 
 	m_pAgentMgr->RunAgentsManager(MaxAgent,(WCHAR*)bindEXTstr.c_str(), extport, createthread, runningthread, maxSessions, SendFrame, SendFlag, PACKET_CODE, PACKET_KEY, Nagle);
 	
+	return true;
 }
 
 void CMonitor::StopServer()
@@ -403,20 +405,20 @@ void CMonitor::Monitor()
 	{
 		Sleep(1000);
 		m_pPDH->UpdateCounter();
-		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_CPU_TOTAL, (INT)m_pPDH->ProcessorTotal(), time(NULL));
-		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NONPAGED_MEMORY, (INT)(m_pPDH->m_NonPagedMemoryVal.doubleValue / (1024 * 1024)), time(NULL));
-		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NETWORK_SEND, (INT)((m_pPDH->m_EtherNetSendVal1.doubleValue) / 1024), time(NULL));
-		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NETWORK_RECV, (INT)((m_pPDH->m_EtherNetRecvVal1.doubleValue) / 1024), time(NULL));
-		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_AVAILABLE_MEMORY, (INT)m_pPDH->m_AvailableMemoryVal.doubleValue, time(NULL));
+		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_CPU_TOTAL, (INT)m_pPDH->ProcessorTotal(), static_cast<INT>(time(NULL)));
+		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NONPAGED_MEMORY, (INT)(m_pPDH->m_NonPagedMemoryVal.doubleValue / (1024 * 1024)), static_cast<INT>(time(NULL)));
+		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NETWORK_SEND, (INT)((m_pPDH->m_EtherNetSendVal1.doubleValue) / 1024), static_cast<INT>(time(NULL)));
+		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NETWORK_RECV, (INT)((m_pPDH->m_EtherNetRecvVal1.doubleValue) / 1024), static_cast<INT>(time(NULL)));
+		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_AVAILABLE_MEMORY, (INT)m_pPDH->m_AvailableMemoryVal.doubleValue, static_cast<INT>(time(NULL)));
 
-		DataEnqueue(time(NULL), (INT)m_pPDH->ProcessorTotal(), MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_CPU_TOTAL);
-		DataEnqueue(time(NULL), (INT)(m_pPDH->m_NonPagedMemoryVal.doubleValue / (1024 * 1024)), MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NONPAGED_MEMORY);
-		DataEnqueue(time(NULL), (INT)((m_pPDH->m_EtherNetSendVal1.doubleValue) / 1024), MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NETWORK_SEND);
-		DataEnqueue(time(NULL), (INT)((m_pPDH->m_EtherNetRecvVal1.doubleValue) / 1024), MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NETWORK_RECV);
-		DataEnqueue(time(NULL), (INT)m_pPDH->m_AvailableMemoryVal.doubleValue, MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_AVAILABLE_MEMORY);
+		DataEnqueue(static_cast<INT>(time(NULL)), (INT)m_pPDH->ProcessorTotal(), MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_CPU_TOTAL);
+		DataEnqueue(static_cast<INT>(time(NULL)), (INT)(m_pPDH->m_NonPagedMemoryVal.doubleValue / (1024 * 1024)), MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NONPAGED_MEMORY);
+		DataEnqueue(static_cast<INT>(time(NULL)), (INT)((m_pPDH->m_EtherNetSendVal1.doubleValue) / 1024), MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NETWORK_SEND);
+		DataEnqueue(static_cast<INT>(time(NULL)), (INT)((m_pPDH->m_EtherNetRecvVal1.doubleValue) / 1024), MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NETWORK_RECV);
+		DataEnqueue(static_cast<INT>(time(NULL)), (INT)m_pPDH->m_AvailableMemoryVal.doubleValue, MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_AVAILABLE_MEMORY);
 
 
-		wprintf(L"CMessagePool    UseCount : %d \n", CMessage::m_pMessagePool->GetUseCnt());
+		wprintf(L"CMessagePool    UseCount : %lld \n", CMessage::m_pMessagePool->GetUseCnt());
 		wprintf(L"MonitorDataPool UseCount : %d \n", m_pMonitorPool->GetUseCnt());
 		wprintf(L"UserPool        UseCount : %lld \n", m_UserMap.size());
 		wprintf(L"Agent              Count : %lld \n", m_pAgentMgr->GetAgentsSize());

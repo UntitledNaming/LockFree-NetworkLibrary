@@ -40,7 +40,7 @@ public:
 	CMemoryPool<Bucket>* g_pCaseBucketPool;            // 버킷 껍데기 가져오는 풀
 
 protected:
-	BOOL          m_bPlacementNew;
+	bool          m_bPlacementNew;
 	UINT64        m_iOriginID;
 	UINT          m_iBKTCapacity;
 	UINT64        m_iUseCnt;
@@ -51,7 +51,8 @@ protected:
 	SubPool       m_SubPoolArray[SUBPOOL_MAX];                //각 서브풀 포인터 관리 자료구조
 
 public:
-	CMPoolTLS(int iBucketNum = 0, bool bPlacementNew = false) 
+	CMPoolTLS(int iBucketNum = 0, bool bPlacementNew = false) : g_pBucketPool(nullptr), g_pCaseBucketPool(nullptr), m_SubPoolIndex(-1), m_bPlacementNew(bPlacementNew), 
+		m_iBKTCapacity(0), m_iOriginID(-1), m_iUseCnt(0)
 	{
 		Bucket* pBucket = nullptr;
 
@@ -64,9 +65,7 @@ public:
 		}
 
 		//멤버 변수 초기화
-		m_bPlacementNew = bPlacementNew;
 		m_iBKTCapacity = iBucketNum;
-		m_SubPoolIndex = -1;
 		m_iUseCnt = 0;
 
 
@@ -214,7 +213,7 @@ public:
 	//  각 서브 풀의 UseCnt 합산.
 	//
 	//////////////////////////////////////////////////////////////////////////
-	inline int GetUseCnt()
+	inline UINT64 GetUseCnt()
 	{
 		return m_iUseCnt;
 	}

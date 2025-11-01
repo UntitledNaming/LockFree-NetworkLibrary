@@ -53,7 +53,7 @@ void CEcho::OnRecv(UINT64 sessionID, CMessage* pMessage)
 	if (pMessage->GetLastError())
 	{
 		Disconnect(sessionID);
-		LOG(L"CEcho", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CEcho::OnRecv CMessage Flag Error...  \ UniqID : %lld ", sessionID);
+		LOG(L"CEcho", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CEcho::OnRecv CMessage Flag Error...  / UniqID : %lld ", sessionID);
 		return;
 	}
 
@@ -69,7 +69,7 @@ void CEcho::OnRecv(UINT64 sessionID, CMessage* pMessage)
 
 	default:
 		Disconnect(sessionID);
-		LOG(L"CEcho", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CEcho::OnRecv Message Type Error...  \ UniqID : %lld ", sessionID);
+		LOG(L"CEcho", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CEcho::OnRecv Message Type Error...  / UniqID : %lld ", sessionID);
 		break;
 	}
 
@@ -119,7 +119,7 @@ void CEcho::EchoRequestProc(UINT64 sessionID, CMessage* pMessage)
 
 	if (pMessage->GetLastError())
 	{
-		LOG(L"Echo", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Flag Error... \ UniqID : %lld", sessionID);
+		LOG(L"Echo", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Flag Error... / UniqID : %lld", sessionID);
 		//프로토콜 보다 보낸 데이터 크기가 적으면 플래그 켜짐.
 		Disconnect(sessionID);
 		return;
@@ -127,7 +127,7 @@ void CEcho::EchoRequestProc(UINT64 sessionID, CMessage* pMessage)
 
 	if (pMessage->GetDataSize() > 0)
 	{
-		LOG(L"Echo", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Size Overflow Error... \ UniqID : %lld ", sessionID);
+		LOG(L"Echo", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Size Overflow Error... / UniqID : %lld ", sessionID);
 		//프로토콜 보다 보낸 데이터 크기가 크면 끊기
 		Disconnect(sessionID);
 		return;
@@ -161,7 +161,7 @@ void CEcho::HearBeatProc(UINT64 sessionID, CMessage* pMessage)
 
 	if (pMessage->GetDataSize() > 0)
 	{
-		LOG(L"Echo", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Size Overflow Error... \ UniqID : %lld ", sessionID);
+		LOG(L"Echo", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Size Overflow Error... / UniqID : %lld ", sessionID);
 		//프로토콜 보다 보낸 데이터 크기가 크면 끊기
 		Disconnect(sessionID);
 		return;

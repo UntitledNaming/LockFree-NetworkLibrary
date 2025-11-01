@@ -15,7 +15,7 @@
 #include "LogClass.h"
 #pragma comment(lib, "Ws2_32.lib")
 
-CLanClient::CLanClient()
+CLanClient::CLanClient() : m_iocp(INVALID_HANDLE_VALUE), m_pSession(nullptr), m_serverport(-1)
 {
 
 }
@@ -25,7 +25,7 @@ CLanClient::~CLanClient()
 
 }
 
-bool CLanClient::Connect(WCHAR* SERVERIP, INT SERVERPORT, BOOL OffNagle)
+bool CLanClient::Connect(WCHAR* SERVERIP, INT SERVERPORT)
 {
 	SOCKET sock = INVALID_SOCKET;
 
@@ -37,7 +37,7 @@ bool CLanClient::Connect(WCHAR* SERVERIP, INT SERVERPORT, BOOL OffNagle)
 	}
 
 	// 멤버 초기화
-	if (!Mem_Init(SERVERIP, SERVERPORT, OffNagle))
+	if (!Mem_Init(SERVERIP, SERVERPORT))
 		return false;
 
 	// 스레드 생성
@@ -165,7 +165,6 @@ void CLanClient::Destroy()
 void CLanClient::WorkerThread()
 {
 	int retval;
-	long long retrel;
 
 	DWORD curThreadID = GetCurrentThreadId();
 
@@ -186,7 +185,7 @@ void CLanClient::WorkerThread()
 			//IOCP가 닫히거나 IOCP 완료 통지 큐에서 디큐잉에 실패할 때 처리
 			if (pOverlapped == nullptr)
 			{
-				LOG(L"CLanClient", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"WorkerThread GQCS IOCP Failed \ Error Code : %d", GetLastError());
+				LOG(L"CLanClient", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"WorkerThread GQCS IOCP Failed  / Error Code : %d", GetLastError());
 
 				//어차피 이 경우에는 그냥 워커 스레드를 파괴해야 함.
 				break;
@@ -196,7 +195,7 @@ void CLanClient::WorkerThread()
 			else
 			{
 				//어차피 워커 스레드 하단에서 알아서 Release할 것임.
-				LOG(L"CLanClient", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"WorkerThread GQCS IO Failed \ Error Code : %d", GetLastError());
+				LOG(L"CLanClient", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"WorkerThread GQCS IO Failed / Error Code : %d", GetLastError());
 
 			}
 
@@ -221,11 +220,10 @@ void CLanClient::WorkerThread()
 
 }
 
-bool CLanClient::Mem_Init( WCHAR* ServerIP, INT ServerPort, BOOL Nagle)
+bool CLanClient::Mem_Init( WCHAR* ServerIP, INT ServerPort)
 {
 	m_serverIP = ServerIP;
 	m_serverport = ServerPort;
-	m_nagle = Nagle;
 	m_pSession = new SESSION;
 
 	// IOCP 객체 생성 및 초기화
@@ -252,20 +250,6 @@ bool CLanClient::CreateAndSetSocket(SOCKET& outParam)
 		return false;
 	}
 
-	//네이글 On/Off
-	if (m_nagle == true)
-	{
-		//네이글 끄고 싶을 때
-		int flag = 1;
-		if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
-		{
-			LOG(L"CLanClient", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanClient::setsockopt()_Nagle Error...");
-			return false;
-		}
-
-		LOG(L"NetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanClient::setsockopt()_Nagle On Complete...");
-	}
-
 	// Overlapped IO로 작동시키기 위해 소켓 송신 버퍼 0으로 설정
 	int sendBufferSize = 0;
 	setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char*)&sendBufferSize, sizeof(sendBufferSize));
@@ -287,7 +271,7 @@ bool CLanClient::CreateAndSetSocket(SOCKET& outParam)
 	retCIOCP = CreateIoCompletionPort((HANDLE)sock, m_iocp, (ULONG_PTR)NULL, 0);
 	if (retCIOCP == NULL)
 	{
-		LOG(L"CLanClient", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanClient RegisterSocketHANDLE Failed  \ Error Code : %d ", GetLastError());
+		LOG(L"CLanClient", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanClient RegisterSocketHANDLE Failed  / Error Code : %d ", GetLastError());
 		return false;
 	}
 
@@ -330,9 +314,9 @@ bool CLanClient::RecvPost()
 
 	WSABUF wsa[2];
 	wsa[0].buf = m_pSession->s_RecvQ.GetWritePtr();
-	wsa[0].len = m_pSession->s_RecvQ.DirectEnqueueSize();
+	wsa[0].len = static_cast<ULONG>(m_pSession->s_RecvQ.DirectEnqueueSize());
 	wsa[1].buf = m_pSession->s_RecvQ.GetAllocPtr();
-	wsa[1].len = m_pSession->s_RecvQ.GetFreeSize() - wsa[0].len;
+	wsa[1].len = static_cast<ULONG>(m_pSession->s_RecvQ.GetFreeSize() - wsa[0].len);
 
 	InterlockedIncrement(&m_pSession->s_IORefCnt);
 
@@ -357,7 +341,7 @@ bool CLanClient::RecvPost()
 			//비정상적인 에러시 로그 남기기
 			if (err != WSAECONNRESET && err != WSAECONNABORTED && err != WSAEINTR)
 			{
-				LOG(L"CLanClient", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed \ Error Code : %d", err);
+				LOG(L"CLanClient", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed / Error Code : %d", err);
 			}
 
 			Release(InterlockedDecrement(&m_pSession->s_IORefCnt));
@@ -453,7 +437,7 @@ bool CLanClient::SendPost()
 			//비정상적인 에러시 로그 남기기
 			if (err != WSAECONNRESET && err != WSAECONNABORTED && err != WSAEINTR)
 			{
-				LOG(L"CLanClient", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed \ Error Code : %d", err);
+				LOG(L"CLanClient", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed / Error Code : %d", err);
 			}
 
 			Release(InterlockedDecrement(&m_pSession->s_IORefCnt));
@@ -511,7 +495,6 @@ void CLanClient::RecvIOProc(DWORD cbTransferred)
 {
 	INT retPeekHeader = -1;
 	INT retPeekPayload = -1;
-	LONG retrel;
 	BOOL RecvError = false;
 
 	m_pSession->s_RecvQ.MoveWritePos(cbTransferred);
@@ -529,7 +512,7 @@ void CLanClient::RecvIOProc(DWORD cbTransferred)
 
 
 		//수신 링버퍼에 len이 네트워크 헤더인데 이정도도 없으면 그냥 끝내기
-		int usesize = m_pSession->s_RecvQ.GetUseSize();
+		unsigned long long usesize = m_pSession->s_RecvQ.GetUseSize();
 		if (usesize <= sizeof(LANHEADER))
 		{
 			CMessage::Free(pPacket);
@@ -588,12 +571,6 @@ void CLanClient::RecvIOProc(DWORD cbTransferred)
 
 void CLanClient::SendIOProc(DWORD cbTransferred)
 {
-	int retPeek;
-	int retRefCnt;
-	LONG retrel;
-
-	//SendArray에서 SendMessageCount만큼 메모리풀에 반납.
-
 	//사용한 직렬화 버퍼 메세지 메모리 풀에 반납
 	for (int i = 0; i <m_pSession->s_SendMsgCnt; i++)
 	{

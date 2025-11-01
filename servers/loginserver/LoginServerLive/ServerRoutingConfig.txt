@@ -1,9 +1,9 @@
 
-         DUMMY_IP1 = "172.30.1.85";
-         DUMMY_IP1_RESULT = "172.30.1.55"; 
+         DUMMY_IP1 = "172.30.1.42";
+         DUMMY_IP1_RESULT = "172.30.1.42"; 
 
-         DUMMY_IP2 = "172.30.1.85";
-         DUMMY_IP2_RESULT = "172.30.1.55"; 
+         DUMMY_IP2 = "172.30.1.42";
+         DUMMY_IP2_RESULT = "172.30.1.42"; 
  
 
 

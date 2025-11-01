@@ -41,7 +41,8 @@
 #pragma warning(disable : 4996) 
 
 
-ChatServer::ChatServer()
+ChatServer::ChatServer() : m_MonitorFlag(false), m_ReqChatMsgTPS(0), m_ReqLoginTPS(0), m_ReqMoveTPS(0), m_ReqTPS(0), m_ResChatMsgTPS(0), m_ResLoginTPS(0), m_ResMoveTPS(0), m_ResTPS(0)
+, m_UpdateFrame(-1), m_UpdateLoopTime(0), m_UpdateTPS(0), m_UserMaxCnt(0), m_pJobPool(nullptr), m_pMonitorClient(nullptr), m_pPDH(nullptr), m_pUpdateJobQ(nullptr), m_pUserPool(nullptr)
 {
 }
 
@@ -410,7 +411,7 @@ void ChatServer::LoginProc(CMessage* pMessage, UINT64 sessionid)
 
 	if (m_UserMap.size() >= m_UserMaxCnt)
 	{
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"LoginRequest::UserMax \ UniqID : %llu ", sessionid);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"LoginRequest::UserMax / UniqID : %llu ", sessionid);
 		Disconnect(sessionid);
 		return;
 	}
@@ -422,7 +423,7 @@ void ChatServer::LoginProc(CMessage* pMessage, UINT64 sessionid)
 
 	if (pMessage->GetLastError())
 	{
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"LoginRequest::CMessage Flag Error... \ UniqID : %lld", sessionid);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"LoginRequest::CMessage Flag Error... / UniqID : %lld", sessionid);
 
 		//프로토콜 보다 보낸 데이터 크기가 적으면 플래그 켜짐.
 		Disconnect(sessionid);
@@ -433,7 +434,7 @@ void ChatServer::LoginProc(CMessage* pMessage, UINT64 sessionid)
 
 	if (pMessage->GetDataSize() > 0)
 	{
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"LoginRequest::CMessage Size Overflow Error... \ UniqID : %lld ", sessionid);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"LoginRequest::CMessage Size Overflow Error... / UniqID : %lld ", sessionid);
 		//프로토콜 보다 보낸 데이터 크기가 크면 끊기
 		Disconnect(sessionid);
 
@@ -490,7 +491,7 @@ void ChatServer::SectorMoveProc(CMessage* pMessage, UINT64 sessionid)
 			__debugbreak();
 
 		// LoginProc 처리 전에 메세지 먼저 온 경우는 상대방 끊기
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::UserMap Not Exist NonUserMap Exist Error... \ UniqID : %llu ", sessionid);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::UserMap Not Exist NonUserMap Exist Error... / UniqID : %llu ", sessionid);
 		CNetServer::Disconnect(sessionid);
 		return;
 	}
@@ -503,21 +504,21 @@ void ChatServer::SectorMoveProc(CMessage* pMessage, UINT64 sessionid)
 
 	if (pMessage->GetLastError())
 	{
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::CMessage Flag Error... \ UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::CMessage Flag Error... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
 		//프로토콜 보다 보낸 데이터 크기가 적으면 플래그 켜짐.
 		Disconnect(sessionid);
 		return;
 	}
 	if (pMessage->GetDataSize() > 0)
 	{
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::CMessage Size Overflow Error... \ UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::CMessage Size Overflow Error... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
 		//프로토콜 보다 보낸 데이터 크기가 크면 끊기
 		Disconnect(sessionid);
 		return;
 	}
 	if (!SectorRangeCheck(pos.s_xpos, pos.s_ypos))
 	{
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::Sector Arrang Error... \ UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::Sector Arrang Error... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
 		Disconnect(sessionid);
 		return;
 	}
@@ -575,7 +576,7 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 			__debugbreak();
 
 		// LoginProc 처리 전에 메세지 먼저 온 경우는 상대방 끊기
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::UserMap Not Exist NonUserMap Exist Error... \ UniqID : %llu ", sessionid);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::UserMap Not Exist NonUserMap Exist Error... / UniqID : %llu ", sessionid);
 		Disconnect(sessionid);
 
 		return;
@@ -589,7 +590,7 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 	// 섹터 변경 메세지 보다 먼저 온 경우
 	if (pUser->s_Sector != 1)
 	{
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::Not Recv SectorMove Message ... \ UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::Not Recv SectorMove Message ... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
 		Disconnect(sessionid);
 		return;
 	}
@@ -610,7 +611,7 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 
 	if (pMessage->GetLastError())
 	{
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::CMessage Flag Error... \ UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::CMessage Flag Error... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
 
 		//프로토콜 보다 보낸 데이터 크기가 적으면 플래그 켜짐.
 		CNetServer::Disconnect(sessionid);
@@ -620,7 +621,7 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 
 	if (pMessage->GetDataSize() > 0)
 	{
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::CMessage Size Overflow Error... \ UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::CMessage Size Overflow Error... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
 		//프로토콜 보다 보낸 데이터 크기가 크면 끊기
 		CNetServer::Disconnect(sessionid);
 
@@ -650,7 +651,7 @@ void ChatServer::HeartBeatProc(CMessage* pMessage, UINT64 sessionid)
 
 	if (pMessage->GetDataSize() > 0)
 	{
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"HeartBeat::CMessage Size Overflow Error... \ UniqID : %llu  ", sessionid);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"HeartBeat::CMessage Size Overflow Error... / UniqID : %llu  ", sessionid);
 		//프로토콜 보다 보낸 데이터 크기가 크면 끊기
 		CNetServer::Disconnect(sessionid);
 
@@ -665,7 +666,7 @@ void ChatServer::HeartBeatProc(CMessage* pMessage, UINT64 sessionid)
 		if (itNon == m_NonUserMap.end())
 			__debugbreak();
 
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"HeartBeat::UserMap Not Exist NonUserMap Exist Error... \ UniqID : %llu ", sessionid);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"HeartBeat::UserMap Not Exist NonUserMap Exist Error... / UniqID : %llu ", sessionid);
 
 		CNetServer::Disconnect(sessionid);
 
@@ -677,7 +678,7 @@ void ChatServer::HeartBeatProc(CMessage* pMessage, UINT64 sessionid)
 	CUser* pUser = itOn->second;
 	if (pUser->s_Sector != 1)
 	{
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"HeartBeat::Not Recv SectorMove Message ... \ UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"HeartBeat::Not Recv SectorMove Message ... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
 
 		//섹터 이동 보다 먼저 패킷온 경우
 		CNetServer::Disconnect(sessionid);
@@ -702,7 +703,7 @@ void ChatServer::RecvProc(UINT64 sessionID, CMessage* pMessage)
 	if (pMessage->GetLastError())
 	{
 		Disconnect(sessionID);
-		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"UserRecvMsg::CMessage Flag Error...  \ UniqID : %llu ", sessionID);
+		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"UserRecvMsg::CMessage Flag Error...  / UniqID : %llu ", sessionID);
 		CMessage::Free(pMessage);
 		return;
 	}
@@ -944,7 +945,7 @@ void ChatServer::MonitorThread()
 		wprintf(L"SendIOComplete                                TPS    : (Avg %lld, %d) \n", SendIOSum / loopCnt, m_SendIOTPS);
 		wprintf(L"RecvIOComplete                                TPS    : (Avg %lld, %d) \n", RecvIOSum / loopCnt, m_RecvIOTPS);
 		wprintf(L"RequestMsg                                    TPS    : (Avg %lld, %d) \n\n", ReqMsgSum / loopCnt, m_ReqTPS);
-		wprintf(L"ResponseMsg                                   TPS    : (Avg %lld, %lld) \n\n", ResMsgSum / loopCnt, m_ResTPS);
+		wprintf(L"ResponseMsg                                   TPS    : (Avg %lld, %d) \n\n", ResMsgSum / loopCnt, m_ResTPS);
 
 
 		wprintf(L"====================== 카운트 모니터링 ==============================\n");
@@ -958,7 +959,7 @@ void ChatServer::MonitorThread()
 
 		wprintf(L"====================== 사용량 모니터링 ==============================\n");
 		wprintf(L"   UpdateJobQ           Avg    Size : %lld  / Size  : %d \n", MsgQSizeSum / loopCnt, m_pUpdateJobQ->GetUseSize());
-		wprintf(L" CMessagePool           Avg  UseCnt : %lld  / Count : %d \n", CPoolSum / loopCnt, CMessage::m_pMessagePool->GetUseCnt());
+		wprintf(L" CMessagePool           Avg  UseCnt : %lld  / Count : %lld \n", CPoolSum / loopCnt, CMessage::m_pMessagePool->GetUseCnt());
 		wprintf(L"     UserPool                UseCnt : %d \n", m_pUserPool->GetUseCnt());
 
 
@@ -976,7 +977,7 @@ void ChatServer::MonitorThread()
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATE_TPS, m_UpdateTPS);
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, CMessage::m_pMessagePool->GetUseCnt());
+			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
 			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATEMSG_POOL, m_pJobPool->GetUseCnt());
 		}
 		else
@@ -989,7 +990,7 @@ void ChatServer::MonitorThread()
 				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
 				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
 				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATE_TPS, m_UpdateTPS);
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, CMessage::m_pMessagePool->GetUseCnt());
+				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
 				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATEMSG_POOL, m_pJobPool->GetUseCnt());
 			}
 		}

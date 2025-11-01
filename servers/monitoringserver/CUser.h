@@ -7,7 +7,7 @@ public:
 	UINT64     m_UniqID;
 	INT        m_ServerNo;
 	DWORD      m_recvTime;
-	BOOL       m_TimeOut;
+	bool       m_TimeOut;
 public:
 	CUser();
 	~CUser();

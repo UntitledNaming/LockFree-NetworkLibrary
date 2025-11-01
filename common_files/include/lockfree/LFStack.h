@@ -84,7 +84,6 @@ public:
 	{
 		//메모리 로그 준비
 		DWORD curID = GetCurrentThreadId();
-		DWORD retSize;
 
 		Node* t;
 		Node* real;
@@ -116,7 +115,7 @@ public:
 			__debugbreak();
 
 
-		retSize = InterlockedDecrement64((volatile LONG64*) & m_size);
+		InterlockedDecrement64((volatile LONG64*) & m_size);
 
 		return true;
 	}

@@ -38,7 +38,7 @@ public:
 	////////////////////////////////////////////////////
 	// 외부 제공 함수
 	////////////////////////////////////////////////////
-	bool  Connect(WCHAR* SERVERIP, INT SERVERPORT, BOOL OffNagle = false);
+	bool  Connect(WCHAR* SERVERIP, INT SERVERPORT);
 	bool  Disconnect();
 	bool  SendPacket(CMessage* pMessage);
 	bool  ReConnect();                                  // ConnectAlive 함수를 통해 연결 끊긴게 확인될 때 호출하는 함수(Not Thread Safe Func)
@@ -50,7 +50,7 @@ private:
 
 
 private:
-	bool  Mem_Init(WCHAR* ServerIP, INT ServerPort, BOOL Nagle = false);
+	bool  Mem_Init(WCHAR* ServerIP, INT ServerPort);
 	bool  CreateAndSetSocket(SOCKET& outParam);                                                           // true : 소켓 생성 및 옵션 설정 성공, false : 소켓 생성 또는 옵션 설정 실패
 	bool  ConnectTry(SOCKET inputParam);                                                                  // true : 서버와 연결 성공 , false : 연결 실패
 	bool  RecvPost();              
@@ -65,7 +65,6 @@ private:
 
 private:
 	HANDLE                    m_iocp;
-	BOOL                      m_nagle;
 	INT                       m_serverport;
 	SESSION*                  m_pSession;
 	std::thread               m_IOCPWorkerThread[MAX_NUM_THREAD];               

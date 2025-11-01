@@ -11,6 +11,6 @@ public:
 public:
 	UINT64  m_uniqID;
 	DWORD   m_recvTime;
-	BOOL    m_timeOut;
+	bool    m_timeOut;
 };
 

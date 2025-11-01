@@ -85,7 +85,7 @@ public:
 	static INT                  m_iNetHeaderSize;    // 헤더 사이즈
 	static INT                  m_iLanHeaderSize;    // 헤더 사이즈
 											         
-	static BOOL                 m_netHderFlag;       // 네트워크 헤더 사용 플래그
+	static bool                 m_netHderFlag;       // 네트워크 헤더 사용 플래그
 
 private:
 	CHAR*                       m_iAllocPtr;           // 직렬화 버퍼 할당 메모리 포인터

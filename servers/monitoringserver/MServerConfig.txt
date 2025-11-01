@@ -1,5 +1,5 @@
 
-         BIND_EXTIP = "172.30.1.55";
+         BIND_EXTIP = "172.30.1.42";
          BIND_EXTPORT = 11209;
          BIND_INTIP = "127.0.0.1";                           // 모니터링 서버와 게임 서버, 채팅 서버, 로그인 서버가 같은 머신에서 돌아가기 때문에 루프백 ip를 사용함.
          BIND_INTPORT = 10000;
@@ -17,7 +17,7 @@
          SEND_FRAME = 20;
          SEND_TH_FLAG = 0;  // 0 : SendThread 생성 x , 1: SendThread 생성 o
 
-         DB_IP = "172.30.1.55"
+         DB_IP = "172.30.1.42"
          DB_PORT = 3306;
 
 

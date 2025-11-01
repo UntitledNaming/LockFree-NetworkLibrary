@@ -18,15 +18,18 @@
 #include "CNetServer.h"
 #pragma warning(disable:4996)
 
-CNetServer::CNetServer()
+CNetServer::CNetServer() : m_AcceptTPS(0), m_AcceptTotal(0), m_AllocID(0), m_ConcurrentCnt(0), m_CreateWorkerCnt(0), m_CurSessionCnt(0), m_FixedKey(0), 
+m_IOCP(INVALID_HANDLE_VALUE), m_Listen(INVALID_SOCKET), m_MaxSessionCnt(0), m_Nagle(false), m_PacketCode(0), m_Port(-1), m_RecvIOTPS(0),m_SendFrame(-1),m_SendIOTPS(0)
+,m_SendThFL(0),m_SessionTable(nullptr), m_pSessionIdxStack(nullptr)
 {
+
 }
 
 CNetServer::~CNetServer()
 {
 }
 
-bool CNetServer::Start(WCHAR* SERVERIP, int SERVERPORT, int numberOfCreateThread, int numberOfRunningThread, int maxNumOfSession, int SendSleep, int SendTHFL ,WORD packetCode, WORD fixedkey, bool OffNagle)
+bool CNetServer::Start(WCHAR* SERVERIP, int SERVERPORT, int numberOfCreateThread, int numberOfRunningThread, int maxNumOfSession, int SendSleep, int SendTHFL ,WORD packetCode, WORD fixedkey, bool Nagle)
 {
 	// Config 파일에서 얻어온 정보 네트워크 라이브러리 멤버 세팅
 	m_IP = *SERVERIP;
@@ -38,15 +41,13 @@ bool CNetServer::Start(WCHAR* SERVERIP, int SERVERPORT, int numberOfCreateThread
 	m_FixedKey = fixedkey;
 	m_SendFrame = SendSleep;
 	m_SendThFL = SendTHFL;
-	m_Nagle = OffNagle;
+	m_Nagle = Nagle;
 
 	Mem_Init();
 
+	Net_Init(SERVERIP, SERVERPORT, Nagle);
+
 	Thread_Create();
-
-	Net_Init(SERVERIP, SERVERPORT, OffNagle);
-
-
 
 	return true;
 }
@@ -104,7 +105,7 @@ bool CNetServer::SendPacket(UINT64 SessionID, CMessage* pMessage)
 	if (pSession->m_SendQ.GetUseSize() >= SENDQ_MAX_SIZE)
 	{
 		Disconnect(pSession->m_SessionID);
-		LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPacket SendQ Full \ SessionID : %lld , Time : %d ", pSession->m_SessionID, timeGetTime());
+		LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPacket SendQ Full / SessionID : %lld , Time : %d ", pSession->m_SessionID, timeGetTime());
 		Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
 
 		return false;
@@ -255,7 +256,7 @@ void CNetServer::WorkerThread()
 			if (pOverlapped == nullptr)
 			{
 				err = GetLastError();
-				LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"WorkerThread GQCS IOCP Failed \ Error Code : %d", err);
+				LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"WorkerThread GQCS IOCP Failed / Error Code : %d", err);
 
 				ESC = true;
 				break;
@@ -265,7 +266,7 @@ void CNetServer::WorkerThread()
 			else
 			{
 				err = GetLastError();
-				LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"WorkerThread GQCS IO Failed \ Error Code : %d", err);
+				LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"WorkerThread GQCS IO Failed / Error Code : %d", err);
 			}
 
 		}
@@ -296,6 +297,8 @@ void CNetServer::WorkerThread()
 void CNetServer::AcceptThread()
 {
 	LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"AcceptThread Start : %d ", GetCurrentThreadId());
+	wprintf(L"AcceptThread Start... %d \n", GetCurrentThreadId());
+
 	bool ESC = false;
 
 	while (!ESC)
@@ -305,12 +308,11 @@ void CNetServer::AcceptThread()
 		DWORD bytesReceived = 0;
 		DWORD flags = 0;
 		int  addlen = sizeof(clientAddr);
-		int  retrel;
 
 		client_socket = accept(m_Listen, (SOCKADDR*)&clientAddr, &addlen);
 		if (client_socket == INVALID_SOCKET)
 		{
-			LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"AcceptThread accept() Failed \ Error Code : %d", WSAGetLastError());
+			LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"AcceptThread accept() Failed / Error Code : %d", WSAGetLastError());
 			ESC = true;
 			continue;
 		}
@@ -337,16 +339,16 @@ void CNetServer::AcceptThread()
 		setsockopt(client_socket, SOL_SOCKET, SO_SNDBUF, (char*)&sendBufferSize, sizeof(sendBufferSize));
 
 		//네이글 On/Off
-		if (m_Nagle == true)
+		if (m_Nagle == 1)
 		{
-			int flag = 1;
+			int flag = 0;
 			if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
 			{
 				LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CNetLibrary::Nagle Error :%d ", WSAGetLastError());
 				__debugbreak();
 			}
 		}
-
+		
 
 		linger so_linger;
 		so_linger.l_onoff = 1;  // linger 옵션 사용
@@ -379,7 +381,7 @@ void CNetServer::AcceptThread()
 		retCIOCP = CreateIoCompletionPort((HANDLE)client_socket, m_IOCP, (ULONG_PTR)&m_SessionTable[Index], 0);
 		if (retCIOCP == NULL)
 		{
-			LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"AcceptThread RegisterSocketHANDLE Failed \ Session ID : %lld \ Error Code : %d ", m_SessionTable[Index].m_SessionID, GetLastError());
+			LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"AcceptThread RegisterSocketHANDLE Failed / Session ID : %lld / Error Code : %d ", m_SessionTable[Index].m_SessionID, GetLastError());
 			break;
 		}
 
@@ -394,7 +396,7 @@ void CNetServer::AcceptThread()
 
 	}
 
-
+	wprintf(L"AcceptThread End... %d \n", GetCurrentThreadId());
 	LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"AcceptThread End : %d ", GetCurrentThreadId());
 }
 
@@ -452,7 +454,7 @@ void CNetServer::SendThread()
 	LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"SendThread End : %d ", GetCurrentThreadId());
 }
 
-void CNetServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool OffNagle)
+void CNetServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool Nagle)
 {
 	int ret;
 	WSADATA wsa;
@@ -473,6 +475,32 @@ void CNetServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool OffNagle)
 	}
 	wprintf(L"socket() Complete... \n");
 
+
+	//네이글 On/Off
+	if (Nagle == 1)
+	{
+		//네이글 키고 싶을 때
+		int flag = 0;
+		if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
+		{
+			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
+			__debugbreak();
+		}
+		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanLibrary::Start()_Nagle On Complete...");
+	}
+	else
+	{
+		//네이글 끄고 싶을 때
+		int flag = 1;
+		if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
+		{
+			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
+			__debugbreak();
+		}
+		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanLibrary::Start()_Nagle Off Complete...");
+	}
+
+
 	//bind() 처리
 	SOCKADDR_IN serveraddr;
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
@@ -483,15 +511,15 @@ void CNetServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool OffNagle)
 	ret = bind(m_Listen, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (ret == SOCKET_ERROR)
 	{
-		LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CNetLibrary::Net_Init bind() Error... \ Error Code : %d", WSAGetLastError());
+		LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CNetLibrary::Net_Init bind() Error... / Error Code : %d", WSAGetLastError());
 		__debugbreak();
 	}
 
 
-	ret = listen(m_Listen, SOMAXCONN_HINT(5000));
+	ret = listen(m_Listen, SOMAXCONN);
 	if (ret == SOCKET_ERROR)
 	{
-		LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CNetLibrary::Net_Init listen() Error... \ Error Code : %d", WSAGetLastError());
+		LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CNetLibrary::Net_Init listen() Error... / Error Code : %d", WSAGetLastError());
 		__debugbreak();
 	}
 
@@ -586,7 +614,7 @@ void CNetServer::FindSession(UINT64 SessionID, CSession** ppSession)
 		return;
 
 	// 인자로받은 세션 ID에서 Index 추출
-	index = SessionID >> INDEX_POS;
+	index = SessionID >> df_NET_INDEX_POS;
 
 	*ppSession = &m_SessionTable[index];
 }
@@ -595,7 +623,7 @@ UINT64 CNetServer::MakeSessionID(UINT16 index, UINT64 allocID)
 {
 	UINT64     idx;
 	idx = index;
-	idx = idx << INDEX_POS;
+	idx = idx << df_NET_INDEX_POS;
 
 	return (UINT64)(idx | allocID);
 }
@@ -610,9 +638,9 @@ bool CNetServer::RecvPost(CSession* pSession)
 	DWORD curThreadID = GetCurrentThreadId();
 	WSABUF wsa[2];
 	wsa[0].buf = pSession->m_RecvQ.GetWritePtr();
-	wsa[0].len = pSession->m_RecvQ.DirectEnqueueSize();
+	wsa[0].len = static_cast<ULONG>(pSession->m_RecvQ.DirectEnqueueSize());
 	wsa[1].buf = pSession->m_RecvQ.GetAllocPtr();
-	wsa[1].len = pSession->m_RecvQ.GetFreeSize() - wsa[0].len;
+	wsa[1].len = static_cast<ULONG>(pSession->m_RecvQ.GetFreeSize() - wsa[0].len);
 
 
 	InterlockedIncrement64(&pSession->m_RefCnt);
@@ -639,7 +667,7 @@ bool CNetServer::RecvPost(CSession* pSession)
 			//비정상적인 에러시 로그 남기기
 			if (err != WSAECONNRESET && err != WSAECONNABORTED && err != WSAEINTR)
 			{
-				LOG(L"NetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed \ Error Code : %d \ SessionID  : %d ", err, pSession->m_SessionID);
+				LOG(L"NetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed / Error Code : %d / SessionID  : %d ", err, pSession->m_SessionID);
 			}
 
 			Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
@@ -711,7 +739,6 @@ bool CNetServer::SendPost(CSession* pSession)
 	WSABUF wsa[df_SERVER_WSABUFSIZE];
 
 	//송신 락프리큐에서 데이터 꺼내기(없으면 false 리턴)
-	CMessage* temp;
 	int index;
 	for (index = 0; index < df_SERVER_WSABUFSIZE; index++)
 	{
@@ -742,7 +769,7 @@ bool CNetServer::SendPost(CSession* pSession)
 
 		if (err == ERROR_IO_PENDING)
 		{
-			LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SendPost_IO_PENDING \ Session ID : %llu ", pSession->m_SessionID);
+			LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SendPost_IO_PENDING / Session ID : %llu ", pSession->m_SessionID);
 			return true;
 		}
 
@@ -754,7 +781,7 @@ bool CNetServer::SendPost(CSession* pSession)
 			//비정상적인 에러시 로그 남기기
 			if (err != WSAECONNRESET && err != WSAECONNABORTED && err != WSAEINTR)
 			{
-				LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed \ Error Code : %d \ SessionID  : %llu ", err, pSession->m_SessionID);
+				LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed / Error Code : %d / SessionID  : %llu ", err, pSession->m_SessionID);
 			}
 
 
@@ -766,7 +793,7 @@ bool CNetServer::SendPost(CSession* pSession)
 
 	else if (ret == 0)
 	{
-		LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SendPost WSARecv Return 0  \ Session ID : %d", pSession->m_SessionID);
+		LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SendPost WSARecv Return 0  / Session ID : %d", pSession->m_SessionID);
 		return true;
 	}
 
@@ -795,7 +822,7 @@ bool CNetServer::SessionInvalid(CSession* pSession, UINT64 SessionID)
 	return true;
 }
 
-bool CNetServer::Release(CSession* pSession, long retIOCount)
+bool CNetServer::Release(CSession* pSession, long long retIOCount)
 {
 
 	CMessage* peek = nullptr;
@@ -840,7 +867,7 @@ void CNetServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 
 
 		//수신 링버퍼에 len이 네트워크 헤더인데 이정도도 없으면 그냥 끝내기
-		int usesize = pSession->m_RecvQ.GetUseSize();
+		unsigned long long usesize = pSession->m_RecvQ.GetUseSize();
 		if (usesize <= sizeof(NETHEADER))
 		{
 			CMessage::Free(pPacket);
@@ -925,7 +952,7 @@ void CNetServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 		//체크섬 다르면 디버깅 위해 중단
 		if (header.s_checksum != (sum % 256))
 		{
-			LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CNetServer::WorkerThread RecvIO CheckSum Error \ Session ID : %llu ...", pSession->m_SessionID);
+			LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CNetServer::WorkerThread RecvIO CheckSum Error / Session ID : %llu ...", pSession->m_SessionID);
 			Disconnect(pSession->m_SessionID);
 			CMessage::Free(pPacket);
 			break;
@@ -1011,7 +1038,7 @@ void CNetServer::ReleaseProc(CSession* pSession)
 	//index 추출
 	uint16_t index;
 
-	index = pSession->m_SessionID >> INDEX_POS;
+	index = pSession->m_SessionID >> df_NET_INDEX_POS;
 	closesocket(pSession->m_Socket);
 	m_pSessionIdxStack->Push(index);
 	InterlockedDecrement16(&m_CurSessionCnt);

@@ -52,7 +52,7 @@ private:
 	ProcessMonitor*                           m_pPDH;
 	HANDLE                                    m_DBEvent[DB_HANDLE_COUNT];       // 0번 : 데이터 삽입 이벤트 , 1번 : DB 저장 이벤트 , 2번 : 스레드 종료 이벤트
 	SRWLOCK                                   m_UserMapLock;
-	BOOL                                      m_EndFlag;
+	bool                                      m_EndFlag;
 public:
 	CMonitor();
 	~CMonitor();

@@ -105,8 +105,6 @@ ProcessMonitor::~ProcessMonitor()
 
 void ProcessMonitor::UpdateCounter()
 {
-	PDH_STATUS status;
-
 	m_processCS = 0;
 
 	//데이터 갱신
@@ -121,7 +119,7 @@ void ProcessMonitor::UpdateCounter()
 	PdhCollectQueryData(m_EtherNetRecvQry1);
 	PdhCollectQueryData(m_EtherNetRecvQry2);
 
-	for (int i = 0; i < m_threacCnt; i++)
+	for (UINT i = 0; i < m_threacCnt; i++)
 	{
 		PdhCollectQueryData(m_pProcessCSQry[i]);
 	}
@@ -147,7 +145,7 @@ void ProcessMonitor::UpdateCounter()
 
 	PdhGetFormattedCounterValue(m_EtherNetRecvCnter2, PDH_FMT_DOUBLE, NULL, &m_EtherNetRecvVal2);
 
-	for (int i = 0; i < m_threacCnt; i++)
+	for (UINT i = 0; i < m_threacCnt; i++)
 	{
 		PdhGetFormattedCounterValue(m_pProcessCSCnter[i], PDH_FMT_DOUBLE, NULL, &m_pProcessCSVal[i]);
 		m_processCS += m_pProcessCSVal[i].doubleValue;

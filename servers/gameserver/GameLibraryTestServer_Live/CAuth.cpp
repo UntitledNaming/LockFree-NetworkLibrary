@@ -52,7 +52,7 @@ void CAuth::OnRecv(UINT64 sessionID, CMessage* pMessage)
 	if (pMessage->GetLastError())
 	{
 		Disconnect(sessionID);
-		LOG(L"Auth", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CAuth::OnRecv CMessage Flag Error...  \ UniqID : %lld ", sessionID);
+		LOG(L"Auth", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CAuth::OnRecv CMessage Flag Error...  / UniqID : %lld ", sessionID);
 		return;
 	}
 
@@ -64,7 +64,7 @@ void CAuth::OnRecv(UINT64 sessionID, CMessage* pMessage)
 
 	default:
 		Disconnect(sessionID);
-		LOG(L"Auth", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CAuth::OnRecv Type Error...  \ UniqID : %lld ", sessionID);
+		LOG(L"Auth", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CAuth::OnRecv Type Error...  / UniqID : %lld ", sessionID);
 		break;
 	}
 
@@ -106,7 +106,7 @@ void CAuth::LoginRequsetProc(UINT64 sessionID, CMessage* pMessage)
 
 	if (pMessage->GetLastError())
 	{
-		LOG(L"Auth", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Flag Error... \ UniqID : %lld", sessionID);
+		LOG(L"Auth", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Flag Error... / UniqID : %lld", sessionID);
 		//프로토콜 보다 보낸 데이터 크기가 적으면 플래그 켜짐.
 		Disconnect(sessionID);
 		return;
@@ -114,7 +114,7 @@ void CAuth::LoginRequsetProc(UINT64 sessionID, CMessage* pMessage)
 
 	if (pMessage->GetDataSize() > 0)
 	{
-		LOG(L"Auth", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Size Overflow Error... \ UniqID : %lld ", sessionID);
+		LOG(L"Auth", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Size Overflow Error... / UniqID : %lld ", sessionID);
 		//프로토콜 보다 보낸 데이터 크기가 크면 끊기
 		Disconnect(sessionID);
 		return;

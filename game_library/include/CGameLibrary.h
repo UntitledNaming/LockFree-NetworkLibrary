@@ -54,7 +54,7 @@ private:
 	INT                                      m_PacketCode;                                    // 네트워크 라이브러리 패킷 코드
 	INT                                      m_FixedKey;                                      // 인코딩 고정 키 값
 	INT                                      m_SendThFL;                                      // Send 스레드 생성 버전 플래그 ( 0 : 끄기 / 1 : 켜기 )
-	INT                                      m_Nagle;                                         // 네이글 옵션
+	INT                                      m_Nagle;                                         // 네이글 옵션( 0 : 끄기, 1 : 켜기 )
 																	                          
 
 public:
@@ -102,7 +102,7 @@ public:
 	bool          Run();                                                                      // 게임 라이브러리 작동 함수
 	void          Stop();                                                                     // 게임 라이브러리 멤버 정리 및 스레드 정리
 		          																	          
-	bool          Attach(CGroup* pContents, std::wstring contentsType, UINT64 groupframe, BOOL shared = FALSE);          // 그룹관리 벡터에 등록할 함수
+	bool          Attach(CGroup* pContents, std::wstring contentsType, UINT groupframe, BOOL shared = FALSE);          // 그룹관리 벡터에 등록할 함수
 
 private:
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

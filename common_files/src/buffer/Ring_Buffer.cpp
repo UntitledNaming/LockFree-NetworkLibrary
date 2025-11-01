@@ -52,8 +52,8 @@ int CRingBuffer::Enqueue(const char* chpData, int iSize)
 		return 0;
 	}
 
-	int des;
-	int leftenq;
+	long long des;
+	__int64 leftenq;
 
 	//과거의 readPos로 판단할 것임.
 	char* oldReadPos = _readPos;
@@ -106,8 +106,8 @@ int CRingBuffer::Enqueue(const char* chpData, int iSize)
 // 디큐작업하고 나서 readPos의 예상되는 위치가 writePos가 같으면 애초에 그냥 Dequeue 작업 안할 것임.
 int CRingBuffer::Dequeue(char* chpData, int iSize)
 {
-	int dds;
-	int left;
+	long long dds;
+	__int64 left;
 	int len;
 
 	if (iSize > GetUseSize())
@@ -161,9 +161,8 @@ int CRingBuffer::Dequeue(char* chpData, int iSize)
 
 int CRingBuffer::Peek(char* chpData, int iSize)
 {
-	int len;
-	int dds;
-	int left;
+	long long dds;
+	__int64 left;
 
 	if (iSize > GetUseSize())
 		return 0;

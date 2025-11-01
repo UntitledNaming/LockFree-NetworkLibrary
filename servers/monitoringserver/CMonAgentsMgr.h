@@ -48,5 +48,5 @@ private:
 	SRWLOCK                             m_agentMapLock;
 	SRWLOCK                             m_nonAgentMapLock;
 	CMemoryPool<CAgent>*                m_pAgentPool;
-	BOOL                                m_endFlag;
+	bool                                m_endFlag;
 };

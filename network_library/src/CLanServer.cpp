@@ -21,8 +21,10 @@
 #pragma warning(disable:4996)
 
 
-CLanServer::CLanServer()
+CLanServer::CLanServer() : m_AcceptTPS(0), m_AcceptTotal(0), m_AllocID(0), m_ConcurrentCnt(0), m_CreateWorkerCnt(0), m_CurSessionCnt(0), m_IOCP(INVALID_HANDLE_VALUE), m_Listen(INVALID_SOCKET)
+, m_MaxSessionCnt(0), m_Port(-1), m_RecvIOTPS(0), m_SendFrame(-1), m_SendIOTPS(0), m_SendThFL(0), m_SessionTable(nullptr),m_pSessionIdxStack(nullptr)
 {
+
 }
 
 CLanServer::~CLanServer()
@@ -43,9 +45,10 @@ bool CLanServer::Start(WCHAR* SERVERIP, int SERVERPORT, int numberOfCreateThread
 
 	Mem_Init();
 
+	Net_Init(SERVERIP, SERVERPORT, OffNagle);
+
 	Thread_Create();
 
-	Net_Init(SERVERIP, SERVERPORT, OffNagle);
 
 	return true;
 }
@@ -96,7 +99,7 @@ bool CLanServer::SendPacket(UINT64 SessionID, CMessage* pMessage)
 	if (pSession->m_SendQ.GetUseSize() >= SENDQ_MAX_SIZE)
 	{
 		Disconnect(pSession->m_SessionID);
-		LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPacket SendQ Full \ SessionID : %lld , Time : %d ", pSession->m_SessionID, timeGetTime());
+		LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPacket SendQ Full / SessionID : %lld , Time : %d ", pSession->m_SessionID, timeGetTime());
 		Release(pSession, InterlockedDecrement64(&pSession->m_RefCnt));
 
 		return false;
@@ -124,7 +127,6 @@ bool CLanServer::FindIP(UINT64 SessionID, WCHAR* OutIP)
 {
 	SOCKADDR_IN ClientAddr;
 	INT         len;
-	INT64       ret;
 	CSession* pSession;
 
 	FindSession(SessionID, &pSession);
@@ -190,7 +192,6 @@ void CLanServer::WorkerThread()
 
 	BOOL  retval;
 	DWORD err;
-	LONGLONG retrel;
 
 	bool ESC = false;
 
@@ -216,7 +217,7 @@ void CLanServer::WorkerThread()
 			if (pOverlapped == nullptr)
 			{
 				err = GetLastError();
-				LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"WorkerThread GQCS IOCP Failed \ Error Code : %d", err);
+				LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"WorkerThread GQCS IOCP Failed / Error Code : %d", err);
 
 				ESC = true;
 				break;
@@ -226,7 +227,7 @@ void CLanServer::WorkerThread()
 			else
 			{
 				err = GetLastError();
-				LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"WorkerThread GQCS IO Failed \ Error Code : %d", err);
+				LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"WorkerThread GQCS IO Failed / Error Code : %d", err);
 			}
 
 		}
@@ -272,7 +273,7 @@ void CLanServer::AcceptThread()
 		client_socket = accept(m_Listen, (SOCKADDR*)&clientAddr, &addlen);
 		if (client_socket == INVALID_SOCKET)
 		{
-			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"AcceptThread accept() Failed \ Error Code : %d", WSAGetLastError());
+			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"AcceptThread accept() Failed / Error Code : %d", WSAGetLastError());
 			ESC = true;
 			continue;
 		}
@@ -327,7 +328,7 @@ void CLanServer::AcceptThread()
 		retCIOCP = CreateIoCompletionPort((HANDLE)client_socket, m_IOCP, (ULONG_PTR)&m_SessionTable[Index], 0);
 		if (retCIOCP == NULL)
 		{
-			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"AcceptThread RegisterSocketHANDLE Failed \ Session ID : %lld \ Error Code : %d ", m_SessionTable[Index].m_SessionID, GetLastError());
+			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"AcceptThread RegisterSocketHANDLE Failed / Session ID : %lld / Error Code : %d ", m_SessionTable[Index].m_SessionID, GetLastError());
 			break;
 		}
 
@@ -393,7 +394,7 @@ void CLanServer::SendThread()
 	LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"SendThread End : %d ", GetCurrentThreadId());
 }
 
-void CLanServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool OffNagle)
+void CLanServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool Nagle)
 {
 	int ret;
 	WSADATA wsa;
@@ -415,7 +416,18 @@ void CLanServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool OffNagle)
 	wprintf(L"socket() Complete... \n");
 
 	//네이글 On/Off
-	if (OffNagle == true)
+	if (Nagle == true)
+	{
+		//네이글 키고 싶을 때
+		int flag = 0;
+		if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
+		{
+			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
+			__debugbreak();
+		}
+		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanLibrary::Start()_Nagle On Complete...");
+	}
+	else
 	{
 		//네이글 끄고 싶을 때
 		int flag = 1;
@@ -424,7 +436,7 @@ void CLanServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool OffNagle)
 			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
 			__debugbreak();
 		}
-		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanLibrary::Start()_Nagle On Complete...");
+		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanLibrary::Start()_Nagle Off Complete...");
 	}
 
 
@@ -438,7 +450,7 @@ void CLanServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool OffNagle)
 	ret = bind(m_Listen, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (ret == SOCKET_ERROR)
 	{
-		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Net_Init bind() Error... \ Error Code :", WSAGetLastError());
+		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Net_Init bind() Error... / Error Code :", WSAGetLastError());
 		__debugbreak();
 	}
 
@@ -446,7 +458,7 @@ void CLanServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool OffNagle)
 	ret = listen(m_Listen, SOMAXCONN);
 	if (ret == SOCKET_ERROR)
 	{
-		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Net_Init listen() Error... \ Error Code :", WSAGetLastError());
+		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Net_Init listen() Error... / Error Code :", WSAGetLastError());
 		__debugbreak();
 	}
 
@@ -539,7 +551,7 @@ void CLanServer::FindSession(UINT64 SessionID, CSession** ppSession)
 		return;
 
 	// 인자로받은 세션 ID에서 Index 추출
-	index = SessionID >> INDEX_POS;
+	index = SessionID >> df_LAN_INDEX_POS;
 
 	*ppSession = &m_SessionTable[index];
 }
@@ -548,7 +560,7 @@ UINT64 CLanServer::MakeSessionID(UINT16 index, UINT64 allocID)
 {
 	UINT64     idx;
 	idx = index;
-	idx = idx << INDEX_POS;
+	idx = idx << df_LAN_INDEX_POS;
 
 	return (UINT64)(idx | allocID);
 }
@@ -557,15 +569,14 @@ bool CLanServer::RecvPost(CSession* pSession)
 {
 	int ret;
 	int err;
-	int retrel;
 	DWORD bytesReceived = 0;
 	DWORD flags = 0;
 	DWORD curThreadID = GetCurrentThreadId();
 	WSABUF wsa[2];
 	wsa[0].buf = pSession->m_RecvQ.GetWritePtr();
-	wsa[0].len = pSession->m_RecvQ.DirectEnqueueSize();
+	wsa[0].len = static_cast<ULONG>(pSession->m_RecvQ.DirectEnqueueSize());
 	wsa[1].buf = pSession->m_RecvQ.GetAllocPtr();
-	wsa[1].len = pSession->m_RecvQ.GetFreeSize() - wsa[0].len;
+	wsa[1].len = static_cast<ULONG>(pSession->m_RecvQ.GetFreeSize() - wsa[0].len);
 
 	InterlockedIncrement64(&pSession->m_RefCnt);
 
@@ -588,7 +599,7 @@ bool CLanServer::RecvPost(CSession* pSession)
 			//비정상적인 에러시 로그 남기기
 			if (err != WSAECONNRESET && err != WSAECONNABORTED && err != WSAEINTR)
 			{
-				LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed \ Error Code : %d \ SessionID  : %d ", err, pSession->m_SessionID);
+				LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed / Error Code : %d / SessionID  : %d ", err, pSession->m_SessionID);
 			}
 
 
@@ -609,7 +620,6 @@ bool CLanServer::SendPost(CSession* pSession)
 {
 	int ret;
 	int err;
-	int retrel;
 	int usesize;
 	DWORD bytesSend = 0;
 	DWORD flags = 0;
@@ -658,7 +668,6 @@ bool CLanServer::SendPost(CSession* pSession)
 	WSABUF wsa[WSABUFSIZE];
 
 	//송신 락프리큐에서 데이터 꺼내기(없으면 false 리턴)
-	CMessage* temp;
 	int index;
 	for (index = 0; index < WSABUFSIZE; index++)
 	{
@@ -688,7 +697,7 @@ bool CLanServer::SendPost(CSession* pSession)
 
 		if (err == ERROR_IO_PENDING)
 		{
-			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SendPost_IO_PENDING \ Session ID : %llu ", pSession->m_SessionID);
+			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SendPost_IO_PENDING / Session ID : %llu ", pSession->m_SessionID);
 			return true;
 		}
 
@@ -699,7 +708,7 @@ bool CLanServer::SendPost(CSession* pSession)
 			//비정상적인 에러시 로그 남기기
 			if (err != WSAECONNRESET && err != WSAECONNABORTED && err != WSAEINTR)
 			{
-				LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed \ Error Code : %d \ SessionID  : %llu ", err, pSession->m_SessionID);
+				LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed / Error Code : %d / SessionID  : %llu ", err, pSession->m_SessionID);
 			}
 
 
@@ -712,7 +721,7 @@ bool CLanServer::SendPost(CSession* pSession)
 
 	else if (ret == 0)
 	{
-		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SendPost WSARecv Return 0  \ Session ID : %d", pSession->m_SessionID);
+		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SendPost WSARecv Return 0  / Session ID : %d", pSession->m_SessionID);
 		return true;
 	}
 
@@ -741,7 +750,7 @@ bool CLanServer::SessionInvalid(CSession* pSession, UINT64 SessionID)
 	return true;
 }
 
-bool CLanServer::Release(CSession* pSession, long retIOCount)
+bool CLanServer::Release(CSession* pSession, long long retIOCount)
 {
 	CMessage* peek = nullptr;
 	st_IOFLAG check;
@@ -784,7 +793,7 @@ void CLanServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 		LANHEADER header;
 
 		//수신 링버퍼에 len이 네트워크 헤더인데 이정도도 없으면 그냥 끝내기
-		int usesize = pSession->m_RecvQ.GetUseSize();
+		unsigned long long usesize = pSession->m_RecvQ.GetUseSize();
 		if (usesize <= sizeof(LANHEADER))
 		{
 			CMessage::Free(pPacket);
@@ -852,7 +861,6 @@ void CLanServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 
 void CLanServer::SendIOProc(CSession* pSession, DWORD cbTransferred)
 {
-	LONGLONG retrel;
 
 	//사용한 직렬화 버퍼 메세지 메모리 풀에 반납
 	for (int i = 0; i < pSession->m_SendMsgCnt; i++)
@@ -907,7 +915,7 @@ void CLanServer::ReleaseProc(CSession* pSession)
 	//index 추출
 	uint16_t index;
 
-	index = pSession->m_SessionID >> INDEX_POS;
+	index = pSession->m_SessionID >> df_LAN_INDEX_POS;
 	closesocket(pSession->m_Socket);
 
 

@@ -10,7 +10,7 @@
 CMPoolTLS<CMessage>* CMessage::m_pMessagePool = nullptr;
 INT CMessage::m_iNetHeaderSize = 0;
 INT CMessage::m_iLanHeaderSize = 0;
-BOOL CMessage::m_netHderFlag = false;
+bool CMessage::m_netHderFlag = false;
 
 
 //직렬화 버퍼 생성자에서는 refCnt = 0으로 하고 Alloc 하고 Clear할 때 refCnt = 1로 만듬.
@@ -139,6 +139,7 @@ int CMessage::GetRealDataSize(int type)
 		return m_iDataSize + m_iLanHeaderSize;
 	}
 
+	return -1;
 }
 
 char* CMessage::GetReadPos()
@@ -231,22 +232,22 @@ int CMessage::PutData(char* chpSrc, int iSrcSize)
 
 bool CMessage::Resize()
 {
-	if (m_iBufferSize * 1.5 >= eBuffer_Max)
+	if (m_iBufferSize * 2 >= eBuffer_Max)
 		return false;
 
 	// 임시 버퍼 생성
-	char* pTemp = (char*)malloc(m_iBufferSize * 1.5); //1.5배 큰 직렬화 버퍼 생성
+	char* pTemp = (char*)malloc(m_iBufferSize * 2); //2배 큰 직렬화 버퍼 생성
 	memcpy_s(pTemp, m_iBufferSize, m_iAllocPtr, m_iBufferSize); //기존 직렬화 버퍼 복사
 	
-	int tempWpos = m_iWritePos - m_iAllocPtr; //offset 구하기
-	int tempRpos = m_iReadPos - m_iAllocPtr;
+	__int64 tempWpos = m_iWritePos - m_iAllocPtr; //offset 구하기
+	__int64 tempRpos = m_iReadPos - m_iAllocPtr;
 
 	//기존 버퍼 해제
 	free(m_iAllocPtr);
 
 	//임시 버퍼 포인터를 m_iBuffer 값으로 설정 및 버퍼 크기 재설정
 	m_iAllocPtr = pTemp;
-	m_iBufferSize = m_iBufferSize * 1.5;
+	m_iBufferSize = m_iBufferSize * 2;
 	m_iWritePos = m_iAllocPtr+ tempWpos;
 	m_iReadPos = m_iAllocPtr + tempRpos;
 

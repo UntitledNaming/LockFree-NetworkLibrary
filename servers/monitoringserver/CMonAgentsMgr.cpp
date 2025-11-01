@@ -15,7 +15,7 @@
 #include "CNetServer.h"
 #include "CMonAgentsMgr.h"
 
-CMonAgentsMgr::CMonAgentsMgr()
+CMonAgentsMgr::CMonAgentsMgr() : m_agentMaxCnt(0), m_endFlag(false), m_monitorSessionKey(nullptr),m_pAgentPool(nullptr)
 {
 
 }
@@ -31,8 +31,6 @@ void CMonAgentsMgr::RunAgentsManager(INT MAXAGENTCNT, WCHAR* SERVERIP, INT SERVE
 	m_agentMaxCnt = MAXAGENTCNT;
 	m_pAgentPool = new CMemoryPool<CAgent>;
 	m_endFlag = false;
-	InitializeSRWLock(&m_nonAgentMapLock);
-	InitializeSRWLock(&m_agentMapLock);
 
 	// 스레드 생성
 	m_frame = std::thread(&CMonAgentsMgr::FrameThread, this);
@@ -144,7 +142,7 @@ void CMonAgentsMgr::OnRecv(UINT64 SessionID, CMessage* pMessage)
 	if (pMessage->GetLastError())
 	{
 		Disconnect(SessionID);
-		LOG(L"CMonAgentsMgr", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"OnRecv::CMessage Flag Error... \ UniqID : %lld", SessionID);
+		LOG(L"CMonAgentsMgr", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"OnRecv::CMessage Flag Error... / UniqID : %lld", SessionID);
 		return;
 	}
 
@@ -174,14 +172,14 @@ void CMonAgentsMgr::ToolLoginProc(UINT64 sessionID, CMessage* pMessage)
 	pMessage->GetData(sessionkey, MONITOR_SESSION_KEY_MAX);
 	if (pMessage->GetLastError())
 	{
-		LOG(L"CMonAgentsMgr", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"ToolLoginProc::CMessage Flag Error... \ UniqID : %lld", sessionID);
+		LOG(L"CMonAgentsMgr", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"ToolLoginProc::CMessage Flag Error... / UniqID : %lld", sessionID);
 		Disconnect(sessionID);
 		return;
 	}
 
 	if (pMessage->GetDataSize() > 0)
 	{
-		LOG(L"CMonAgentsMgr", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"ToolLoginProc::CMessage Size Overflow Error... \ UniqID : %lld", sessionID);
+		LOG(L"CMonAgentsMgr", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"ToolLoginProc::CMessage Size Overflow Error... / UniqID : %lld", sessionID);
 		Disconnect(sessionID);
 		return;
 	}

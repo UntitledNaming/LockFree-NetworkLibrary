@@ -2,7 +2,7 @@
 #define MAX_THREAD_COUNT   100
 #define WSABUFSIZE         200
 #define IP_LEN             16
-#define INDEX_POS          46
+#define df_LAN_INDEX_POS   48
 #define INVALID_ID         -1
 #define SENDQ_MAX_SIZE     10000
 
@@ -29,7 +29,7 @@ private:
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Config 정보
 	///////////////////////////////////////////////////////////////////////////////////////
-	std::string            m_IP;                    // 서버 IP
+	std::wstring           m_IP;                    // 서버 IP
 	INT                    m_Port;                  // 서버 Port
 	INT                    m_MaxSessionCnt;         // 최대 세션 갯수 설정
 	INT                    m_CreateWorkerCnt;       // 생성 워커 스레드 갯수
@@ -73,7 +73,7 @@ public:
 public:
 	// 외부 제공 함수 //
 
-	bool          Start(WCHAR* SERVERIP, int SERVERPORT, int numberOfCreateThread, int numberOfRunningThread, int maxNumOfSession, int SendSleep, int SendTHFL, bool OffNagle);
+	bool          Start(WCHAR* SERVERIP, int SERVERPORT, int numberOfCreateThread, int numberOfRunningThread, int maxNumOfSession, int SendSleep, int SendTHFL, bool Nagle = false);
 	bool          Disconnect(UINT64 SessionID);
 	bool          SendPacket(UINT64 SessionID, CMessage* pMessage);
 	bool          FindIP(UINT64 SessionID, WCHAR* OutIP);
@@ -108,7 +108,7 @@ private:
 	bool          RecvPost(CSession* pSession);              //WSARecv해서 수신 데이터 받는 함수
 	bool          SendPost(CSession* pSession);              //WSASend해서 데이터 송신하는 함수
 	bool          SessionInvalid(CSession* pSession, UINT64 SessionID);        //세션 유효성 체크
-	bool          Release(CSession* pSession, long retIOCount);
+	bool          Release(CSession* pSession, long long retIOCount);
 
 	void          RecvIOProc(CSession* pSession, DWORD cbTransferred);
 	void          SendIOProc(CSession* pSession, DWORD cbTransferred);
