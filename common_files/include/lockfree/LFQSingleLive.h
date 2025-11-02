@@ -151,7 +151,7 @@ public:
 			localHead = m_pHead;
 			realHead = (Node*)((UINT64)localHead & BITMASK);
 			realHeadNext = realHead->_next;
-			if (realHeadNext == nullptr)
+			if (realHeadNext == nullptr || realHeadNext == (Node*)0xFFFFFFFFFFFFFFFF)
 				return false;
 
 
