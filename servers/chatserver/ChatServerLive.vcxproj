@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\common_files\include\buffer;$(SolutionDir)..\..\clients\include;$(SolutionDir)..\..\common_files\include\list;$(SolutionDir)..\..\network_library\include;$(SolutionDir)..\..\protocol\include;$(SolutionDir)..\..\common_files\include\lockfree;$(SolutionDir)..\..\common_files\include\memorypool;$(SolutionDir)..\..\common_files\include\util;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

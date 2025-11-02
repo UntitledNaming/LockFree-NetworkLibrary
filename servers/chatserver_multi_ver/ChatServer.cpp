@@ -165,8 +165,8 @@ void ChatServer::Mem_Init(INT userMAX, WCHAR* bindip, WCHAR* serverip, INT serve
 	}
 
 	// 모니터링 서버에 연결
-	//if (!m_pMonitorClient->Connect(bindip, serverip, serverport))
-	//	__debugbreak();
+	if (!m_pMonitorClient->Connect(serverip, serverport))
+		__debugbreak();
 
 
 	Thread_Create();

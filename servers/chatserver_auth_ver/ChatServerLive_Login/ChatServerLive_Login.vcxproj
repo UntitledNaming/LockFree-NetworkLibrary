@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir);C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\protocol\include;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\buffer;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\list;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\lockfree;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\memorypool;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\common_files\include\util;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\network_library\include;C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\clients\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)..\..\..\common_files\include\buffer;$(SolutionDir)..\..\..\clients\include;$(SolutionDir)..\..\..\common_files\include\list;$(SolutionDir)..\..\..\network_library\include;$(SolutionDir)..\..\..\protocol\include;$(SolutionDir)..\..\..\common_files\include\lockfree;$(SolutionDir)..\..\..\common_files\include\memorypool;$(SolutionDir)..\..\..\common_files\include\util;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
