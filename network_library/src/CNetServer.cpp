@@ -244,7 +244,6 @@ void CNetServer::WorkerThread()
 		DWORD       cbTransferred = 0;
 		OVERLAPPED* pOverlapped = nullptr;     // IO에 사용된 Overlapped 구조체 주소값 or Task Type
 		CSession*   pSession = nullptr;
-		INT         sum = 0;                   //체크섬 계산
 
 		retval = GetQueuedCompletionStatus(m_IOCP, &cbTransferred, (PULONG_PTR)&pSession, (LPOVERLAPPED*)&pOverlapped, INFINITE);
 		
@@ -252,7 +251,7 @@ void CNetServer::WorkerThread()
 		//false 인 상황(IOCP 완료 통지 큐에서 디큐잉이 안된 경우, IOCP 핸들이 CloseHandle로 인해 닫힌 경우)
 		if (retval == false)
 		{
-			//IOCP가 닫히거나 IOCP 완료 통지 큐에서 디큐잉에 실패할 때 처리
+			//IOCP가 닫힐 때
 			if (pOverlapped == nullptr)
 			{
 				err = GetLastError();

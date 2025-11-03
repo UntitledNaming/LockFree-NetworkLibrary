@@ -866,6 +866,7 @@ void ChatServer::AuthReqProc(UINT64 sessionID, CMessage* pMessage)
 		{
 			INT64 accountNo = *reinterpret_cast<INT64*>(pMessage->GetReadPos());
 
+			// 토큰 자체가 없으면 해당 유저 연결 끊기
 			if (reply.is_null()) {
 				LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"AuthProc No Token ... / UniqID : %lld / AccountNo : %lld ", sessionID, accountNo);
 				CMessage::Free(pMessage);
@@ -876,10 +877,13 @@ void ChatServer::AuthReqProc(UINT64 sessionID, CMessage* pMessage)
 			std::string value = reply.as_string();
 			std::string token(pMessage->GetReadPos() + sizeof(INT64) + ID_MAX * sizeof(WCHAR) + NICK_MAX * sizeof(WCHAR), SESSION_KEY_MAX);
 
+			// 토큰이 있으면 인증 완료 되었으니 Update 스레드에게 후처리 전달
 			if (value == token)
 			{
 				AuthCompleteJob(sessionID, pMessage);
 			}
+
+			// 토큰이 다르면 해당 세션 연결 끊기
 			else
 			{
 				LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"AuthProc TokenInvalid ... / UniqID : %lld / AccountNo : %lld / RedisToken : %s / User Token : %s ", sessionID, accountNo, value, token);
