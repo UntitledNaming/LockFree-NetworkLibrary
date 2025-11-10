@@ -54,7 +54,7 @@ Stable IOCP-based network library designed without session lock
    - 네트워크 로직 처리
   
 
-< 서버 구동 및 테스트 방법 : Release >
+< 서버 구동 및 테스트 방법 : Release 빌드 >
 
 0. Mysql 설치
    - 폴더 경로 : C:\Program Files에 설치되어야 함.
