@@ -15,6 +15,7 @@ CSession::CSession()
 	m_SendFlag = 0;
 	m_DCFlag = 0;
 	m_RelFlag = 0;
+
 }
 
 CSession::~CSession()

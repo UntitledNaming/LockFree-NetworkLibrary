@@ -50,7 +50,7 @@ public:
 	LONG                   m_AcceptTPS;             // 초당 Accept 처리 횟수 모니터링 용
 	LONG                   m_RecvIOTPS;             // 초당 Recv 처리 횟수 모니터링 용
 	LONG                   m_SendIOTPS;             // 초당 Send 처리 횟수 모니터링 용
-	INT64                  m_AcceptTotal;           // Accept처리한 최대 세션 갯수
+	INT64                  m_AcceptTotal;           // Accept처리한 총 갯수
 	SHORT                  m_CurSessionCnt;         // 세션 배열에서 실제로 사용중인 세션 갯수
 
 
@@ -103,8 +103,8 @@ public:
 	//------------------------------------------------------------------------------
 	// 네트워크 라이브에서만 사용할 함수
 	//------------------------------------------------------------------------------
-	void          Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool Nagle);
-	void          Mem_Init();
+	bool          Net_Init(WCHAR* SERVERIP, int SERVERPORT);
+	bool          Mem_Init();
 	void          Thread_Create();
 	void          Thread_Destroy();
 	void          FindSession(UINT64 SessionID, CSession** ppSession); // 아웃파라미터 nullptr이면 세션ID가 Invalid임.

@@ -115,7 +115,6 @@ BOOL ChatServer::RunServer()
 	CLogClass::GetInstance()->Init(Loglevel);
 	CMessage::Init(sizeof(LANHEADER), sizeof(NETHEADER));
 
-	// todo :  mem_inint에서 모니터링 서버 연결까지 하기
 	Mem_Init(Usermax, UpdateFrame, const_cast<WCHAR*>(monitorstr.c_str()), monitorport);
 
 	if (!Start((WCHAR*)bindstr.c_str(), port, createthread, runningthread, maxSessions, SendFrame, Sendflag, PACKET_CODE, PACKET_KEY, (bool)Nagle))

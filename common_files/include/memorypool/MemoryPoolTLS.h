@@ -65,7 +65,7 @@ public:
 		}
 
 		//멤버 변수 초기화
-		m_iBKTCapacity = iBucketNum;
+		m_iBKTCapacity = 0;
 		m_iUseCnt = 0;
 
 
@@ -233,11 +233,14 @@ public:
 		if (ret == nullptr)
 		{
 			ret = new CSubPool(this);
-			TlsSetValue(m_iTlsIndex, ret);
 			retindex = InterlockedIncrement(&m_SubPoolIndex);
 			if (retindex >= SUBPOOL_MAX)
-				__debugbreak();
+			{
+				delete ret;
+				return nullptr;
+			}
 
+			TlsSetValue(m_iTlsIndex, ret);
 			m_SubPoolArray[retindex].s_ptr = ret;
 			m_SubPoolArray[retindex].s_ThreadId = GetCurrentThreadId();
 		}

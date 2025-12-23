@@ -26,7 +26,10 @@ DBTLS::DBTLS(const CHAR* DBip, INT DBPort)
 
 DBTLS::~DBTLS()
 {
-
+	for (int i = 0; i < m_DBQArrayIdx; i++)
+	{
+		delete m_DBQueryAry[i];
+	}
 }
 
 bool DBTLS::DB_Post_Query(const CHAR* QueryString, ...)
@@ -109,7 +112,7 @@ bool DBTLS::DB_Query::DB_Post_Query(const CHAR* QueryString, const va_list& args
 {
 	INT     query_stat;
 	HRESULT ret;
-	CHAR*  pBuffer = (CHAR*)malloc(DBQUERY_DEFAULT_LEN);
+	CHAR    pBuffer[DBQUERY_DEFAULT_LEN];
 	BOOL    reSize = false;
 
 
@@ -120,7 +123,6 @@ bool DBTLS::DB_Query::DB_Post_Query(const CHAR* QueryString, const va_list& args
     // 쿼리 스트링 길이가 할당 크기보다 크면 중단
 	if (ret == STRSAFE_E_INSUFFICIENT_BUFFER)
 	{
-		free(pBuffer);
 		return false;
 	}
 
@@ -131,11 +133,9 @@ bool DBTLS::DB_Query::DB_Post_Query(const CHAR* QueryString, const va_list& args
 		// DB와 연결 끊겨서 에러 날 수도 있음. 이때 이 세션 그냥 끊고 
 		// 유저가 다시 연결 해서 로그인 요청 보내게 하는 방법
 		LOG(L"DB",en_LOG_LEVEL::dfLOG_LEVEL_ERROR,L"DB mysql_query Error : %s" ,mysql_error(&m_Conn));
-		free(pBuffer);
 		return false;
 	}
 
-	free(pBuffer);
 	return true;
 }
 
@@ -160,7 +160,7 @@ MYSQL_RES* DBTLS::DB_Query::DB_GET_Result(int type)
 MYSQL_ROW* DBTLS::DB_Query::DB_Fetch_Row(MYSQL_RES* res)
 {
 	if (m_sql_result != res)
-		__debugbreak();
+		return nullptr;
 
 	m_sql_row = mysql_fetch_row(m_sql_result);
 	if (m_sql_row == NULL)
