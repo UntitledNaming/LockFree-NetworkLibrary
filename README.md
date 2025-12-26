@@ -35,8 +35,7 @@ Stable IOCP-based network library designed without session lock
    - 로그인 서버
    - 모니터링 서버
      
-10. tests
-   - zero copy on / off 테스트
+
 
 < 특징 요약 >
 1. 세션 Lock 제거
