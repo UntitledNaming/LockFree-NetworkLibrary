@@ -150,7 +150,6 @@
     <ClCompile Include="..\..\..\common_files\src\util\ProcessMonitor.cpp" />
     <ClCompile Include="..\..\..\common_files\src\util\TextParser.cpp" />
     <ClCompile Include="..\..\..\network_library\src\CLanClient.cpp" />
-    <ClCompile Include="..\..\..\network_library\src\CLanServer.cpp" />
     <ClCompile Include="..\..\..\network_library\src\CNetServer.cpp" />
     <ClCompile Include="..\..\..\network_library\src\CSession.cpp" />
     <ClCompile Include="CLoginServer.cpp" />

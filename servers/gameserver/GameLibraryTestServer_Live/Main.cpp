@@ -36,11 +36,13 @@ int main()
 
 
 	// Attach
-	p->Attach(auth, L"Auth",25, false);
-	p->Attach(echo, L"Echo",25, true);
-	p->Attach(mo, L"Monitor", 1000, true);
+	std::wstring auth_string(L"Auth");
+	std::wstring echo_string(L"Echo");
+	std::wstring monitor_string(L"Monitor");
 
-
+	p->Attach(auth, auth_string,25, false);
+	p->Attach(echo, echo_string,25, true);
+	p->Attach(mo, monitor_string, 1000, true);
 
 	while (!ESC)
 	{

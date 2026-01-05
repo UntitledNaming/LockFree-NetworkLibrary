@@ -51,9 +51,6 @@
     <ClCompile Include="..\..\..\network_library\src\CLanClient.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\network_library\src\CLanServer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\network_library\src\CNetServer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

@@ -73,7 +73,7 @@ void CEcho::OnRecv(UINT64 sessionID, CMessage* pMessage)
 		break;
 	}
 
-	IncRecvTPS();
+	m_RecvTPS++;
 }
 
 void CEcho::OnIUserMove(UINT64 sessioID, IUser* pUser)
@@ -86,24 +86,24 @@ void CEcho::OnIUserMove(UINT64 sessioID, IUser* pUser)
 
 void CEcho::OnUpdate()
 {
-	//CUser* pUser = nullptr;
+	CUser* pUser = nullptr;
 
-	// User е╦юс╬ф©Т
+	////User е╦юс╬ф©Т
 	//std::unordered_map<UINT64, CUser*>::iterator it = m_EchoUser.begin();
 	//for (; it != m_EchoUser.end(); ++it)
 	//{
 	//	pUser = it->second;
-	//	if (timeGetTime() - pUser->s_RecvTime >= ECHO_TIMEOUT)
+	//	if (timeGetTime() - pUser->m_recvTime >= df_ECHO_TIMEOUT)
 	//	{
-	//		if (pUser->s_TimeOut == 0)
+	//		if (pUser->m_timeOut == 0)
 	//		{
 	//			Disconnect(it->first);
-	//			pUser->s_TimeOut = 1;
+	//			pUser->m_timeOut = 1;
 	//		}
 	//	}
 	//}
 
-	IncFrameTPS();
+	m_FrameTPS++;
 }
 
 void CEcho::EchoRequestProc(UINT64 sessionID, CMessage* pMessage)
@@ -152,7 +152,7 @@ void CEcho::EchoRequestProc(UINT64 sessionID, CMessage* pMessage)
 
 	CMessage::Free(pPacket);
 
-	IncSendTPS();
+	m_SendTPS++;
 }
 
 void CEcho::HearBeatProc(UINT64 sessionID, CMessage* pMessage)
@@ -190,7 +190,7 @@ void CEcho::LoginResponse(CUser* pUser)
 
 	CMessage::Free(pPacket);
 
-	IncSendTPS();
+	m_SendTPS++;
 }
 
 

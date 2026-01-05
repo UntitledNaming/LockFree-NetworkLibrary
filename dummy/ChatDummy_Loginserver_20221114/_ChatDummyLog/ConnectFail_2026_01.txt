@@ -1,0 +1,1 @@
+[ConnectFail][2026.01.05 14:22:44 / SYSTM /          2] ConnectChat Fail Error:10055

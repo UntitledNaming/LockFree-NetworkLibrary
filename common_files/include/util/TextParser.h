@@ -18,15 +18,15 @@ public:
 private:
 	bool SkipNoneWord();
 	bool GetNextWord(char** chppBuffer, int* lpLength);
+
 public:
 	bool LoadFile(const char* FileName);
 	bool GetValue(const char* szName, int* pValue);
 	bool GetValue(const char* szName, st_Msg* pMsg);
 
 private:
-	char _FileName[MAX_NAME_SIZE] = { 0, };
+	char  _FileName[MAX_NAME_SIZE] = { 0, };
 	char* _pTextBuffer = nullptr;
 	char* _pRead = nullptr;//버퍼를 읽기 위한 용도의 포인터
-	char* p = nullptr;
 };
 

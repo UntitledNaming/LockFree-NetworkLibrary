@@ -47,16 +47,10 @@ int CRingBuffer::Enqueue(const char* chpData, int iSize)
 {
 	//링버퍼에 복사할 데이터 크기가 남은 링버퍼 크기보다 클 때
 	if (iSize >= GetFreeSize())
-	{
-
 		return 0;
-	}
 
 	long long des;
 	__int64 leftenq;
-
-	//과거의 readPos로 판단할 것임.
-	char* oldReadPos = _readPos;
 
 
 	des = DirectEnqueueSize();
@@ -64,13 +58,7 @@ int CRingBuffer::Enqueue(const char* chpData, int iSize)
 	//실제 Enqueue 작업
 	if (iSize <= des)
 	{
-		//여기서 writePos값을 미리 계산 해보고 만약 readPos와 겹치면 Enqueue작업 안할 것임
-		if ((_writePos + iSize == oldReadPos))
-			return 0;
-
 		memcpy_s(_writePos, iSize, chpData, iSize);
-
-
 		_writePos += iSize;
 
 		if (_writePos == _allocPos + _size)
@@ -84,22 +72,14 @@ int CRingBuffer::Enqueue(const char* chpData, int iSize)
 	{
 		leftenq = iSize - des;
 
-		if (oldReadPos == _allocPos + leftenq)
-			return 0;
-
-
 		memcpy_s(_writePos, des, chpData, des);
-		_writePos += des;
 		_writePos = _allocPos;
 
 		memcpy_s(_writePos, leftenq, chpData + des, leftenq);
-
 		_writePos += leftenq;
 	}
 
-
 	_usingSize += iSize;
-
 
 	return iSize;
 }
@@ -131,8 +111,6 @@ int CRingBuffer::Dequeue(char* chpData, int iSize)
 
 	}
 
-	
-
 	//확정된 빼낼 크기가 DirectDequeueSize보다 크면 포인터 이동해서 루프 한번 더 돌아야 함.
 	else
 	{
@@ -140,16 +118,10 @@ int CRingBuffer::Dequeue(char* chpData, int iSize)
 
 
 		memcpy_s(chpData, dds, _readPos, dds);
-
-		_readPos += dds;
 		_readPos = _allocPos;
 
 		memcpy_s(chpData + dds, left, _readPos, left);
-
 		_readPos = _readPos + left;
-
-		if (_readPos == _allocPos + _size)
-			_readPos = _allocPos;
 
 	}
 

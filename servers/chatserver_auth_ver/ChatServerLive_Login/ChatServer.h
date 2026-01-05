@@ -101,9 +101,6 @@ private:
 	void         Thread_Create();
 	void         Thread_Destroy();
 		         
-	void         TypeInsert(JOB* pJob, UINT64 type);
-	UINT64       TypeErase(JOB* pJob);
-		         
 	UINT64       SumResMsgTPS();
 
 	///////////////////////////////////////////////////////////////////////////

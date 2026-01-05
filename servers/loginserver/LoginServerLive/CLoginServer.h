@@ -38,6 +38,7 @@ private:
 	SRWLOCK                                        m_UserMapLock;
 	SRWLOCK                                        m_NonUserMapLock;
 	SRWLOCK                                        m_ServerInfoMapLock;
+	SRWLOCK                                        m_RedisClientLock;
 
 
 	cpp_redis::client*                             m_pRedisClient;

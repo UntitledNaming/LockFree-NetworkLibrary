@@ -147,7 +147,6 @@ void CLoginServer::StopServer()
 	CMessage::PoolDestroy();
 }
 
-
 void CLoginServer::Mem_Init(INT maxUserCnt, const CHAR* DBIp, INT DBPort, const CHAR* RedisIp, INT RedisPort, WCHAR* MonitorIp, INT MonitorPort)
 {
 	m_MaxUserCnt = maxUserCnt;
@@ -156,11 +155,14 @@ void CLoginServer::Mem_Init(INT maxUserCnt, const CHAR* DBIp, INT DBPort, const 
 	m_LoginComTPS = 0;
 	m_EndFlag = false;
 
+	std::string schema("accountdb");
+
 	// DB Init
-	m_DBTLS = new DBTLS(DBIp, DBPort);
+	m_DBTLS = new DBTLS(DBIp, DBPort, schema);
 
 	// Redis Init
 	m_pRedisClient = new cpp_redis::client;
+	
 	m_pRedisClient->connect(RedisIp, RedisPort);
 
 	// MonitorClient Init
@@ -173,6 +175,7 @@ void CLoginServer::Mem_Init(INT maxUserCnt, const CHAR* DBIp, INT DBPort, const 
 	InitializeSRWLock(&m_UserMapLock);
 	InitializeSRWLock(&m_NonUserMapLock);
 	InitializeSRWLock(&m_ServerInfoMapLock);
+	InitializeSRWLock(&m_RedisClientLock);
 }
 
 void CLoginServer::Thread_Create()
@@ -277,15 +280,18 @@ void CLoginServer::OnClientLeave(UINT64 SessionID)
 {
 	CUser* pUser = nullptr;
 
-	AcquireSRWLockExclusive(&m_NonUserMapLock);
 	AcquireSRWLockExclusive(&m_UserMapLock);
-
 
 	// 유저 자료구조 먼저 찾아보고 제거
 	std::unordered_map<UINT64, CUser*>::iterator iton;
 	iton = m_UserMap.find(SessionID);
+
 	if (iton == m_UserMap.end())
 	{
+		ReleaseSRWLockExclusive(&m_UserMapLock);
+
+
+		AcquireSRWLockExclusive(&m_NonUserMapLock);
 		// 유저 자료구조에 없으면 NonUser 자료구조 찾음.
 		std::unordered_map<UINT64, DWORD>::iterator itNon;
 		itNon = m_NonUserMap.find(SessionID);
@@ -296,7 +302,6 @@ void CLoginServer::OnClientLeave(UINT64 SessionID)
 
 		m_NonUserMap.erase(itNon);
 
-		ReleaseSRWLockExclusive(&m_UserMapLock);
 		ReleaseSRWLockExclusive(&m_NonUserMapLock);
 		return;
 	}
@@ -305,7 +310,6 @@ void CLoginServer::OnClientLeave(UINT64 SessionID)
 	m_UserMap.erase(iton);
 
 	ReleaseSRWLockExclusive(&m_UserMapLock);
-	ReleaseSRWLockExclusive(&m_NonUserMapLock);
 
 	//풀에 반납
 	m_pUserPool->Free(pUser);
@@ -466,7 +470,6 @@ void CLoginServer::FindServerInfo(WCHAR* keyIp, SERVERINFO** OutIP)
 
 }
 
-
 void CLoginServer::GetDBData(WCHAR* id, WCHAR* nick, UINT64 accountNo)
 {
 	MYSQL_RES*    sql_result;
@@ -475,12 +478,9 @@ void CLoginServer::GetDBData(WCHAR* id, WCHAR* nick, UINT64 accountNo)
 	INT           NICKLen;
 
 
-	if (!m_DBTLS->DB_Post_Query("SELECT userid, usernick From accountdb.account WHERE accountno = %lld", accountNo))
-		__debugbreak();
+	m_DBTLS->DB_Post_Query("SELECT userid, usernick From accountdb.account WHERE accountno = %lld", accountNo);
 
 	sql_result = m_DBTLS->DB_GET_Result(DBTLS::en_Use);
-	if (sql_result == nullptr)
-		__debugbreak();
 
 	sql_row = m_DBTLS->DB_Fetch_Row(sql_result);
 
@@ -508,8 +508,10 @@ void CLoginServer::GetDBData(WCHAR* id, WCHAR* nick, UINT64 accountNo)
 
 void CLoginServer::SetRedisToken(UINT64 accountNo, const std::string& token)
 {
+	AcquireSRWLockExclusive(&m_RedisClientLock);
 	m_pRedisClient->set(std::to_string(accountNo), token);
 	m_pRedisClient->sync_commit();
+	ReleaseSRWLockExclusive(&m_RedisClientLock);
 }
 
 void CLoginServer::UserInsert(UINT64 sessionID, CUser* pUser)
@@ -532,7 +534,6 @@ void CLoginServer::UserInsert(UINT64 sessionID, CUser* pUser)
 
 }
 
-
 void CLoginServer::NonUserTimeOut()
 {
 	DWORD tick;
@@ -546,7 +547,7 @@ void CLoginServer::NonUserTimeOut()
 		if (tick - it->second >= TIMEOUT1)
 		{
 			Disconnect(it->first);
-			LOG(L"Login", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"FrameThread  NonUserTimeout / SessionID : %lld / TimeOut : %d ", it->first, tick - it->second);
+			LOG(L"Login", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"FrameThread  NonUserTimeout / SessionID : %lld / TimeOut : %d ", it->first, tick - it->second);
 			continue;
 		}
 	}
@@ -583,8 +584,8 @@ void CLoginServer::UserTimeOut()
 
 void CLoginServer::FrameThread()
 {
-	DWORD OldTimeOutTick1; //2초  타임아웃
-	DWORD OldTimeOutTick2; //40초 타임아웃
+	DWORD OldTimeOutTick1; //3초  타임아웃
+	DWORD OldTimeOutTick2; //10초 타임아웃
 	DWORD curTick;
 
 	OldTimeOutTick1 = timeGetTime();

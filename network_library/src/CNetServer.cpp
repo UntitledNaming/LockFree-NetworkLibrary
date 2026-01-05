@@ -655,7 +655,7 @@ bool CNetServer::RecvPost(CSession* pSession)
 			//비정상적인 에러시 로그 남기기
 			if (err != WSAECONNRESET && err != WSAECONNABORTED && err != WSAEINTR)
 			{
-				LOG(L"NetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed / Error Code : %d / SessionID  : %d ", err, pSession->m_SessionID);
+				LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed / Error Code : %d / SessionID  : %d ", err, pSession->m_SessionID);
 			}
 
 			Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));

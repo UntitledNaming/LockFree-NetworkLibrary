@@ -48,19 +48,13 @@ public:
 	void Init(int LogLevel);
 	void ChangeLogLevel();
 	void Log(const WCHAR* szType, en_LOG_LEVEL LogLevel, const WCHAR* szStringFormat, ...);
-	void LogHex(const WCHAR* szType, en_LOG_LEVEL LogLevel, BYTE* pByte, int iByteLen);
 };
 
-//초기화 작업
-static CLogClass* Log = CLogClass::GetInstance();
-
-
 #define LOG(Type, LogLevel, format, ...) \
-Log->GetInstance()->Log(Type,LogLevel,format,__VA_ARGS__)
+CLogClass::GetInstance()->Log(Type,LogLevel,format,__VA_ARGS__)
 
 #define LOGHEX(Type, LogLevel,Byte, Len ) \
-Log->GetInstance()->LogHex(Type, LogLevel, Byte, Len)
-
+CLogClass::GetInstance()->LogHex(Type, LogLevel, Byte, Len)
 
 #pragma once
 

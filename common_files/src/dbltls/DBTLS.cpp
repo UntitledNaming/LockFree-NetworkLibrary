@@ -9,7 +9,7 @@
 #include "DBTLS.h"
 
 
-DBTLS::DBTLS(const CHAR* DBip, INT DBPort) 
+DBTLS::DBTLS(const CHAR* DBip, INT DBPort, std::string& schema) 
 {
 	m_TlsIdx = TlsAlloc();
 	if (m_TlsIdx == TLS_OUT_OF_INDEXES)
@@ -17,6 +17,7 @@ DBTLS::DBTLS(const CHAR* DBip, INT DBPort)
 		__debugbreak();
 	}
 
+	m_Schema = schema;
 	m_DBIP = DBip;
 	m_DBPort = DBPort;
 	m_DBQArrayIdx = DBTLS_IDX;
@@ -93,13 +94,12 @@ DBTLS::DB_Query::DB_Query(DBTLS* parent, const CHAR* DBip, UINT DBPort) : m_Pare
 {
 	mysql_init(&m_Conn);
 
-	m_Connection = mysql_real_connect(&m_Conn, DBip, "root", "1q2w3e4r", "logdb", DBPort, (char*)NULL, 0);
+	m_Connection = mysql_real_connect(&m_Conn, DBip, "root", "1q2w3e4r", m_Parent->m_Schema.c_str(), DBPort, (char*)NULL, 0);
 	if (m_Connection == NULL)
 	{
 		LOG(L"DB", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"DB Connect Error... / UniqID : %s ", mysql_error(&m_Conn));
 		__debugbreak();
 	}
-
 
 }
 

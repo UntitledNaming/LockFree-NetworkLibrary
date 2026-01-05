@@ -319,7 +319,7 @@ void ChatServer::NonUserTimeOut()
 		tick = timeGetTime();
 		if (tick - it->second >= df_TIMEOUT1)
 		{
-			CNetServer::Disconnect(it->first);
+			Disconnect(it->first);
 			LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"UpdateThread  NonUserTimeout / SessionID : %llu / TimeOut : %d ", it->first, tick - it->second);
 			continue;
 		}
@@ -383,8 +383,6 @@ void ChatServer::AcquireSectorExclusiveLock(WORD eXpos, WORD eYpos, WORD iXpos, 
 			AcquireSRWLockExclusive(&m_Sector[iYpos][iXpos].s_lock);
 			AcquireSRWLockExclusive(&m_Sector[eYpos][eXpos].s_lock);
 		}
-		else
-			__debugbreak();
 	}
 }
 
@@ -611,7 +609,7 @@ void ChatServer::SectorMoveProc(CMessage* pMessage, UINT64 sessionid)
 		// LoginProc 처리 전에 메세지 먼저 온 경우는 상대방 끊기
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::UserMap Not Exist NonUserMap Exist Error... / UniqID : %lld ", sessionid);
 
-		CNetServer::Disconnect(sessionid);
+		Disconnect(sessionid);
 		return;
 	}
 
@@ -962,27 +960,27 @@ void ChatServer::MonitorThread()
 		wprintf(L"[ TCP Retransmitted Avg   Count : %lf /sec  ]  [ TCP Segment Sent  Avg   Count : % lf / sec]\n", tcpretransmitsum / loopCnt, tcpsegmentsentsum / loopCnt);
 
 		// 연결 되었을 때만 모니터링 서버로 데이터 보내기
-		//if (m_pMonitorClient->ConnectAlive())
-		//{
-		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
-		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU, (int)m_pPDH->ProcessTotal());
-		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
-		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
-		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
-		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, CMessage::pMessagePool->GetUseCnt());
-		//}
-		//else
-		//{
-		//	if (m_pMonitorClient->ReConnect())
-		//	{
-		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
-		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU, (int)m_pPDH->ProcessTotal());
-		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
-		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
-		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
-		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, CMessage::pMessagePool->GetUseCnt());
-		//	}
-		//}
+		if (m_pMonitorClient->ConnectAlive())
+		{
+			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
+			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU, (int)m_pPDH->ProcessTotal());
+			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
+			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
+			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
+			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, CMessage::m_pMessagePool->GetUseCnt());
+		}
+		else
+		{
+			if (m_pMonitorClient->ReConnect())
+			{
+				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
+				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU, (int)m_pPDH->ProcessTotal());
+				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
+				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
+				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
+				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, CMessage::m_pMessagePool->GetUseCnt());
+			}
+		}
 
 
 		tcpretranslog = m_pPDH->m_TCPReTransmitVal.doubleValue;

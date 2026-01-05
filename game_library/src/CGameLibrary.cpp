@@ -174,7 +174,7 @@ void CGameLibrary::Stop()
 
 }
 
-bool CGameLibrary::Attach(CGroup* pContents, wstring contentsType, UINT groupframe, BOOL shared)
+bool CGameLibrary::Attach(CGroup* pContents, wstring& contentsType, UINT groupframe, BOOL shared)
 {
 	m_GroupArray.push_back(pContents);
 	pContents->SetGroupFrame(groupframe);
@@ -200,7 +200,6 @@ void CGameLibrary::Mem_Init(INT sessionmax, INT createiothread, INT activethread
 	m_Nagle = nagle;
 	m_Endflag = false;
 
-	m_GroupArray.reserve(df_GAMELIB_DEFAULT_GROUP_COUNT);
 
 	// IOCP 객체 생성 및 초기화
 	m_IOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, m_ConcurrentCnt); // 러닝 스레드 갯수로 컨커런트 스레드 설정
@@ -226,9 +225,11 @@ void CGameLibrary::Mem_Init(INT sessionmax, INT createiothread, INT activethread
 
 }
 
-void CGameLibrary::Net_Init(WCHAR* serverIp, INT serverport)
+void CGameLibrary::Net_Init(WCHAR* serverIP, INT serverport)
 {
 	int ret;
+	m_IP = serverIP;
+	m_Port = serverport;
 
 	// 리슨 소켓 생성
 	m_Listen = socket(AF_INET, SOCK_STREAM, 0);
@@ -248,10 +249,10 @@ void CGameLibrary::Net_Init(WCHAR* serverIp, INT serverport)
 		int flag = 0;
 		if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
 		{
-			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
+			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CGameLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
 			__debugbreak();
 		}
-		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanLibrary::Start()_Nagle On Complete...");
+		LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CGameLibrary::Start()_Nagle On Complete...");
 	}
 	else
 	{
@@ -259,10 +260,10 @@ void CGameLibrary::Net_Init(WCHAR* serverIp, INT serverport)
 		int flag = 1;
 		if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
 		{
-			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
+			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CGameLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
 			__debugbreak();
 		}
-		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanLibrary::Start()_Nagle Off Complete...");
+		LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CGameLibrary::Start()_Nagle Off Complete...");
 	}
 
 	//bind() 처리
@@ -270,7 +271,7 @@ void CGameLibrary::Net_Init(WCHAR* serverIp, INT serverport)
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
 	serveraddr.sin_port = htons(serverport);
-	InetPtonW(AF_INET, serverIp, &serveraddr.sin_addr);
+	InetPtonW(AF_INET, serverIP, &serveraddr.sin_addr);
 
 	ret = bind(m_Listen, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (ret == SOCKET_ERROR)
@@ -308,6 +309,7 @@ void CGameLibrary::Session_Init()
 void CGameLibrary::Group_Init()
 {
 	m_GroupID = 0;
+	m_GroupArray.reserve(df_GAMELIB_DEFAULT_GROUP_COUNT);
 }
 
 void CGameLibrary::Monitoring_Init()
@@ -326,8 +328,6 @@ void CGameLibrary::Thread_Create(INT sendflag)
 		m_IOCPWorkerThread[i] = std::thread(&CGameLibrary::WorkerThread, this);
 	}
 
-	m_AcceptThread = std::thread(&CGameLibrary::AcceptThread, this);
-
 	if (m_SendThFL == 1)
 	{
 		m_SendThread = std::thread(&CGameLibrary::SendThread, this);
@@ -335,6 +335,7 @@ void CGameLibrary::Thread_Create(INT sendflag)
 
 	m_FrameThread = std::thread(&CGameLibrary::FrameThread, this);
 
+	m_AcceptThread = std::thread(&CGameLibrary::AcceptThread, this);
 }
 
 void CGameLibrary::FrameThread()
@@ -386,10 +387,8 @@ void CGameLibrary::WorkerThread()
 
 		retval = GetQueuedCompletionStatus(m_IOCP, &cbTransferred, (PULONG_PTR)&pSession, (LPOVERLAPPED*)&pOverlapped, INFINITE);
 
-		//false 인 상황(IOCP 완료 통지 큐에서 디큐잉이 안된 경우, IOCP 핸들이 CloseHandle로 인해 닫힌 경우)
 		if (retval == false)
 		{
-			//IOCP가 닫히거나 IOCP 완료 통지 큐에서 디큐잉에 실패할 때 처리
 			if (pOverlapped == nullptr)
 			{
 				err = GetLastError();
@@ -525,18 +524,10 @@ void CGameLibrary::AcceptThread()
 
 		//Overlapped IO로 작동시키기 위해 소켓 송신 버퍼 0으로 설정
 		int sendBufferSize = 0;
-		setsockopt(client_socket, SOL_SOCKET, SO_SNDBUF, (char*)&sendBufferSize, sizeof(sendBufferSize));
-
-		//네이글 On/Off
-		if (m_Nagle == 1)
+		if (setsockopt(client_socket, SOL_SOCKET, SO_SNDBUF, (char*)&sendBufferSize, sizeof(sendBufferSize)) == SOCKET_ERROR)
 		{
-			int flag = 0;
-			if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
-			{
-				LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CGameLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
-				__debugbreak();
-			}
-			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CGameLibrary::Start()_Nagle On Complete...");
+			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"GameLibrary::Socket Send Buffer Set Error :%d ", WSAGetLastError());
+			break;
 		}
 
 		linger so_linger;
@@ -546,6 +537,7 @@ void CGameLibrary::AcceptThread()
 		if (setsockopt(client_socket, SOL_SOCKET, SO_LINGER, (char*)&so_linger, sizeof(so_linger)) == SOCKET_ERROR)
 		{
 			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"GameLibrary::Linger Option Set Error :%d ", WSAGetLastError());
+			break;
 		}
 
 		//세션 배열에 넣기 전에 일단 Index 찾기
@@ -728,8 +720,8 @@ bool CGameLibrary::GroupMove(std::wstring ToContents, UINT64 sessionID, IUser* p
 
 	if (it == m_GroupMap.end())
 	{
-		// 문자열과 대응되는 그룹 ID 없음
-		__debugbreak();
+		Release(pSession, InterlockedDecrement64(&pSession->m_RefCnt));
+		return false;
 	}
 
 
@@ -791,6 +783,11 @@ CGroup* CGameLibrary::GetGroupPtr(std::wstring Contents)
 	// wstring에 해당되는 그룹 ID 찾기
 	std::unordered_map<std::wstring, UINT16>::iterator it = m_GroupMap.find(Contents);
 
+	if (it == m_GroupMap.end())
+	{
+		return nullptr;
+	}
+
 	return m_GroupArray[it->second];
 }
 
@@ -800,7 +797,10 @@ bool CGameLibrary::RecvPost(CSession* pSession)
 	int err;
 	DWORD bytesReceived = 0;
 	DWORD flags = 0;
-	DWORD curThreadID = GetCurrentThreadId();
+
+	if (pSession->m_DCFlag == 1)
+		return false;
+
 	WSABUF wsa[2];
 	wsa[0].buf = pSession->m_RecvQ.GetWritePtr();
 	wsa[0].len = static_cast<ULONG>(pSession->m_RecvQ.DirectEnqueueSize());
@@ -808,8 +808,6 @@ bool CGameLibrary::RecvPost(CSession* pSession)
 	wsa[1].len = static_cast<ULONG>(pSession->m_RecvQ.GetFreeSize() - wsa[0].len);
 
 
-	if (pSession->m_DCFlag == 1)
-		return false;
 
 	InterlockedIncrement64(&pSession->m_RefCnt);
 
@@ -857,7 +855,6 @@ bool CGameLibrary::SendPost(CSession* pSession)
 	DWORD bytesSend = 0;
 	DWORD flags = 0;
 
-	DWORD curThreadID = GetCurrentThreadId();
 
 	if (pSession->m_DCFlag == 1)
 		return false;
@@ -907,13 +904,6 @@ bool CGameLibrary::SendPost(CSession* pSession)
 			break;
 	}
 
-
-	//송신 링버퍼에 아무것도 들어간게 없으면 false 리턴
-	if (index == 0)
-	{
-		__debugbreak();
-		return false;
-	}
 
 	//Dequeue 성공해서 SendArray에 저장한 갯수 갱신
 	pSession->m_SendMsgCnt = index;
@@ -976,8 +966,6 @@ bool CGameLibrary::Release(CSession* pSession,long long retIOCount)
 	check.s_cnt = 0;
 	check.s_flag = 0;
 
-	if (retIOCount < 0)
-		__debugbreak();
 
 	if (!InterlockedCompareExchange128(&pSession->m_RefCnt, 1, 0, (long long*)&check))
 		return false;
@@ -988,8 +976,7 @@ bool CGameLibrary::Release(CSession* pSession,long long retIOCount)
 
 bool CGameLibrary::SessionInvalid(CSession* pSession, UINT64 CheckID)
 {
-	LONG64 retrel;
-	retrel = InterlockedIncrement64(&pSession->m_RefCnt);
+	InterlockedIncrement64(&pSession->m_RefCnt);
 
 	//그런데 이미 누가 Release 하고 있으면 쓰면 안되니 감소 시키고 Release 
 	if (pSession->m_RelFlag == 1)
@@ -1012,7 +999,6 @@ void CGameLibrary::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 {
 	INT retPeekHeader = 0;
 	INT retPeekPayload = 0;
-	BOOL RecvError = false;
 
 	if (cbTransferred == 0)
 	{
@@ -1036,7 +1022,6 @@ void CGameLibrary::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 		NETHEADER header;
 
 
-
 		//수신 링버퍼에 len이 네트워크 헤더인데 이정도도 없으면 그냥 끝내기
 		unsigned long long usesize = pSession->m_RecvQ.GetUseSize();
 		if (usesize <= sizeof(st_NETHEADER))
@@ -1048,15 +1033,11 @@ void CGameLibrary::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 		//네트워크 헤더 추출시 체크섬 제외하고 추출
 		retPeekHeader = pSession->m_RecvQ.Peek((char*)&header, sizeof(st_NETHEADER));
 
-		if (retPeekHeader == 0)
-		{
-			__debugbreak();
-		}
 
 		// 네트워크 헤더 코드 체크
 		if (header.s_code != m_PacketCode)
 		{
-			LOG(L"NetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CNetServer::WorkerThread RecvIO NetHeader PacketCode Error / Session ID : %lld ", pSession->m_SessionID);
+			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CGameLibrary::WorkerThread RecvIO NetHeader PacketCode Error / Session ID : %lld ", pSession->m_SessionID);
 			Disconnect(pSession->m_SessionID);
 
 			CMessage::Free(pPacket);
@@ -1066,9 +1047,8 @@ void CGameLibrary::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 		//헤더의 페이로드 len이 0이하 조작 메세지
 		if (header.s_len <= 0)
 		{
-			RecvError = true;
 
-			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CNetServer::WorkerThread RecvIO NetHeader Len Error / Session ID : %lld", pSession->m_SessionID);
+			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CGameLibrary::WorkerThread RecvIO NetHeader Len Error / Session ID : %lld", pSession->m_SessionID);
 			Disconnect(pSession->m_SessionID);
 
 			CMessage::Free(pPacket);
@@ -1098,10 +1078,6 @@ void CGameLibrary::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 
 		// 수신 링버퍼에서 체크섬 및 페이로드 추출 후 직렬화 버퍼에 저장
 		retPeekPayload = pSession->m_RecvQ.Peek(pPacket->GetWritePos(), header.s_len + sizeof(header.s_checksum));
-		if (retPeekPayload == 0)
-		{
-			__debugbreak();
-		}
 
 		pPacket->MoveWritePos(retPeekPayload);
 
@@ -1123,8 +1099,7 @@ void CGameLibrary::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 		//체크섬 다르면 디버깅 위해 중단
 		if (header.s_checksum != (sum % 256))
 		{
-			RecvError = true;
-			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CNetServer::WorkerThread RecvIO CheckSum Error / Session ID : %llu ...", pSession->m_SessionID);
+			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CGameLibrary::WorkerThread RecvIO CheckSum Error / Session ID : %llu ...", pSession->m_SessionID);
 			Disconnect(pSession->m_SessionID);
 			CMessage::Free(pPacket);
 			break;
@@ -1232,11 +1207,6 @@ void CGameLibrary::FindSession(UINT64 SessionID, CSession** ppSession)
 	// 인자로받은 세션 ID에서 Index 추출
 	index = SessionID >> df_GAMELIB_INDEX_POS;
 
-	if (index < 0 || index >= m_MaxSessionCnt)
-	{
-		__debugbreak();
-	}
-
 	*ppSession = &m_SessionTable[index];
 }
 
@@ -1311,17 +1281,11 @@ void CGameLibrary::GroupMoveProc(CMessage* pMessage)
 	CMessage::Free(pMessage);
 
 	FindSession(sessionID, &pSession);
-	if (pSession == nullptr)
-	{
-		__debugbreak();
-	}
 
 	m_GroupArray[groupid]->ExclusiveGroupLock();
+	pSession->m_GroupID = groupid;
 	m_GroupArray[groupid]->OnIUserMove(sessionID, pUser);
 	m_GroupArray[groupid]->ExclusiveGroupUnlock();
 
-	pSession->m_GroupID = groupid;
-
 	Release(pSession,  InterlockedDecrement64(&pSession->m_RefCnt));
 }
-

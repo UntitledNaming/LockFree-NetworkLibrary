@@ -68,7 +68,7 @@ void CAuth::OnRecv(UINT64 sessionID, CMessage* pMessage)
 		break;
 	}
 
-	IncRecvTPS();
+	m_RecvTPS++;
 }
 
 void CAuth::OnIUserMove(UINT64 sessioID, IUser* pUser)
@@ -79,17 +79,17 @@ void CAuth::OnIUserMove(UINT64 sessioID, IUser* pUser)
 
 void CAuth::OnUpdate()
 {
-	// NonUser е╦юс╬ф©Т
+	//// NonUser е╦юс╬ф©Т
 	//std::unordered_map<UINT64, DWORD>::iterator it = m_NonUserMap.begin();
 	//for (; it != m_NonUserMap.end(); ++it)
 	//{
-	//	if (timeGetTime() - it->second >= AUTH_TIMEOUT)
+	//	if (timeGetTime() - it->second >= df_AUTH_TIMEOUT)
 	//	{
 	//		Disconnect(it->first);
 	//	}
 	//}
 
-	IncFrameTPS();
+	m_FrameTPS++;;
 }
 
 void CAuth::LoginRequsetProc(UINT64 sessionID, CMessage* pMessage)

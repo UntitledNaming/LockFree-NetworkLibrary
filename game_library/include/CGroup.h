@@ -15,10 +15,10 @@ private:
 	DWORD               m_GroupID;             // 그룹을 상속 받는 컨텐츠의 실제 타입 구분자
 	UINT                m_GroupFrameTime;      // 프레임 로직 돌릴때 프레임(ms 단위)
 	DWORD               m_OldTime;             // 프레임 스레드에서 체크할 시간
-	BOOL                m_Shared;              // 멀티 스레드가 그룹에 접근 가능해도 되는지 제어 플래그
+	BOOL                m_Shared;              // 그룹 수신 메세지 병렬 처리 제어 플래그
 
 
-private:
+protected:
 	//////////////////////////////////////////////
 	// 그룹 객체 모니터링 변수
 	//////////////////////////////////////////////
@@ -34,9 +34,10 @@ public:
 	{
 		return m_OldTime;
 	}
+
 	inline void   SetOldTime()
 	{
-		InterlockedAdd((LONG*)&m_OldTime, m_GroupFrameTime);
+		m_OldTime += m_GroupFrameTime;
 	}
 
 	inline DWORD GetGroupID()

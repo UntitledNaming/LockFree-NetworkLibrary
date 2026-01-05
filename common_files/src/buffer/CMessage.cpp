@@ -31,9 +31,7 @@ CMessage::CMessage()
 CMessage::CMessage(int size)
 {
 	if (size > eBuffer_Max)
-	{
-		__debugbreak();
-	}
+		return;
 	
 	m_iAllocPtr = (char*)malloc(size);
 	m_iReadPos = m_iAllocPtr;
@@ -64,10 +62,7 @@ bool CMessage::Free(CMessage* pMessage)
 	int ret;
 	ret = pMessage->SubRef();
 
-	if (ret < 0)
-		__debugbreak();
-
-	else if (ret == 0)
+	if (ret == 0)
 	{
 		m_pMessagePool->Free(pMessage);
 		return true;
@@ -164,7 +159,7 @@ bool CMessage::GetLastError()
 
 void CMessage::SetEncodingFlag(int value)
 {
-	InterlockedExchange((long*) & m_EncodingFlag, value);
+	m_EncodingFlag = value;
 }
 
 void CMessage::SetNetHeader(int type)
@@ -184,7 +179,10 @@ void CMessage::SetNetHeader(int type)
 int CMessage::GetData(char* chpDest, int iSize)
 {
 	if (m_iDataSize < iSize)
+	{
+		m_iError = true;
 		return 0;
+	}
 
 	memcpy_s(chpDest, iSize, m_iReadPos, iSize);
 
@@ -374,13 +372,13 @@ CMessage& CMessage::operator<<(double iValue)
 
 CMessage& CMessage::operator>>(BYTE& byValue)
 {
-	byValue = *(BYTE*)m_iReadPos;
-
 	if (m_iDataSize < sizeof(BYTE))
 	{
 		m_iError = true;
 		return *this;
 	}
+
+	byValue = *(BYTE*)m_iReadPos;
 
 	m_iReadPos += sizeof(BYTE);
 	m_iDataSize -= sizeof(BYTE);
@@ -390,13 +388,13 @@ CMessage& CMessage::operator>>(BYTE& byValue)
 
 CMessage& CMessage::operator>>(char& chValue)
 {
-	chValue = *(char*)m_iReadPos;
-
 	if (m_iDataSize < sizeof(char))
 	{
 		m_iError = true;
 		return *this;
 	}
+
+	chValue = *(char*)m_iReadPos;
 
 	m_iReadPos += sizeof(char);
 	m_iDataSize -= sizeof(char);
@@ -406,14 +404,13 @@ CMessage& CMessage::operator>>(char& chValue)
 
 CMessage& CMessage::operator>>(short& shValue)
 {
-	shValue = *(short*)m_iReadPos;
-
 	if (m_iDataSize < sizeof(short))
 	{
 		m_iError = true;
 		return *this;
 	}
 
+	shValue = *(short*)m_iReadPos;
 
 	m_iReadPos += sizeof(short);
 	m_iDataSize -= sizeof(short);
@@ -423,14 +420,13 @@ CMessage& CMessage::operator>>(short& shValue)
 
 CMessage& CMessage::operator>>(WORD& wValue)
 {
-	wValue = *(WORD*)m_iReadPos;
-
 	if (m_iDataSize < sizeof(WORD))
 	{
 		m_iError = true;
 		return *this;
 	}
 
+	wValue = *(WORD*)m_iReadPos;
 
 	m_iReadPos += sizeof(WORD);
 	m_iDataSize -= sizeof(WORD);
@@ -440,14 +436,13 @@ CMessage& CMessage::operator>>(WORD& wValue)
 
 CMessage& CMessage::operator>>(int& iValue)
 {
-	iValue = *(int*)m_iReadPos;
-
 	if (m_iDataSize < sizeof(int))
 	{
 		m_iError = true;
 		return *this;
 	}
 
+	iValue = *(int*)m_iReadPos;
 
 	m_iReadPos += sizeof(int);
 	m_iDataSize -= sizeof(int);
@@ -457,15 +452,13 @@ CMessage& CMessage::operator>>(int& iValue)
 
 CMessage& CMessage::operator>>(DWORD& dwValue)
 {
-	dwValue = *(DWORD*)m_iReadPos;
-
 	if (m_iDataSize < sizeof(DWORD))
 	{
 		m_iError = true;
 		return *this;
 	}
 
-
+	dwValue = *(DWORD*)m_iReadPos;
 
 	m_iReadPos += sizeof(DWORD);
 	m_iDataSize -= sizeof(DWORD);
@@ -475,14 +468,13 @@ CMessage& CMessage::operator>>(DWORD& dwValue)
 
 CMessage& CMessage::operator>>(float& fValue)
 {
-	fValue = *(float*)m_iReadPos;
-
 	if (m_iDataSize < sizeof(float))
 	{
 		m_iError = true;
 		return *this;
 	}
 
+	fValue = *(float*)m_iReadPos;
 
 	m_iReadPos += sizeof(float);
 	m_iDataSize -= sizeof(float);
@@ -492,13 +484,13 @@ CMessage& CMessage::operator>>(float& fValue)
 
 CMessage& CMessage::operator>>(__int64& iValue)
 {
-	iValue = *(__int64*)m_iReadPos;
-
 	if (m_iDataSize < sizeof(__int64))
 	{
 		m_iError = true;
 		return *this;
 	}
+
+	iValue = *(__int64*)m_iReadPos;
 
 	m_iReadPos += sizeof(__int64);
 	m_iDataSize -= sizeof(__int64);
@@ -508,13 +500,13 @@ CMessage& CMessage::operator>>(__int64& iValue)
 
 CMessage& CMessage::operator>>(unsigned long long& iValue)
 {
-	iValue = *(unsigned long long*)m_iReadPos;
-
 	if (m_iDataSize < sizeof(unsigned long long))
 	{
 		m_iError = true;
 		return *this;
 	}
+
+	iValue = *(unsigned long long*)m_iReadPos;
 
 	m_iReadPos += sizeof(unsigned long long);
 	m_iDataSize -= sizeof(unsigned long long);
@@ -524,14 +516,13 @@ CMessage& CMessage::operator>>(unsigned long long& iValue)
 
 CMessage& CMessage::operator>>(double& dValue)
 {
-	dValue = *(double*)m_iReadPos;
-
 	if (m_iDataSize < sizeof(double))
 	{
 		m_iError = true;
 		return *this;
 	}
 
+	dValue = *(double*)m_iReadPos;
 
 	m_iReadPos += sizeof(double);
 	m_iDataSize -= sizeof(double);

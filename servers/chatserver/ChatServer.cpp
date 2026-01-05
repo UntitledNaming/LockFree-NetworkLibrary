@@ -85,7 +85,6 @@ BOOL ChatServer::RunServer()
 	INT runningthread;
 	parser.GetValue("IOCP_ACTIVE_THREAD", &runningthread);
 
-	// WORD 형으로 지역변수 선언하면 스택 오염임. 2바이트 지역변수인데 GetValue할때 넘겨주는 변수의 주소는 4바이트 크기로 파서가 인지하고 있음. 그래서 파서가 4바이트를 copy해서 줘버림.
 	INT PACKET_CODE;
 	parser.GetValue("PACKET_CODE", (int*)&PACKET_CODE);
 
@@ -196,7 +195,6 @@ void ChatServer::Thread_Destroy()
 	}
 }
 
-
 bool ChatServer::OnConnectionRequest(WCHAR* InputIP, USHORT InputPort)
 {
 
@@ -210,7 +208,6 @@ void ChatServer::OnClientJoin(UINT64 SessionID)
 	job->s_Type = en_Join;
 
 	m_pUpdateJobQ->Enqueue(job);
-
 }
 
 void ChatServer::OnClientLeave(UINT64 SessionID)
@@ -243,8 +240,8 @@ void ChatServer::NonUserTimeOut()
 		tick = timeGetTime();
 		if (tick - it->second >= TIMEOUT1)
 		{
-			CNetServer::Disconnect(it->first);
-			LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"UpdateThread  NonUserTimeout / SessionID : %llu / TimeOut : %d ", it->first, tick - it->second);
+			Disconnect(it->first);
+			LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"UpdateThread  NonUserTimeout / SessionID : %llu / TimeOut : %d ", it->first, tick - it->second);
 			continue;
 		}
 	}
@@ -385,7 +382,6 @@ BOOL ChatServer::SectorRemove(CUser* pUser)
 		}
 	}
 
-
 	return false;
 }
 
@@ -491,9 +487,10 @@ void ChatServer::SectorMoveProc(CMessage* pMessage, UINT64 sessionid)
 
 		// LoginProc 처리 전에 메세지 먼저 온 경우는 상대방 끊기
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::UserMap Not Exist NonUserMap Exist Error... / UniqID : %llu ", sessionid);
-		CNetServer::Disconnect(sessionid);
+		Disconnect(sessionid);
 		return;
 	}
+	
 	pUser = itOn->second;
 
 	//찾았으면
@@ -585,8 +582,6 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 	//찾았으면
 	pUser = itOn->second;
 
-
-	// 섹터 변경 메세지 보다 먼저 온 경우
 	if (pUser->s_Sector != 1)
 	{
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::Not Recv SectorMove Message ... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
@@ -613,7 +608,7 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::CMessage Flag Error... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
 
 		//프로토콜 보다 보낸 데이터 크기가 적으면 플래그 켜짐.
-		CNetServer::Disconnect(sessionid);
+		Disconnect(sessionid);
 
 		return;
 	}
@@ -622,7 +617,7 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 	{
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::CMessage Size Overflow Error... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
 		//프로토콜 보다 보낸 데이터 크기가 크면 끊기
-		CNetServer::Disconnect(sessionid);
+		Disconnect(sessionid);
 
 		return;
 	}
@@ -652,7 +647,7 @@ void ChatServer::HeartBeatProc(CMessage* pMessage, UINT64 sessionid)
 	{
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"HeartBeat::CMessage Size Overflow Error... / UniqID : %llu  ", sessionid);
 		//프로토콜 보다 보낸 데이터 크기가 크면 끊기
-		CNetServer::Disconnect(sessionid);
+		Disconnect(sessionid);
 
 		return;
 	}
@@ -667,7 +662,7 @@ void ChatServer::HeartBeatProc(CMessage* pMessage, UINT64 sessionid)
 
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"HeartBeat::UserMap Not Exist NonUserMap Exist Error... / UniqID : %llu ", sessionid);
 
-		CNetServer::Disconnect(sessionid);
+		Disconnect(sessionid);
 
 		return;
 	}
@@ -680,7 +675,7 @@ void ChatServer::HeartBeatProc(CMessage* pMessage, UINT64 sessionid)
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"HeartBeat::Not Recv SectorMove Message ... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
 
 		//섹터 이동 보다 먼저 패킷온 경우
-		CNetServer::Disconnect(sessionid);
+		Disconnect(sessionid);
 		return;
 	}
 
@@ -690,7 +685,6 @@ void ChatServer::HeartBeatProc(CMessage* pMessage, UINT64 sessionid)
 
 void ChatServer::JoinProc(UINT64 sessionID)
 {
-	//유저 껍데기 자료 구조에 현재 시간 측정해서 insert
 	m_NonUserMap.insert(std::pair<UINT64, DWORD>(sessionID, timeGetTime()));
 }
 
@@ -784,7 +778,7 @@ void ChatServer::DeleteProc(UINT64 sessionID)
 
 void ChatServer::UpdateThread()
 {
-	DWORD OldTimeOutTick1; //2초  타임아웃
+	DWORD OldTimeOutTick1; //3초  타임아웃
 	DWORD OldTimeOutTick2; //40초 타임아웃
 	DWORD OldTimeOutTick;  //루프 이전 시간
 	DWORD curTick;
@@ -809,7 +803,7 @@ void ChatServer::UpdateThread()
 
 		//if (curTick - OldTimeOutTick1 >= TIMEOUT1)
 		//{
-		//	NonUserTimeOut(curTick);
+		//	NonUserTimeOut();
 
 		//	OldTimeOutTick1 += TIMEOUT1;
 		//}

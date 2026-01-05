@@ -100,7 +100,8 @@ public:
 		newNode->s_poolD = m_iOriginID;
 
 		//객체 생성자 호출
-		new(&newNode->s_data) T;
+		if(m_bPlacementNew == false)
+			new(&newNode->s_data) T;
 
 		//기존 TopNode에 연결
 		newNode->s_pNext = m_pTopNode;
@@ -126,7 +127,8 @@ public:
 			newNode->s_poolD = m_iOriginID;
 
 			//객체 생성자 호출
-			new(&newNode->s_data) T;
+			if (m_bPlacementNew == false)
+				new(&newNode->s_data) T;
 
 			retCnt = InterlockedIncrement(&m_iTopCnt);
 
@@ -156,7 +158,8 @@ public:
 		newNode->s_poolD = m_iOriginID;
 
 		//객체 생성자 호출
-		new(&newNode->s_data) T;
+		if (m_bPlacementNew == false)
+			new(&newNode->s_data) T;
 
 		InterlockedIncrement(&m_iCapacity);
 		InterlockedIncrement(&m_iUseCnt);

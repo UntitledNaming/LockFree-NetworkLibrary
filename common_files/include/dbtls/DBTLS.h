@@ -17,7 +17,7 @@ public:
 
 public:
 	DBTLS();
-	DBTLS(const CHAR* DBip, INT DBPort);
+	DBTLS(const CHAR* DBip, INT DBPort, std::string& schema);
 	~DBTLS();
 	
 
@@ -60,6 +60,7 @@ private:
 	// DB_TLS 클래스 멤버 변수
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	DWORD             m_TlsIdx;
+	std::string       m_Schema;
 	std::string       m_DBIP;
 	UINT              m_DBPort;
 	DB_Query*         m_DBQueryAry[DBTLS_MAX_COUNT];
