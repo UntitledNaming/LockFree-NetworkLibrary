@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #define CLIENT_WSABUFSIZE   50
 #define MAX_NUM_THREAD      5
 #define CLIENT_WORKER_COUNT 2
@@ -27,21 +27,21 @@ public:
 	virtual ~CLanClient();
 
 	////////////////////////////////////////////////////
-	// CLanClient ÀÎÅÍÆäÀÌ½º ÇÔ¼ö
+	// CLanClient ì¸í„°í˜ì´ìŠ¤ í•¨ìˆ˜
 	////////////////////////////////////////////////////
-	virtual void OnEnterJoinServer() = 0;               // ¼­¹ö¿Í ¿¬°á ¼º°ø ÈÄ       
-	virtual void OnLeaveServer() = 0;                   // ¼­¹ö¿Í ¿¬°á ²÷¾îÁø ÈÄ
-	virtual void OnRecv(CMessage* pMessage) = 0;        // ÆĞÅ¶ ¼ö½Å ¿Ï·á ÈÄ
-	virtual void OnSend(int sendsize) = 0;              // ÆĞÅ¶ ¼Û½Å ¿Ï·á ÈÄ
+	virtual void OnEnterJoinServer() = 0;               // ì„œë²„ì™€ ì—°ê²° ì„±ê³µ í›„       
+	virtual void OnLeaveServer() = 0;                   // ì„œë²„ì™€ ì—°ê²° ëŠì–´ì§„ í›„
+	virtual void OnRecv(CMessage* pMessage) = 0;        // íŒ¨í‚· ìˆ˜ì‹  ì™„ë£Œ í›„
+	virtual void OnSend(int sendsize) = 0;              // íŒ¨í‚· ì†¡ì‹  ì™„ë£Œ í›„
 
 
 	////////////////////////////////////////////////////
-	// ¿ÜºÎ Á¦°ø ÇÔ¼ö
+	// ì™¸ë¶€ ì œê³µ í•¨ìˆ˜
 	////////////////////////////////////////////////////
 	bool  Connect(WCHAR* SERVERIP, INT SERVERPORT);
 	bool  Disconnect();
 	bool  SendPacket(CMessage* pMessage);
-	bool  ReConnect();                                  // ConnectAlive ÇÔ¼ö¸¦ ÅëÇØ ¿¬°á ²÷±ä°Ô È®ÀÎµÉ ¶§ È£ÃâÇÏ´Â ÇÔ¼ö(Not Thread Safe Func)
+	bool  ReConnect();                                  // ConnectAlive í•¨ìˆ˜ë¥¼ í†µí•´ ì—°ê²° ëŠê¸´ê²Œ í™•ì¸ë  ë•Œ í˜¸ì¶œí•˜ëŠ” í•¨ìˆ˜(Not Thread Safe Func)
 	bool  ConnectAlive();
 	void  Destroy();
 
@@ -51,8 +51,8 @@ private:
 
 private:
 	bool  Mem_Init(WCHAR* ServerIP, INT ServerPort);
-	bool  CreateAndSetSocket(SOCKET& outParam);                                                           // true : ¼ÒÄÏ »ı¼º ¹× ¿É¼Ç ¼³Á¤ ¼º°ø, false : ¼ÒÄÏ »ı¼º ¶Ç´Â ¿É¼Ç ¼³Á¤ ½ÇÆĞ
-	bool  ConnectTry(SOCKET inputParam);                                                                  // true : ¼­¹ö¿Í ¿¬°á ¼º°ø , false : ¿¬°á ½ÇÆĞ
+	bool  CreateAndSetSocket(SOCKET& outParam);                                                           // true : ì†Œì¼“ ìƒì„± ë° ì˜µì…˜ ì„¤ì • ì„±ê³µ, false : ì†Œì¼“ ìƒì„± ë˜ëŠ” ì˜µì…˜ ì„¤ì • ì‹¤íŒ¨
+	bool  ConnectTry(SOCKET inputParam);                                                                  // true : ì„œë²„ì™€ ì—°ê²° ì„±ê³µ , false : ì—°ê²° ì‹¤íŒ¨
 	bool  RecvPost();              
 	bool  SendPost();              
 	void  Release(int refCnt);

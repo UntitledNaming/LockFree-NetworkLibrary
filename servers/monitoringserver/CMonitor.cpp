@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+ï»¿#define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <windows.h>
 #include <timeapi.h>
@@ -48,7 +48,7 @@ CMonitor::~CMonitor()
 
 BOOL CMonitor::RunServer()
 {
-	//Parsing ÀÛ¾÷
+	//Parsing ì‘ì—…
 	Parser parser;
 
 	if (!parser.LoadFile("MServerConfig.txt"))
@@ -60,7 +60,7 @@ BOOL CMonitor::RunServer()
 	Parser::st_Msg bindint;
 	parser.GetValue("BIND_INTIP", &bindint);
 
-	//charÇü ¹®ÀÚ¿­À» wchar·Î º¯È¯
+	//charí˜• ë¬¸ìì—´ì„ wcharë¡œ ë³€í™˜
 	std::wstring bindEXTstr;
 	std::wstring bindINTstr;
 	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
@@ -206,10 +206,10 @@ void CMonitor::DataUpdateProc(UINT64 sessionID, CMessage* pMessage)
 
 	pUser->m_recvTime = timeGetTime();
 
-	// DB ÀúÀå ½º·¹µå¿¡°Ô ÀúÀå ¿äÃ» º¸³»±â
+	// DB ì €ì¥ ìŠ¤ë ˆë“œì—ê²Œ ì €ì¥ ìš”ì²­ ë³´ë‚´ê¸°
 	DataEnqueue(timestamp, datavalue, pUser->m_ServerNo, dataType);
 
-	// ¸ğ´ÏÅÍ¸µ Åø¿¡°Ô µ¥ÀÌÅÍ º¸³»±â
+	// ëª¨ë‹ˆí„°ë§ íˆ´ì—ê²Œ ë°ì´í„° ë³´ë‚´ê¸°
 	m_pAgentMgr->SendServerData((BYTE)pUser->m_ServerNo, dataType, datavalue, timestamp);
 }
 
@@ -245,7 +245,7 @@ void CMonitor::DataInsert(MONITOR_DATA* pData)
 {
 	std::unordered_map<BYTE, DB_DATA*>::iterator it;
 
-	// datatypeÀ» map¿¡¼­ Ã£±â
+	// datatypeì„ mapì—ì„œ ì°¾ê¸°
 	it = m_DataMap.find(pData->s_dataType);
 	if (it == m_DataMap.end())
 	{
@@ -335,8 +335,8 @@ void CMonitor::UserTimeOut()
 
 void CMonitor::FrameThread()
 {
-	DWORD oldTick;          // DB ÀúÀå ÀÌº¥Æ® Ã³¸®
-	DWORD OldTimeOutTick1;  // 30ÃÊ À¯Àú Å¸ÀÓ¾Æ¿ô
+	DWORD oldTick;          // DB ì €ì¥ ì´ë²¤íŠ¸ ì²˜ë¦¬
+	DWORD OldTimeOutTick1;  // 30ì´ˆ ìœ ì € íƒ€ì„ì•„ì›ƒ
 	DWORD curTick;
 
 	oldTick = timeGetTime();

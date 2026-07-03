@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #define MAX_LEN         300
 #define USER_MEMORY_MAX 0x00007FFFFFFFFFFF
 #define BIT_MASK        0x00007FFFFFFFFFFF
@@ -30,7 +30,7 @@ public:
 			__debugbreak();
 		}
 
-		//¸Ş¸ğ¸® Ç® ÇÒ´ç
+		//ë©”ëª¨ë¦¬ í’€ í• ë‹¹
 		m_pMemoryPool = new CMemoryPool<Node>(size);
 
 		m_pTopNode = nullptr;
@@ -54,7 +54,7 @@ public:
 
 	void Push(T InputData)
 	{
-		//¸Ş¸ğ¸® ·Î±× ÁØºñ
+		//ë©”ëª¨ë¦¬ ë¡œê·¸ ì¤€ë¹„
 		DWORD    curID = GetCurrentThreadId();
 		Node*    newNode = m_pMemoryPool->Alloc();
 		Node*    t;
@@ -64,7 +64,7 @@ public:
 		newNode->data = InputData;
 
 		do {
-			//CAS ½ÇÆĞÇÏ¸é newNode¿¡ ºÙÀÎ tag¶§±â
+			//CAS ì‹¤íŒ¨í•˜ë©´ newNodeì— ë¶™ì¸ tagë•Œê¸°
 			newNode = (Node*)(((UINT64)newNode << 17) >> 17);
 
 
@@ -79,10 +79,10 @@ public:
 		InterlockedIncrement64((volatile LONG64*) & m_size);
 	}
 
-	//Data´Â OutParameterÀÓ.
+	//DataëŠ” OutParameterì„.
 	bool Pop(T& Data)
 	{
-		//¸Ş¸ğ¸® ·Î±× ÁØºñ
+		//ë©”ëª¨ë¦¬ ë¡œê·¸ ì¤€ë¹„
 		DWORD curID = GetCurrentThreadId();
 
 		Node* t;
@@ -93,7 +93,7 @@ public:
 
 
 		do {
-			t = m_pTopNode; //±âÁ¸ Å¾ ³ëµå ÀúÀå
+			t = m_pTopNode; //ê¸°ì¡´ íƒ‘ ë…¸ë“œ ì €ì¥
 
 			real = (Node*)((UINT64)t & BIT_MASK);
 			if (real == nullptr)
@@ -109,7 +109,7 @@ public:
 		} while (_InterlockedCompareExchange64((volatile __int64*)&m_pTopNode, (__int64)newTopNode, (__int64)t) != (__int64)t);
 
 
-		//Å¾ ³ëµå Á¦°Å
+		//íƒ‘ ë…¸ë“œ ì œê±°
 		Data = real->data;
 		if (!(m_pMemoryPool->Free(real)))
 			__debugbreak();

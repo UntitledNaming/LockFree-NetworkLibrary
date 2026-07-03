@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+ï»¿#define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <windows.h>
 #include <timeapi.h>
@@ -26,17 +26,17 @@ CMonAgentsMgr::~CMonAgentsMgr()
 
 void CMonAgentsMgr::RunAgentsManager(INT MAXAGENTCNT, WCHAR* SERVERIP, INT SERVERPORT, INT numberOfCreateThread, INT numberOfRunningThread, INT maxNumOfSession, INT SendSleep, INT SendTHFL, WORD packetCode, WORD fixedkey, BOOL OffNagle)
 {
-	// ¸â¹ö ÃÊ±âÈ­
+	// ë©¤ë²„ ì´ˆê¸°í™”
 	m_monitorSessionKey = "ajfw@!cv980dSZ[fje#@fdj123948djf";
 	m_agentMaxCnt = MAXAGENTCNT;
 	m_pAgentPool = new CMemoryPool<CAgent>;
 	m_endFlag = false;
 
-	// ½º·¹µå »ý¼º
+	// ìŠ¤ë ˆë“œ ìƒì„±
 	m_frame = std::thread(&CMonAgentsMgr::FrameThread, this);
 
 
-	// ³×Æ®¿öÅ© ¶óÀÌºê·¯¸® ÀÛµ¿
+	// ë„¤íŠ¸ì›Œí¬ ë¼ì´ë¸ŒëŸ¬ë¦¬ ìž‘ë™
 	Start(SERVERIP, SERVERPORT, numberOfCreateThread, numberOfRunningThread, maxNumOfSession, SendSleep, SendTHFL, packetCode, fixedkey, OffNagle);
 
 
@@ -46,7 +46,7 @@ void CMonAgentsMgr::StopAgentsManager()
 {
 	Stop();
 
-	// ½º·¹µå ÆÄ±«
+	// ìŠ¤ë ˆë“œ íŒŒê´´
 	m_endFlag = true;
 
 	if (m_frame.joinable())
@@ -54,7 +54,7 @@ void CMonAgentsMgr::StopAgentsManager()
 		m_frame.join();
 	}
 
-	// °´Ã¼ ÆÄ±«
+	// ê°ì²´ íŒŒê´´
 	delete m_pAgentPool;
 	
 }
@@ -179,20 +179,20 @@ void CMonAgentsMgr::ToolLoginProc(UINT64 sessionID, CMessage* pMessage)
 	}
 
 
-	// ¸ð´ÏÅÍ¸µ ¼­¹ö Key¿Í ºñ±³
+	// ëª¨ë‹ˆí„°ë§ ì„œë²„ Keyì™€ ë¹„êµ
 	if (memcmp(sessionkey, m_monitorSessionKey, MONITOR_SESSION_KEY_MAX) == 0)
 		status = dfMONITOR_TOOL_LOGIN_ERR_SESSIONKEY;
 	else
 		status = dfMONITOR_TOOL_LOGIN_OK;
 
-	// Agent »ý¼º
+	// Agent ìƒì„±
 	CAgent* pAgent = m_pAgentPool->Alloc();
 	pAgent->Agent_Init(sessionID);
 
-	// nonuser¿¡¼­ Á¦°ÅÇÏ°í user·Î ¿Å±â±â
+	// nonuserì—ì„œ ì œê±°í•˜ê³  userë¡œ ì˜®ê¸°ê¸°
 	AgentInsert(sessionID, pAgent);
 
-	// Res ¸Þ¼¼Áö º¸³»±â
+	// Res ë©”ì„¸ì§€ ë³´ë‚´ê¸°
 	CMessage* pPacket = CMessage::Alloc();
 	pPacket->Clear();
 	*pPacket << (WORD)en_PACKET_CS_MONITOR_TOOL_RES_LOGIN;
@@ -224,8 +224,8 @@ void CMonAgentsMgr::AgentInsert(UINT64 sessionID, CAgent* pUser)
 void CMonAgentsMgr::FrameThread()
 {
 
-	DWORD OldTimeOutTick1; //3ÃÊ  Å¸ÀÓ¾Æ¿ô
-	DWORD OldTimeOutTick2; //40ÃÊ Å¸ÀÓ¾Æ¿ô
+	DWORD OldTimeOutTick1; //3ì´ˆ  íƒ€ìž„ì•„ì›ƒ
+	DWORD OldTimeOutTick2; //40ì´ˆ íƒ€ìž„ì•„ì›ƒ
 	DWORD curTick;
 
 	OldTimeOutTick1 = timeGetTime();

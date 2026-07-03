@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 class CCpuUsage
 {
 public:
 	//------------------------------------------------------------
-	// »ı¼ºÀÚ, È®ÀÎ ´ë»ó ÇÁ·Î¼¼½º ÇÚµé, ¹ÌÀÔ·Â½Ã ÀÚ±â ÀÚ½Å
+	// ìƒì„±ì, í™•ì¸ ëŒ€ìƒ í”„ë¡œì„¸ìŠ¤ í•¸ë“¤, ë¯¸ì…ë ¥ì‹œ ìê¸° ìì‹ 
 	//------------------------------------------------------------
 
 	CCpuUsage(HANDLE hProcess = INVALID_HANDLE_VALUE);
@@ -32,7 +32,7 @@ private:
 	float  m_fProcessUser;
 	float  m_fProcessKernel;
 
-	//¸¶Áö¸· ÃøÁ¤ ½Ã°£
+	//ë§ˆì§€ë§‰ ì¸¡ì • ì‹œê°„
 	ULARGE_INTEGER m_fProcessor_LastKernel;
 	ULARGE_INTEGER m_fProcessor_LastUser;
 	ULARGE_INTEGER m_fProcessor_LastIdle;

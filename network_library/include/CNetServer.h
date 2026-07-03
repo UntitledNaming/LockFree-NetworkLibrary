@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #define MAX_THREAD_COUNT   100
 #define IP_LEN             16
@@ -26,56 +26,56 @@ public:
 
 
 private:
-	HANDLE                 m_IOCP;                  // IOCP ¸®¼Ò½º ÇÚµé
-	SOCKET                 m_Listen;                // ¼­¹ö ¸®½¼ ¼ÒÄÏ
+	HANDLE                 m_IOCP;                  // IOCP ë¦¬ì†ŒìŠ¤ í•¸ë“¤
+	SOCKET                 m_Listen;                // ì„œë²„ ë¦¬ìŠ¨ ì†Œì¼“
 
 	///////////////////////////////////////////////////////////////////////////////////////
-	// Config Á¤º¸
+	// Config ì •ë³´
 	///////////////////////////////////////////////////////////////////////////////////////
-	std::wstring           m_IP;                    // ¼­¹ö IP
-	INT                    m_Port;                  // ¼­¹ö Port
-	INT                    m_MaxSessionCnt;         // ÃÖ´ë ¼¼¼Ç °¹¼ö ¼³Á¤
-	INT                    m_CreateWorkerCnt;       // »ı¼º ¿öÄ¿ ½º·¹µå °¹¼ö
-	INT                    m_ConcurrentCnt;         // IOCP ·¯´× ½º·¹µå °¹¼ö
-	INT                    m_SendFrame;             // Send ½º·¹µå Sleep°ª
-	INT                    m_PacketCode;            // ³×Æ®¿öÅ© ¶óÀÌºê·¯¸® ÆĞÅ¶ ÄÚµå
-	INT                    m_FixedKey;              // ÀÎÄÚµù °íÁ¤ Å° °ª
-	INT                    m_SendThFL;              // Send ½º·¹µå »ı¼º ¹öÀü ÇÃ·¡±× ( 0 : ²ô±â / 1 : ÄÑ±â )
-	INT                    m_Nagle;                 // ³×ÀÌ±Û ¿É¼Ç( 0 : ²ô±â, 1 : ÄÑ±â )
+	std::wstring           m_IP;                    // ì„œë²„ IP
+	INT                    m_Port;                  // ì„œë²„ Port
+	INT                    m_MaxSessionCnt;         // ìµœëŒ€ ì„¸ì…˜ ê°¯ìˆ˜ ì„¤ì •
+	INT                    m_CreateWorkerCnt;       // ìƒì„± ì›Œì»¤ ìŠ¤ë ˆë“œ ê°¯ìˆ˜
+	INT                    m_ConcurrentCnt;         // IOCP ëŸ¬ë‹ ìŠ¤ë ˆë“œ ê°¯ìˆ˜
+	INT                    m_SendFrame;             // Send ìŠ¤ë ˆë“œ Sleepê°’
+	INT                    m_PacketCode;            // ë„¤íŠ¸ì›Œí¬ ë¼ì´ë¸ŒëŸ¬ë¦¬ íŒ¨í‚· ì½”ë“œ
+	INT                    m_FixedKey;              // ì¸ì½”ë”© ê³ ì • í‚¤ ê°’
+	INT                    m_SendThFL;              // Send ìŠ¤ë ˆë“œ ìƒì„± ë²„ì „ í”Œë˜ê·¸ ( 0 : ë„ê¸° / 1 : ì¼œê¸° )
+	INT                    m_Nagle;                 // ë„¤ì´ê¸€ ì˜µì…˜( 0 : ë„ê¸°, 1 : ì¼œê¸° )
 
 public:
 	///////////////////////////////////////////////////////////////////////////////////////
-	// ¸ğ´ÏÅÍ¸µ º¯¼ö
+	// ëª¨ë‹ˆí„°ë§ ë³€ìˆ˜
 	///////////////////////////////////////////////////////////////////////////////////////
-	LONG                   m_AcceptTPS;             // ÃÊ´ç Accept Ã³¸® È½¼ö ¸ğ´ÏÅÍ¸µ ¿ë
-	LONG                   m_RecvIOTPS;             // ÃÊ´ç Recv Ã³¸® È½¼ö ¸ğ´ÏÅÍ¸µ ¿ë
-	LONG                   m_SendIOTPS;             // ÃÊ´ç Send Ã³¸® È½¼ö ¸ğ´ÏÅÍ¸µ ¿ë
-	INT64                  m_AcceptTotal;           // AcceptÃ³¸®ÇÑ ÃÑ °¹¼ö
-	SHORT                  m_CurSessionCnt;         // ¼¼¼Ç ¹è¿­¿¡¼­ ½ÇÁ¦·Î »ç¿ëÁßÀÎ ¼¼¼Ç °¹¼ö
+	LONG                   m_AcceptTPS;             // ì´ˆë‹¹ Accept ì²˜ë¦¬ íšŸìˆ˜ ëª¨ë‹ˆí„°ë§ ìš©
+	LONG                   m_RecvIOTPS;             // ì´ˆë‹¹ Recv ì²˜ë¦¬ íšŸìˆ˜ ëª¨ë‹ˆí„°ë§ ìš©
+	LONG                   m_SendIOTPS;             // ì´ˆë‹¹ Send ì²˜ë¦¬ íšŸìˆ˜ ëª¨ë‹ˆí„°ë§ ìš©
+	INT64                  m_AcceptTotal;           // Acceptì²˜ë¦¬í•œ ì´ ê°¯ìˆ˜
+	SHORT                  m_CurSessionCnt;         // ì„¸ì…˜ ë°°ì—´ì—ì„œ ì‹¤ì œë¡œ ì‚¬ìš©ì¤‘ì¸ ì„¸ì…˜ ê°¯ìˆ˜
 
 
 private:
 	///////////////////////////////////////////////////////////////////////////////////////
-	// ½º·¹µå Á¤º¸ ¹× ÀÚ·á±¸Á¶
+	// ìŠ¤ë ˆë“œ ì •ë³´ ë° ìë£Œêµ¬ì¡°
 	///////////////////////////////////////////////////////////////////////////////////////
-	std::thread            m_IOCPWorkerThread[MAX_THREAD_COUNT]; // Worker °ü¸® ¹è¿­
-	std::thread            m_AcceptThread;                       // AcceptThread °ü¸®
+	std::thread            m_IOCPWorkerThread[MAX_THREAD_COUNT]; // Worker ê´€ë¦¬ ë°°ì—´
+	std::thread            m_AcceptThread;                       // AcceptThread ê´€ë¦¬
 	std::thread            m_SendThread;                         // SendThread
 
 
 	///////////////////////////////////////////////////////////////////////////////////////
-	// ¼¼¼Ç °ü¸® ÀÚ·á±¸Á¶ ¹× ¸â¹ö º¯¼ö
+	// ì„¸ì…˜ ê´€ë¦¬ ìë£Œêµ¬ì¡° ë° ë©¤ë²„ ë³€ìˆ˜
 	///////////////////////////////////////////////////////////////////////////////////////
-	CSession*              m_SessionTable;      	             // ¼¼¼Ç ±¸Á¶Ã¼¸¦ °ü¸®ÇÒ ¹è¿­
-	LFStack<UINT16>*       m_pSessionIdxStack;                   // ¼¼¼Ç ¹è¿­ÀÇ index °ü¸®ÇÒ ÀÚ·á±¸Á¶
-	UINT64                 m_AllocID;                            // ¼¼¼Ç¿¡°Ô ÇÒ´çÇÑ ¼¼¼Ç ID
+	CSession*              m_SessionTable;      	             // ì„¸ì…˜ êµ¬ì¡°ì²´ë¥¼ ê´€ë¦¬í•  ë°°ì—´
+	LFStack<UINT16>*       m_pSessionIdxStack;                   // ì„¸ì…˜ ë°°ì—´ì˜ index ê´€ë¦¬í•  ìë£Œêµ¬ì¡°
+	UINT64                 m_AllocID;                            // ì„¸ì…˜ì—ê²Œ í• ë‹¹í•œ ì„¸ì…˜ ID
 
 public:
 	         CNetServer();
 	virtual ~CNetServer();
 
 public:
-	// ¿ÜºÎ Á¦°ø ÇÔ¼ö //
+	// ì™¸ë¶€ ì œê³µ í•¨ìˆ˜ //
 
 	bool          Start(WCHAR* SERVERIP, int SERVERPORT, int numberOfCreateThread, int numberOfRunningThread, int maxNumOfSession, int SendSleep, int SendTHFL , WORD packetCode, WORD fixedkey, bool Nagle);
 	bool          Disconnect(UINT64 SessionID);
@@ -101,26 +101,26 @@ private:
 	
 public:
 	//------------------------------------------------------------------------------
-	// ³×Æ®¿öÅ© ¶óÀÌºê¿¡¼­¸¸ »ç¿ëÇÒ ÇÔ¼ö
+	// ë„¤íŠ¸ì›Œí¬ ë¼ì´ë¸Œì—ì„œë§Œ ì‚¬ìš©í•  í•¨ìˆ˜
 	//------------------------------------------------------------------------------
 	bool          Net_Init(WCHAR* SERVERIP, int SERVERPORT);
 	bool          Mem_Init();
 	void          Thread_Create();
 	void          Thread_Destroy();
-	void          FindSession(UINT64 SessionID, CSession** ppSession); // ¾Æ¿ôÆÄ¶ó¹ÌÅÍ nullptrÀÌ¸é ¼¼¼ÇID°¡ InvalidÀÓ.
+	void          FindSession(UINT64 SessionID, CSession** ppSession); // ì•„ì›ƒíŒŒë¼ë¯¸í„° nullptrì´ë©´ ì„¸ì…˜IDê°€ Invalidì„.
 	UINT64        MakeSessionID(UINT16 index, UINT64 allocID);
 
-	bool          RecvPost(CSession* pSession);              //WSARecvÇØ¼­ ¼ö½Å µ¥ÀÌÅÍ ¹Ş´Â ÇÔ¼ö
-	bool          SendPost(CSession* pSession);              //WSASendÇØ¼­ µ¥ÀÌÅÍ ¼Û½ÅÇÏ´Â ÇÔ¼ö
-	bool          SessionInvalid(CSession* pSession, UINT64 SessionID);        //¼¼¼Ç À¯È¿¼º Ã¼Å©
+	bool          RecvPost(CSession* pSession);              //WSARecví•´ì„œ ìˆ˜ì‹  ë°ì´í„° ë°›ëŠ” í•¨ìˆ˜
+	bool          SendPost(CSession* pSession);              //WSASendí•´ì„œ ë°ì´í„° ì†¡ì‹ í•˜ëŠ” í•¨ìˆ˜
+	bool          SessionInvalid(CSession* pSession, UINT64 SessionID);        //ì„¸ì…˜ ìœ íš¨ì„± ì²´í¬
 	bool          Release(CSession* pSession, long long retIOCount);
 	
 	void          RecvIOProc(CSession* pSession, DWORD cbTransferred);
 	void          SendIOProc(CSession* pSession, DWORD cbTransferred);
 	void          ReleaseProc(CSession* pSession);
 
-	void          Encoding(char* ptr, int len, UCHAR randkey); //ÇØ´ç À§Ä¡ ºÎÅÍ len¸¸Å­ ÀÎÄÚµù ÀÛ¾÷
-	void          Decoding(char* ptr, int len, UCHAR randkey); //ÇØ´ç À§Ä¡ ºÎÅÍ len¸¸Å­ µğÄÚµù ÀÛ¾÷ 
+	void          Encoding(char* ptr, int len, UCHAR randkey); //í•´ë‹¹ ìœ„ì¹˜ ë¶€í„° lenë§Œí¼ ì¸ì½”ë”© ì‘ì—…
+	void          Decoding(char* ptr, int len, UCHAR randkey); //í•´ë‹¹ ìœ„ì¹˜ ë¶€í„° lenë§Œí¼ ë””ì½”ë”© ì‘ì—… 
 
 
 

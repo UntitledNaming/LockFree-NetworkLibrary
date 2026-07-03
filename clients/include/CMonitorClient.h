@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class CMonitorClient : public CLanClient
 {
@@ -9,10 +9,10 @@ public:
 	bool SendMonitorData(BYTE dataType, INT dataValue);
 
 private:
-	virtual void OnEnterJoinServer() override;               // ¼­¹ö¿Í ¿¬°á ¼º°ø ÈÄ       
-	virtual void OnLeaveServer() override;                   // ¼­¹ö¿Í ¿¬°á ²÷¾îÁø ÈÄ
-	virtual void OnRecv(CMessage* pMessage) override;        // ÆĞÅ¶ ¼ö½Å ¿Ï·á ÈÄ
-	virtual void OnSend(int sendsize) override;              // ÆĞÅ¶ ¼Û½Å ¿Ï·á ÈÄ
+	virtual void OnEnterJoinServer() override;               // ì„œë²„ì™€ ì—°ê²° ì„±ê³µ í›„       
+	virtual void OnLeaveServer() override;                   // ì„œë²„ì™€ ì—°ê²° ëŠì–´ì§„ í›„
+	virtual void OnRecv(CMessage* pMessage) override;        // íŒ¨í‚· ìˆ˜ì‹  ì™„ë£Œ í›„
+	virtual void OnSend(int sendsize) override;              // íŒ¨í‚· ì†¡ì‹  ì™„ë£Œ í›„
 
 private:
 	INT m_ServerNo;

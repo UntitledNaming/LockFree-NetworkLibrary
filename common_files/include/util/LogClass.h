@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #define FILE_HEADER_LEN 512
 
@@ -13,7 +13,7 @@ class CLogClass
 {
 private:
 
-	//·Î±× ·¹º§
+	//ë¡œê·¸ ë ˆë²¨
 	int  m_iLogLevel;
 	int  m_iSizeUpCnt;
 	long m_iLogCount;
@@ -22,14 +22,14 @@ private:
 	size_t m_MAX_LEN;
 
 
-	//Typeº° µ¿±âÈ­ °´Ã¼ °ü¸®ÇÏ±â À§ÇÑ ÀÚ·á±¸Á¶(¿©·¯ Å¸ÀÔµéÀÌ µ¿½Ã¿¡ ·Î±× ³²±æ·Á°í ÀÚ·á ±¸Á¶ ¼øÈ¸ÇÒ ¼ö ÀÖÀ¸´Ï SRWLOCK)
+	//Typeë³„ ë™ê¸°í™” ê°ì²´ ê´€ë¦¬í•˜ê¸° ìœ„í•œ ìžë£Œêµ¬ì¡°(ì—¬ëŸ¬ íƒ€ìž…ë“¤ì´ ë™ì‹œì— ë¡œê·¸ ë‚¨ê¸¸ë ¤ê³  ìžë£Œ êµ¬ì¡° ìˆœíšŒí•  ìˆ˜ ìžˆìœ¼ë‹ˆ SRWLOCK)
 	CRITICAL_SECTION                           m_iMapLock;
 	std::unordered_map<std::wstring, SRWLOCK*> m_iLockTable;
 
-	//Æú´õ °æ·Î
+	//í´ë” ê²½ë¡œ
 	const WCHAR* directoryPath;
 
-	//ÀÌÀü ³â¿ù
+	//ì´ì „ ë…„ì›”
 	WORD oldMonth;
 	WORD oldYear;
 

@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+ï»¿#define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <windows.h>
 #include <timeapi.h>
@@ -25,11 +25,11 @@ int main()
 	_wsetlocale(LC_ALL, L"korean");
 	bool ESC = false;
 
-	// °ÔÀÓ ¶óÀÌºê·¯¸® »ı¼º
+	// ê²Œì„ ë¼ì´ë¸ŒëŸ¬ë¦¬ ìƒì„±
 	p = new CGameLibrary;
 	p->Run();
 
-	// ÄÁÅÙÃ÷ »ı¼º
+	// ì»¨í…ì¸  ìƒì„±
 	CAuth* auth = new CAuth;
 	CEcho* echo = new CEcho;
 	CMonitor* mo = new CMonitor;
@@ -48,7 +48,7 @@ int main()
 	{
 		Sleep(1000);
 
-		//ESC Å° ´­·¶À¸¸é 
+		//ESC í‚¤ ëˆŒë €ìœ¼ë©´ 
 		if (GetAsyncKeyState(VK_TAB) & 0x8001)
 		{
 

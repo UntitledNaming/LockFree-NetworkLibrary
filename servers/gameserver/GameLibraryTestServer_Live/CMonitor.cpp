@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+ï»¿#define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <windows.h>
 #include <timeapi.h>
@@ -73,7 +73,7 @@ CMonitor::CMonitor() : m_MonitorFrameTPSSum(0)
 
 	monitorstr = converter.from_bytes(monitor.s_ptr);
 
-	// ¸ð´ÏÅÍ¸µ ¼­¹ö ¿¬°á
+	// ëª¨ë‹ˆí„°ë§ ì„œë²„ ì—°ê²°
 	if (!m_pMonitorClient->Connect((WCHAR*)monitorstr.c_str(), monitorport))
 	{
 		__debugbreak();
@@ -111,7 +111,7 @@ void CMonitor::OnUpdate()
 
 	m_pPDH->UpdateCounter();
 
-	// º¯¼ö ¼öÁý
+	// ë³€ìˆ˜ ìˆ˜ì§‘
 	m_Processtotalsum += m_pPDH->ProcessTotal();
 	m_Processusersum += m_pPDH->ProcessUser();
 	m_Processkernelsum += m_pPDH->ProcessKernel();
@@ -179,7 +179,7 @@ void CMonitor::OnUpdate()
 		m_local_time->tm_hour,
 		m_local_time->tm_min,
 		m_local_time->tm_sec);
-	wprintf(L"======================= TPS ¸ð´ÏÅÍ¸µ ================================\n");
+	wprintf(L"======================= TPS ëª¨ë‹ˆí„°ë§ ================================\n");
 	wprintf(L"Accept                                        TPS    : (Avg %lld ,%d) \n", m_AcceptTPSSum / m_loopCnt, GetAcceptTPS());
 	wprintf(L"SendIOComplete                                TPS    : (Avg %lld, %d) \n", m_SendIOSum / m_loopCnt, GetSendIOTPS());
 	wprintf(L"RecvIOComplete                                TPS    : (Avg %lld, %d) \n", m_RecvIOSum / m_loopCnt, GetRecvIOTPS());
@@ -191,16 +191,16 @@ void CMonitor::OnUpdate()
 	wprintf(L"Echo    Frame                                 TPS    : (Avg %lld, %d) \n", m_EchoFrameTPSSum / m_loopCnt, echoptr->GetFrameTPS());
 	wprintf(L"Monitor Frame                                 TPS    : (Avg %lld, %d) \n", m_MonitorFrameTPSSum / m_loopCnt, GetFrameTPS());
 
-	wprintf(L"====================== ¸ð´ÏÅÍ¸µ ÇÁ·¹ÀÓ ==============================\n");
+	wprintf(L"====================== ëª¨ë‹ˆí„°ë§ í”„ë ˆìž„ ==============================\n");
 	wprintf(L"Frame Time                              Time   : %dms \n", timeGetTime() - starttime);
 
-	wprintf(L"====================== Ä«¿îÆ® ¸ð´ÏÅÍ¸µ ==============================\n");
+	wprintf(L"====================== ì¹´ìš´íŠ¸ ëª¨ë‹ˆí„°ë§ ==============================\n");
 	wprintf(L"SessionTable                           Count   : %d \n", GetCurSessionCount());
 	wprintf(L"Echo User                              Count   : %lld \n", echoptr->GetUserCount());
 	wprintf(L"Auth User                              Count   : %lld \n", authptr->GetUserCount());
 	wprintf(L"Accept  Total                          Count   : %lld \n", GetAcceptTotal());
 
-	wprintf(L"====================== »ç¿ë·® ¸ð´ÏÅÍ¸µ ==============================\n");
+	wprintf(L"====================== ì‚¬ìš©ëŸ‰ ëª¨ë‹ˆí„°ë§ ==============================\n");
 	wprintf(L" CMessagePool           Avg  UseCnt : %lld  / Count : %lld \n", m_CMessagePoolSum / m_loopCnt, CMessage::m_pMessagePool->GetUseCnt());
 	wprintf(L"     UserPool           Avg  UseCnt : %lld  / Count : %lld \n", m_UserPoolSum / m_loopCnt, CUser::m_pUserPool->GetUseCnt());
 

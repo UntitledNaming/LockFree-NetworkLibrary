@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #define USER_TIMEOUT    30000
 #define DB_UPDATE_TIME  600000
 #define DB_HANDLE_COUNT 3
@@ -16,7 +16,7 @@ class LFQueue;
 class CMonitor : public CLanServer
 {
 private:
-	// DB ½º·¹µå Àü´Ş À§ÇÑ ±¸Á¶Ã¼ 
+	// DB ìŠ¤ë ˆë“œ ì „ë‹¬ ìœ„í•œ êµ¬ì¡°ì²´ 
 	struct st_MONITOR
 	{
 		INT  s_timeStamp;
@@ -37,20 +37,20 @@ private:
 
 private:
 	////////////////////////////////////////////////////////////////////////////
-    // MornitorServer ÀÚ·á ±¸Á¶ ¹× ¸â¹ö
+    // MornitorServer ìë£Œ êµ¬ì¡° ë° ë©¤ë²„
     ////////////////////////////////////////////////////////////////////////////
 	std::unordered_map<UINT64, CUser*>        m_UserMap;
 	std::unordered_map<BYTE, DB_DATA*>        m_DataMap;
 	std::thread                               m_DB;
 	std::thread                               m_Monitor;
-	std::thread                               m_Frame;                          // TimeOut Ã¼Å©ÇÒ ½º·¹µå
+	std::thread                               m_Frame;                          // TimeOut ì²´í¬í•  ìŠ¤ë ˆë“œ
 	CMemoryPool<CUser>*                       m_pUserPool;		                
-	CMemoryPool<MONITOR_DATA>*                m_pMonitorPool;                   // DB ½º·¹µå·Î ´øÁú ±¸Á¶Ã¼ Ç®
+	CMemoryPool<MONITOR_DATA>*                m_pMonitorPool;                   // DB ìŠ¤ë ˆë“œë¡œ ë˜ì§ˆ êµ¬ì¡°ì²´ í’€
 	LFQueue<MONITOR_DATA*>*                   m_pDBQueue;
 	DBTLS*                                    m_pDBTLS;
 	CMonAgentsMgr*                            m_pAgentMgr;
 	ProcessMonitor*                           m_pPDH;
-	HANDLE                                    m_DBEvent[DB_HANDLE_COUNT];       // 0¹ø : µ¥ÀÌÅÍ »ğÀÔ ÀÌº¥Æ® , 1¹ø : DB ÀúÀå ÀÌº¥Æ® , 2¹ø : ½º·¹µå Á¾·á ÀÌº¥Æ®
+	HANDLE                                    m_DBEvent[DB_HANDLE_COUNT];       // 0ë²ˆ : ë°ì´í„° ì‚½ì… ì´ë²¤íŠ¸ , 1ë²ˆ : DB ì €ì¥ ì´ë²¤íŠ¸ , 2ë²ˆ : ìŠ¤ë ˆë“œ ì¢…ë£Œ ì´ë²¤íŠ¸
 	SRWLOCK                                   m_UserMapLock;
 	bool                                      m_EndFlag;
 public:
@@ -65,7 +65,7 @@ private:
 	void          Mem_Init(const CHAR* DBip, INT DBport);
 
 	///////////////////////////////////////////////////////////////////////////
-    // Recv Message ÇÚµé·¯
+    // Recv Message í•¸ë“¤ëŸ¬
     ///////////////////////////////////////////////////////////////////////////
 	void ServerLoginProc(UINT64 sessionID, CMessage* pMessage);
 	void DataUpdateProc(UINT64 sessionID, CMessage* pMessage);
@@ -85,7 +85,7 @@ private:
 
 public:
 	///////////////////////////////////////////////////////////////////////////
-    // LanServer Callback ÇÔ¼ö ±¸Çö
+    // LanServer Callback í•¨ìˆ˜ êµ¬í˜„
     ///////////////////////////////////////////////////////////////////////////
 	virtual bool  OnConnectionRequest(WCHAR* InputIP, unsigned short InputPort) override;
 

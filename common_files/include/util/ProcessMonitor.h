@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 typedef double DOUBLE;
 
@@ -16,64 +16,64 @@ private:
 	bool   FindThreadInstanceNameByTID(const std::wstring& procName, DWORD tid, std::wstring& outInstName);
 
 public:
-	// »ı¼ºÀÚ·Î Àü´ŞÇÑ ½º·¹µå °¹¼ö
+	// ìƒì„±ìë¡œ ì „ë‹¬í•œ ìŠ¤ë ˆë“œ ê°¯ìˆ˜
 	UINT                  m_threacCnt;
 
-	// ÇÁ·Î¼¼½º ÄÁÅØ½ºÆ® ½ºÀ§Äª °ª
+	// í”„ë¡œì„¸ìŠ¤ ì»¨í…ìŠ¤íŠ¸ ìŠ¤ìœ„ì¹­ ê°’
 	DOUBLE                m_processCS;
 
-	//ÇÁ·Î¼¼½º À¯Àú ÇÒ´ç ¸Ş¸ğ¸® Äõ¸® ¹× Ä«¿îÅÍ, °ª
+	//í”„ë¡œì„¸ìŠ¤ ìœ ì € í• ë‹¹ ë©”ëª¨ë¦¬ ì¿¼ë¦¬ ë° ì¹´ìš´í„°, ê°’
 	PDH_HQUERY            m_processUserMemoryQry;
 	PDH_HCOUNTER          m_processUserMemoryCnter;
 	PDH_FMT_COUNTERVALUE  m_processUserMemoryVal;
 
-	//ÇÁ·Î¼¼½º ³íÆäÀÌÁö ¸Ş¸ğ¸® Äõ¸® ¹× Ä«¿îÅÍ, °ª
+	//í”„ë¡œì„¸ìŠ¤ ë…¼í˜ì´ì§€ ë©”ëª¨ë¦¬ ì¿¼ë¦¬ ë° ì¹´ìš´í„°, ê°’
 	PDH_HQUERY            m_processNonPagedrMemoryQry;
 	PDH_HCOUNTER          m_processNonPagedMemoryCnter;
 	PDH_FMT_COUNTERVALUE  m_processNonPagedMemoryVal;
 
-	//»ç¿ë°¡´É ¸Ş¸ğ¸® Äõ¸® ¹× Ä«¿îÅÍ, °ª
+	//ì‚¬ìš©ê°€ëŠ¥ ë©”ëª¨ë¦¬ ì¿¼ë¦¬ ë° ì¹´ìš´í„°, ê°’
 	PDH_HQUERY            m_AvailableMemoryQry;
 	PDH_HCOUNTER          m_AvailableMemoryCnter;
 	PDH_FMT_COUNTERVALUE  m_AvailableMemoryVal;
 
-	//³íÆäÀÌÁöµå ¸Ş¸ğ¸® Äõ¸® ¹× Ä«¿îÅÍ, °ª
+	//ë…¼í˜ì´ì§€ë“œ ë©”ëª¨ë¦¬ ì¿¼ë¦¬ ë° ì¹´ìš´í„°, ê°’
 	PDH_HQUERY            m_NonPagedMemoryQry;
 	PDH_HCOUNTER          m_NonPagedMemoryCnter;
 	PDH_FMT_COUNTERVALUE  m_NonPagedMemoryVal;
 
-	// TCP ÀçÀü¼Û·ü
+	// TCP ì¬ì „ì†¡ë¥ 
 	PDH_HQUERY            m_TCPReTransmitQry;
 	PDH_HCOUNTER          m_TCPReTransmitCnter;
 	PDH_FMT_COUNTERVALUE  m_TCPReTransmitVal;
 
 
-	// TCP Àü¼Û·®
+	// TCP ì „ì†¡ëŸ‰
 	PDH_HQUERY            m_TCPSegmentSentQry;
 	PDH_HCOUNTER          m_TCPSegmentSentCnter;
 	PDH_FMT_COUNTERVALUE  m_TCPSegmentSentVal;
 
-	// ÀÌ´õ³İ1 Send Àü¼Û·®
+	// ì´ë”ë„·1 Send ì „ì†¡ëŸ‰
 	PDH_HQUERY            m_EtherNetSendQry1;
 	PDH_HCOUNTER          m_EtherNetSendCnter1;
 	PDH_FMT_COUNTERVALUE  m_EtherNetSendVal1;
 
-	// ÀÌ´õ³İ2 Send Àü¼Û·®
+	// ì´ë”ë„·2 Send ì „ì†¡ëŸ‰
 	PDH_HQUERY            m_EtherNetSendQry2;
 	PDH_HCOUNTER          m_EtherNetSendCnter2;
 	PDH_FMT_COUNTERVALUE  m_EtherNetSendVal2;
 
-	// ÀÌ´õ³İ1 Recv·®
+	// ì´ë”ë„·1 RecvëŸ‰
 	PDH_HQUERY            m_EtherNetRecvQry1;
 	PDH_HCOUNTER          m_EtherNetRecvCnter1;
 	PDH_FMT_COUNTERVALUE  m_EtherNetRecvVal1;
 
-	// ÀÌ´õ³İ2 Recv
+	// ì´ë”ë„·2 Recv
 	PDH_HQUERY            m_EtherNetRecvQry2;
 	PDH_HCOUNTER          m_EtherNetRecvCnter2;
 	PDH_FMT_COUNTERVALUE  m_EtherNetRecvVal2;
 
-	// ÇÁ·Î¼¼½º ÀüÃ¼ ÄÁÅØ½ºÆ® ½ºÀ§Äª È½¼ö(µµÁß¿¡ ½º·¹µå°¡ Á¾·áµÇ´Â »óÈ²¿¡¼­´Â À¯È¿¼º º¸Àå ¸øÇÔ)
+	// í”„ë¡œì„¸ìŠ¤ ì „ì²´ ì»¨í…ìŠ¤íŠ¸ ìŠ¤ìœ„ì¹­ íšŸìˆ˜(ë„ì¤‘ì— ìŠ¤ë ˆë“œê°€ ì¢…ë£Œë˜ëŠ” ìƒí™©ì—ì„œëŠ” ìœ íš¨ì„± ë³´ì¥ ëª»í•¨)
 	PDH_HQUERY*           m_pProcessCSQry;
 	PDH_HCOUNTER*         m_pProcessCSCnter;
 	PDH_FMT_COUNTERVALUE* m_pProcessCSVal;

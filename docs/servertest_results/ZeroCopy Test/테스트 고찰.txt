@@ -1,0 +1,49 @@
+1. ProfileTLS 추가 수정
+- 클래스 구조를 ProfileMange, Profile 2개로 완전히 분리하기 보다 ProfileTLS와 서브 클래스로 Profile을 만들었음.
+- 매번 스레드 초기에 ProfileInit함수 호출하기 보다는 생성자 내부에서 tlsgetvalue 해봐서 nullptr이면 ProfileInit 한번 호출 하도록 자동으로 만듬.
+- 이 과정에서 비정적 멤버 참조할 때는 특정 객체에 상대적이어야 한다는 컴파일 에러를 뱉는데 즉, 일반적인 객체의 멤버 변수나 함수에 접근할 때
+  객체라는게 존재해야 한다는 말임. 
+  상위 클래스와 서브 클래스가 있는데 서브 클래스가 상위 클래스의 멤버나 함수에 그냥 접근할 수 없음. 서브 클래스는 상위 클래스와 별도의 클래스 처럼 작동함. 
+  그래서 서브 클래스의 생성자 같은 곳에서 상위 클래스 객체의 포인터를 인자로 받아서 서브 클래스 멤버로 저장하던가 해야 함. 
+  여기서는 싱글톤 객체라 내부에서 그냥 GetInstance로 상위 클래스 객체 주소를 얻어서 접근 가능함.
+
+
+2. start flag 순서
+- accept가 끝나야 send 스레드가 보내야 함. 연결도 안돼었는데 보내면 안됨
+
+3. client 스레드 작동 안정성
+- client 스레드 코드가 제대로 돌아가는지도 확인해야 함. gqcs tps를 보니 높았다가 어느순간 확 떨어져서 유지되는 형태임. 일시적인게 아님.
+- 그래서 send 스레드가 보낸것을 client 스레드가 유저 영역에서 recv로 받아내지 못하면 tcp 소켓 수신 버퍼가 어느 순간 터질테고 그러면 send 스레드에서 send하려고 해도
+  window size가 0이기 때문에 보내질 못하니 완료통지도 안올 것임. 그로인해 tps 떨어 질 수 있음.
+- 그래서 recv flag를 만들어서 recv함수 호출시 0보다 크면 플래그 켰고 tps 떨어진 순간 멈춰서 확인해 본 결과 일부만 recv를 하고 있고 다른 client 소켓들은 recv를 못하고 있음.
+- 문제가 뭐냐면 아래 코드에서 clientsockidx가 처음 64개를 readset에 등록할때 조건문에 걸려서 탈출하고 select걸고 recv를 할 것임. 그 다음 2번째 루프에 들어왔을 때가 문제임
+- 내가 원하는건 readset에 등록된 소켓 갯수가 64개 되거나 max까지 등록했으면 탈출하는게 조건인데 아래 조건문에 의해서 2번째 루프부터는 clientsock이 128이 될때 탈출해야 하는데
+  그러지 못하고 계속 루프돌면서 max_clinet_count가 되었을때 탈출해버림.
+- 그래서 분기를 타서 나머지만 돌게 하던가 64개 돌도록 하던가 함.
+
+		// 소켓 64개씩 Read Set에 등록
+		while (true)
+		{
+			FD_SET(m_client[clientsockidx].m_socket, &readset);
+			clientsockidx++;
+			sockcount++;
+
+			if (clientsockidx == 64 || clientsockidx == MAX_CLIENT_COUNT)
+				break;
+		}
+
+
+4. 클라이언트 갯수 조절
+- 클라이언트 600개로 테스트하면 Send 호출 비율과 recv 호출 비율이 엄청 차이남 send 스레드가 하나의 소켓에 대해 send를 몇십만번 할 동안 1개의 클라이언트 스레드는 600개의 소켓에 대해서 recv를 다 처리해야 하는데 스레드 1개로 벅참. 하나 소켓에 대해 몇백번 정도 밖에 못함.
+- tcp fighter랑 다른게 초당 메세지 생성량임. 거기는 몇천명이 접속해도 메세지를 한 유저가 초당 몇개 정도 보낼텐데 이건 그냥 무한루프 돌면서 막 보내버리니 보내는 메세지가 엄청나게 많은 것임. 세션 갯수가 문제가 아님.
+- 클라 갯수를 30개 까지 낮추면 client 스레드가 recv 하는 횟수랑 send하는 횟수와 비슷해짐.
+
+5. 데이터 크기 설정
+- send할 데이터 크기가 1만정도 일때는 오히려 fast io가 더 좋았음. wsasend 리턴시간, gqcs tps에서다 좋았음. 그러나 데이터 크기가 더 커져서 10만정도가 되었을 때 direct io가 더 우세해 졌음.
+- 
+
+6. CLanclient 파일에서 소켓 생성 -> 연결 -> iocp 등록인데 순서가 이상함. 소켓 생성 및 초기화 -> iocp 등록 -> 연결 이렇게 하는게 자연스러울줄 알았는데 iocp 등록은 connect 후에 해야 함.  recv 등록은 recv 준비가 완료 되었을 때 해야 함. 그런데 connect를 하고 3wayhandshaking해서
+  연결을 해야지 Recv로 받을 준비가 된 것임. 그래서 연결도 하기 전에 recv 등록하려고 하면 10045 에러남.
+
+7. 결론
+- datasize가 작을 때는 확실히 fast io가 direct io보다 이득이다. fast io의 copy 비용 < irp 생성 및 page lock, io 큐 삽입/삭제 비용 이다.

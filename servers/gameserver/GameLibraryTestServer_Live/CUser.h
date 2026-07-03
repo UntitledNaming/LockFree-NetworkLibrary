@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #define df_ID_LEN_MAX      20
 #define df_NICK_LEN_MAX    20
@@ -22,9 +22,9 @@ public:
 	static void   UserFree(CUser* pUser);
 
 public:
-	INT64      m_accountNo;                   // °èÁ¤ ¹øÈ£
-	UCHAR      m_timeOut;                     // Å¸ÀÓ ¾Æ¿ô Ã¼Å© ÇÃ·¡±×
-	DWORD      m_recvTime;                    // ¸Ş¼¼Áö ¸¶Áö¸· ¼ö½Å ½Ã°£
+	INT64      m_accountNo;                   // ê³„ì • ë²ˆí˜¸
+	UCHAR      m_timeOut;                     // íƒ€ì„ ì•„ì›ƒ ì²´í¬ í”Œë˜ê·¸
+	DWORD      m_recvTime;                    // ë©”ì„¸ì§€ ë§ˆì§€ë§‰ ìˆ˜ì‹  ì‹œê°„
 
 public:
 	static CMPoolTLS<CUser>* m_pUserPool;

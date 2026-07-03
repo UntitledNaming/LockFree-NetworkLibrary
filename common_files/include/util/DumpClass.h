@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #pragma comment(lib,"DbgHelp.lib")
 #include <windows.h>
 #include <crtdbg.h>
@@ -20,14 +20,14 @@ public:
 		_invalid_parameter_handler newHandler;
 
 		newHandler = myInvalidParameterHandler;
-		oldHandler = _set_invalid_parameter_handler(newHandler); //crtÇÔ¼ö¿¡ null Æ÷ÀÎÅÍ ³Ö¾úÀ» ¶§ ¹ß»ı
-		_CrtSetReportMode(_CRT_WARN, 0);                        //CRT ¿À·ù ¸Ş¼¼Áö Ç¥½Ã ¾ÈÇÏ°í ¹Ù·Î ´ıÇÁ ³²±â°Ô
-		_CrtSetReportMode(_CRT_ASSERT, 0);                      //CRT ¿À·ù ¸Ş¼¼Áö Ç¥½Ã ¾ÈÇÏ°í ¹Ù·Î ´ıÇÁ ³²±â°Ô
-		_CrtSetReportMode(_CRT_ERROR, 0);                       //CRT ¿À·ù ¸Ş¼¼Áö Ç¥½Ã ¾ÈÇÏ°í ¹Ù·Î ´ıÇÁ ³²±â°Ô
+		oldHandler = _set_invalid_parameter_handler(newHandler); //crtí•¨ìˆ˜ì— null í¬ì¸í„° ë„£ì—ˆì„ ë•Œ ë°œìƒ
+		_CrtSetReportMode(_CRT_WARN, 0);                        //CRT ì˜¤ë¥˜ ë©”ì„¸ì§€ í‘œì‹œ ì•ˆí•˜ê³  ë°”ë¡œ ë¤í”„ ë‚¨ê¸°ê²Œ
+		_CrtSetReportMode(_CRT_ASSERT, 0);                      //CRT ì˜¤ë¥˜ ë©”ì„¸ì§€ í‘œì‹œ ì•ˆí•˜ê³  ë°”ë¡œ ë¤í”„ ë‚¨ê¸°ê²Œ
+		_CrtSetReportMode(_CRT_ERROR, 0);                       //CRT ì˜¤ë¥˜ ë©”ì„¸ì§€ í‘œì‹œ ì•ˆí•˜ê³  ë°”ë¡œ ë¤í”„ ë‚¨ê¸°ê²Œ
 
 		_CrtSetReportHook(_custom_Report_hook);
 
-		//Pure virtual function called ¿¡·¯µµ ³»°¡ Á¤ÀÇÇÑ ÇÔ¼ö·Î ¿ìÈ¸ÇÏµµ·Ï
+		//Pure virtual function called ì—ëŸ¬ë„ ë‚´ê°€ ì •ì˜í•œ í•¨ìˆ˜ë¡œ ìš°íšŒí•˜ë„ë¡
 		_set_purecall_handler(myPurecallHandler);
 
 		SetHandlerDump();
@@ -48,7 +48,7 @@ public:
 
 		long DumpCount = InterlockedIncrement(&_DumpCount);
 
-		//ÇöÀç ³¯Â¥¿Í ½Ã°£ ¾ò±â
+		//í˜„ì¬ ë‚ ì§œì™€ ì‹œê°„ ì–»ê¸°
 		WCHAR filename[MAX_PATH];
 
 		GetLocalTime(&stNowTime);
@@ -81,7 +81,7 @@ public:
 		}
 
 
-		//¸¸¾à Èü ¿À¿°À¸·Î CreateFile¿¡ ½ÇÆĞÇÏ¸é 
+		//ë§Œì•½ í™ ì˜¤ì—¼ìœ¼ë¡œ CreateFileì— ì‹¤íŒ¨í•˜ë©´ 
 
 		
 
@@ -95,10 +95,10 @@ public:
 
 		//	if (GetProcessMemoryInfo(hProcess, &pmc, sizeof(pmc)))
 		//	{
-		//		//»ç¿ëÁßÀÎ ¸Ş¸ğ¸® ±¸ÇÏ±â
+		//		//ì‚¬ìš©ì¤‘ì¸ ë©”ëª¨ë¦¬ êµ¬í•˜ê¸°
 		//		memorySize = (SIZE_T)(pmc.WorkingSetSize);
 
-		//		//»ç¿ëÁßÀÎ ¸Ş¸ğ¸® Å©±â Á¤µµ·Î ÆäÀÌÁö ÇÒ´ç ¹× Ä¿¹Ô
+		//		//ì‚¬ìš©ì¤‘ì¸ ë©”ëª¨ë¦¬ í¬ê¸° ì •ë„ë¡œ í˜ì´ì§€ í• ë‹¹ ë° ì»¤ë°‹
 		//		void* pAlloc = VirtualAlloc(NULL, memorySize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 		//		
 		//		if (pAlloc == nullptr)

@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+ï»¿#define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <windows.h>
 #include <timeapi.h>
@@ -46,7 +46,7 @@ void CEcho::OnClientLeave(UINT64 sessionID)
 
 void CEcho::OnRecv(UINT64 sessionID, CMessage* pMessage)
 {
-	// ¿¡ÄÚ Ã³¸®
+	// ì—ì½” ì²˜ë¦¬
 	WORD type;
 	*pMessage >> type;
 
@@ -88,7 +88,7 @@ void CEcho::OnUpdate()
 {
 	CUser* pUser = nullptr;
 
-	////User Å¸ÀÓ¾Æ¿ô
+	////User íƒ€ì„ì•„ì›ƒ
 	//std::unordered_map<UINT64, CUser*>::iterator it = m_EchoUser.begin();
 	//for (; it != m_EchoUser.end(); ++it)
 	//{
@@ -112,7 +112,7 @@ void CEcho::EchoRequestProc(UINT64 sessionID, CMessage* pMessage)
 	LONGLONG tick;
 	CUser* pUser = nullptr;
 
-	// ¸Ş¼¼Áö »Ì°í ¿¡·¯ Ã¼Å©
+	// ë©”ì„¸ì§€ ë½‘ê³  ì—ëŸ¬ ì²´í¬
 
 	*pMessage >> accountNo;
 	*pMessage >> tick;
@@ -120,7 +120,7 @@ void CEcho::EchoRequestProc(UINT64 sessionID, CMessage* pMessage)
 	if (pMessage->GetLastError())
 	{
 		LOG(L"Echo", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Flag Error... / UniqID : %lld", sessionID);
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ ÀûÀ¸¸é ÇÃ·¡±× ÄÑÁü.
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ ì ìœ¼ë©´ í”Œë˜ê·¸ ì¼œì§.
 		Disconnect(sessionID);
 		return;
 	}
@@ -128,12 +128,12 @@ void CEcho::EchoRequestProc(UINT64 sessionID, CMessage* pMessage)
 	if (pMessage->GetDataSize() > 0)
 	{
 		LOG(L"Echo", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Size Overflow Error... / UniqID : %lld ", sessionID);
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ Å©¸é ²÷±â
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ í¬ë©´ ëŠê¸°
 		Disconnect(sessionID);
 		return;
 	}
 
-	// ¿¡ÄÚ ÀÀ´ä »ı¼º
+	// ì—ì½” ì‘ë‹µ ìƒì„±
 	std::unordered_map<UINT64, CUser*>::iterator it = m_EchoUser.find(sessionID);
 	if (it == m_EchoUser.end())
 		__debugbreak();
@@ -162,7 +162,7 @@ void CEcho::HearBeatProc(UINT64 sessionID, CMessage* pMessage)
 	if (pMessage->GetDataSize() > 0)
 	{
 		LOG(L"Echo", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Size Overflow Error... / UniqID : %lld ", sessionID);
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ Å©¸é ²÷±â
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ í¬ë©´ ëŠê¸°
 		Disconnect(sessionID);
 		return;
 	}
@@ -183,7 +183,7 @@ void CEcho::LoginResponse(CUser* pUser)
 	pPacket->Clear();
 
 	*pPacket << (WORD)en_PACKET_CS_GAME_RES_LOGIN;
-	*pPacket << (BYTE)1; // 1 : ¼º°ø, 0 : ½ÇÆĞ
+	*pPacket << (BYTE)1; // 1 : ì„±ê³µ, 0 : ì‹¤íŒ¨
 	*pPacket << pUser->m_accountNo;
 
 	SendPacket(pUser->m_uniqID, pPacket);

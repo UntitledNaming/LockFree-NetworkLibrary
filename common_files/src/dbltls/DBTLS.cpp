@@ -1,4 +1,4 @@
-
+ï»¿
 #include <windows.h>
 #include <iostream>
 #include <string>
@@ -41,10 +41,10 @@ bool DBTLS::DB_Post_Query(const CHAR* QueryString, ...)
 	ret = (DB_Query*)TlsGetValue(m_TlsIdx);
 	if (ret == nullptr)
 	{
-		// Äõ¸® Ã³À½ È£Ãâ
+		// ì¿¼ë¦¬ ì²˜ìŒ í˜¸ì¶œ
 		ret = new DB_Query(this,m_DBIP.c_str(),m_DBPort);
 
-		// °ü¸® ¹è¿­¹üÀ§ Ã¼Å©
+		// ê´€ë¦¬ ë°°ì—´ë²”ìœ„ ì²´í¬
 		retIDX = InterlockedIncrement16(& m_DBQArrayIdx);
 		if (retIDX >= DBTLS_MAX_COUNT)
 		{
@@ -54,7 +54,7 @@ bool DBTLS::DB_Post_Query(const CHAR* QueryString, ...)
 
 		TlsSetValue(m_TlsIdx, ret);
 
-		// °ü¸® ¹è¿­¿¡ ÀúÀå
+		// ê´€ë¦¬ ë°°ì—´ì— ì €ì¥
 		m_DBQueryAry[retIDX] = ret;
 
 
@@ -120,7 +120,7 @@ bool DBTLS::DB_Query::DB_Post_Query(const CHAR* QueryString, const va_list& args
     ret = StringCchVPrintfA(pBuffer, DBQUERY_DEFAULT_LEN, QueryString, args);
     
 
-    // Äõ¸® ½ºÆ®¸µ ±æÀÌ°¡ ÇÒ´ç Å©±âº¸´Ù Å©¸é Áß´Ü
+    // ì¿¼ë¦¬ ìŠ¤íŠ¸ë§ ê¸¸ì´ê°€ í• ë‹¹ í¬ê¸°ë³´ë‹¤ í¬ë©´ ì¤‘ë‹¨
 	if (ret == STRSAFE_E_INSUFFICIENT_BUFFER)
 	{
 		return false;
@@ -130,8 +130,8 @@ bool DBTLS::DB_Query::DB_Post_Query(const CHAR* QueryString, const va_list& args
 	if (query_stat != 0)
 	{
 		int error_code = mysql_errno(m_Connection);
-		// DB¿Í ¿¬°á ²÷°Ü¼­ ¿¡·¯ ³¯ ¼öµµ ÀÖÀ½. ÀÌ¶§ ÀÌ ¼¼¼Ç ±×³É ²÷°í 
-		// À¯Àú°¡ ´Ù½Ã ¿¬°á ÇØ¼­ ·Î±×ÀÎ ¿äÃ» º¸³»°Ô ÇÏ´Â ¹æ¹ı
+		// DBì™€ ì—°ê²° ëŠê²¨ì„œ ì—ëŸ¬ ë‚  ìˆ˜ë„ ìˆìŒ. ì´ë•Œ ì´ ì„¸ì…˜ ê·¸ëƒ¥ ëŠê³  
+		// ìœ ì €ê°€ ë‹¤ì‹œ ì—°ê²° í•´ì„œ ë¡œê·¸ì¸ ìš”ì²­ ë³´ë‚´ê²Œ í•˜ëŠ” ë°©ë²•
 		LOG(L"DB",en_LOG_LEVEL::dfLOG_LEVEL_ERROR,L"DB mysql_query Error : %s" ,mysql_error(&m_Conn));
 		return false;
 	}

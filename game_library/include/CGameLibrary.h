@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #define df_GAMELIB_MAX_THREAD_COUNT     100
 #define df_GAMELIB_DEFAULT_GROUP_COUNT  100
@@ -38,78 +38,78 @@ public:
 	};
 
 private:
-	HANDLE                                   m_IOCP;                                          // IOCP ¸®¼Ò½º ÇÚµé
-	SOCKET                                   m_Listen;                                        // ¼­¹ö ¸®½¼ ¼ÒÄÏ
+	HANDLE                                   m_IOCP;                                          // IOCP ë¦¬ì†ŒìŠ¤ í•¸ë“¤
+	SOCKET                                   m_Listen;                                        // ì„œë²„ ë¦¬ìŠ¨ ì†Œì¼“
 	BOOL                                     m_Endflag;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Config Á¤º¸
+	// Config ì •ë³´
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	std::wstring                             m_IP;                                            // ¼­¹ö IP
-	INT                                      m_Port;                                          // ¼­¹ö Port
-	INT                                      m_MaxSessionCnt;                                 // ÃÖ´ë ¼¼¼Ç °¹¼ö ¼³Á¤
-	INT                                      m_CreateWorkerCnt;                               // »ı¼º ¿öÄ¿ ½º·¹µå °¹¼ö
-	INT                                      m_ConcurrentCnt;                                 // IOCP ·¯´× ½º·¹µå °¹¼ö
-	INT                                      m_SendFrame;                                     // Send ½º·¹µå Sleep°ª
-	INT                                      m_PacketCode;                                    // ³×Æ®¿öÅ© ¶óÀÌºê·¯¸® ÆĞÅ¶ ÄÚµå
-	INT                                      m_FixedKey;                                      // ÀÎÄÚµù °íÁ¤ Å° °ª
-	INT                                      m_SendThFL;                                      // Send ½º·¹µå »ı¼º ¹öÀü ÇÃ·¡±× ( 0 : ²ô±â / 1 : ÄÑ±â )
-	INT                                      m_Nagle;                                         // ³×ÀÌ±Û ¿É¼Ç( 0 : ²ô±â, 1 : ÄÑ±â )
+	std::wstring                             m_IP;                                            // ì„œë²„ IP
+	INT                                      m_Port;                                          // ì„œë²„ Port
+	INT                                      m_MaxSessionCnt;                                 // ìµœëŒ€ ì„¸ì…˜ ê°¯ìˆ˜ ì„¤ì •
+	INT                                      m_CreateWorkerCnt;                               // ìƒì„± ì›Œì»¤ ìŠ¤ë ˆë“œ ê°¯ìˆ˜
+	INT                                      m_ConcurrentCnt;                                 // IOCP ëŸ¬ë‹ ìŠ¤ë ˆë“œ ê°¯ìˆ˜
+	INT                                      m_SendFrame;                                     // Send ìŠ¤ë ˆë“œ Sleepê°’
+	INT                                      m_PacketCode;                                    // ë„¤íŠ¸ì›Œí¬ ë¼ì´ë¸ŒëŸ¬ë¦¬ íŒ¨í‚· ì½”ë“œ
+	INT                                      m_FixedKey;                                      // ì¸ì½”ë”© ê³ ì • í‚¤ ê°’
+	INT                                      m_SendThFL;                                      // Send ìŠ¤ë ˆë“œ ìƒì„± ë²„ì „ í”Œë˜ê·¸ ( 0 : ë„ê¸° / 1 : ì¼œê¸° )
+	INT                                      m_Nagle;                                         // ë„¤ì´ê¸€ ì˜µì…˜( 0 : ë„ê¸°, 1 : ì¼œê¸° )
 																	                          
 
 public:
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// ¸ğ´ÏÅÍ¸µ º¯¼ö
+	// ëª¨ë‹ˆí„°ë§ ë³€ìˆ˜
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	LONG                                     m_AcceptTPS;                                     // ÃÊ´ç Accept Ã³¸® È½¼ö ¸ğ´ÏÅÍ¸µ ¿ë
-	LONG                                     m_RecvIOTPS;                                     // ÃÊ´ç Recv Ã³¸® È½¼ö ¸ğ´ÏÅÍ¸µ ¿ë
-	LONG                                     m_SendIOTPS;                                     // ÃÊ´ç Send Ã³¸® È½¼ö ¸ğ´ÏÅÍ¸µ ¿ë
-	INT64                                    m_AcceptTotal;                                   // AcceptÃ³¸®ÇÑ ÃÖ´ë ¼¼¼Ç °¹¼ö
-	SHORT                                    m_CurSessionCnt;                                 // ¼¼¼Ç ¹è¿­¿¡¼­ ½ÇÁ¦·Î »ç¿ëÁßÀÎ ¼¼¼Ç °¹¼ö
+	LONG                                     m_AcceptTPS;                                     // ì´ˆë‹¹ Accept ì²˜ë¦¬ íšŸìˆ˜ ëª¨ë‹ˆí„°ë§ ìš©
+	LONG                                     m_RecvIOTPS;                                     // ì´ˆë‹¹ Recv ì²˜ë¦¬ íšŸìˆ˜ ëª¨ë‹ˆí„°ë§ ìš©
+	LONG                                     m_SendIOTPS;                                     // ì´ˆë‹¹ Send ì²˜ë¦¬ íšŸìˆ˜ ëª¨ë‹ˆí„°ë§ ìš©
+	INT64                                    m_AcceptTotal;                                   // Acceptì²˜ë¦¬í•œ ìµœëŒ€ ì„¸ì…˜ ê°¯ìˆ˜
+	SHORT                                    m_CurSessionCnt;                                 // ì„¸ì…˜ ë°°ì—´ì—ì„œ ì‹¤ì œë¡œ ì‚¬ìš©ì¤‘ì¸ ì„¸ì…˜ ê°¯ìˆ˜
 
 
 private:
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// ½º·¹µå Á¤º¸ ¹× ÀÚ·á±¸Á¶
+	// ìŠ¤ë ˆë“œ ì •ë³´ ë° ìë£Œêµ¬ì¡°
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	std::thread                              m_IOCPWorkerThread[df_GAMELIB_MAX_THREAD_COUNT]; // Worker °ü¸® ¹è¿­
-	std::thread                              m_AcceptThread;                                  // AcceptThread °ü¸®
+	std::thread                              m_IOCPWorkerThread[df_GAMELIB_MAX_THREAD_COUNT]; // Worker ê´€ë¦¬ ë°°ì—´
+	std::thread                              m_AcceptThread;                                  // AcceptThread ê´€ë¦¬
 	std::thread                              m_SendThread;                                    // SendThread
-	std::thread                              m_FrameThread;                                   // ÇÁ·¹ÀÓ Ã¼Å©ÇÒ ½º·¹µå
+	std::thread                              m_FrameThread;                                   // í”„ë ˆì„ ì²´í¬í•  ìŠ¤ë ˆë“œ
 
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// ¼¼¼Ç °ü¸® ÀÚ·á±¸Á¶ ¹× ¸â¹ö º¯¼ö
+	// ì„¸ì…˜ ê´€ë¦¬ ìë£Œêµ¬ì¡° ë° ë©¤ë²„ ë³€ìˆ˜
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	CSession*                                m_SessionTable;      	                          // ¼¼¼Ç ±¸Á¶Ã¼¸¦ °ü¸®ÇÒ ¹è¿­
-	LFStack<UINT16>*                         m_pSessionIdxStack;                              // ¼¼¼Ç ¹è¿­ÀÇ index °ü¸®ÇÒ ÀÚ·á±¸Á¶
-	UINT64                                   m_AllocID;                                       // ¼¼¼Ç¿¡°Ô ÇÒ´çÇÑ ¼¼¼Ç ID
+	CSession*                                m_SessionTable;      	                          // ì„¸ì…˜ êµ¬ì¡°ì²´ë¥¼ ê´€ë¦¬í•  ë°°ì—´
+	LFStack<UINT16>*                         m_pSessionIdxStack;                              // ì„¸ì…˜ ë°°ì—´ì˜ index ê´€ë¦¬í•  ìë£Œêµ¬ì¡°
+	UINT64                                   m_AllocID;                                       // ì„¸ì…˜ì—ê²Œ í• ë‹¹í•œ ì„¸ì…˜ ID
 
 
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// ±×·ì °ü·Ã º¯¼ö ¹× ÀÚ·á±¸Á¶
+	// ê·¸ë£¹ ê´€ë ¨ ë³€ìˆ˜ ë° ìë£Œêµ¬ì¡°
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	std::vector<CGroup*>                     m_GroupArray;                                    // ÄÁÅÙÃ÷ °´Ã¼ °ü¸®ÇÒ ÀÚ·á±¸Á¶
-	std::unordered_map<std::wstring, UINT16> m_GroupMap;                                      // Attach ÀÎÀÚ·Î ¹ŞÀº ¹®ÀÚ¿­°ú ±×·ì °´Ã¼ ¹è¿­ index ¸ÅÇÎ ÀÚ·á±¸Á¶
-	UINT16                                   m_GroupID;                                       // ±×·ì µî·Ï½Ã ºÎ¿©ÇÒ ID (À§ ÀÚ·á±¸Á¶ÀÇ Index·Î »ç¿ë)
+	std::vector<CGroup*>                     m_GroupArray;                                    // ì»¨í…ì¸  ê°ì²´ ê´€ë¦¬í•  ìë£Œêµ¬ì¡°
+	std::unordered_map<std::wstring, UINT16> m_GroupMap;                                      // Attach ì¸ìë¡œ ë°›ì€ ë¬¸ìì—´ê³¼ ê·¸ë£¹ ê°ì²´ ë°°ì—´ index ë§¤í•‘ ìë£Œêµ¬ì¡°
+	UINT16                                   m_GroupID;                                       // ê·¸ë£¹ ë“±ë¡ì‹œ ë¶€ì—¬í•  ID (ìœ„ ìë£Œêµ¬ì¡°ì˜ Indexë¡œ ì‚¬ìš©)
 
 
 public:
 	CGameLibrary();
 	~CGameLibrary();
 
-	bool          Run();                                                                      // °ÔÀÓ ¶óÀÌºê·¯¸® ÀÛµ¿ ÇÔ¼ö
-	void          Stop();                                                                     // °ÔÀÓ ¶óÀÌºê·¯¸® ¸â¹ö Á¤¸® ¹× ½º·¹µå Á¤¸®
+	bool          Run();                                                                      // ê²Œì„ ë¼ì´ë¸ŒëŸ¬ë¦¬ ì‘ë™ í•¨ìˆ˜
+	void          Stop();                                                                     // ê²Œì„ ë¼ì´ë¸ŒëŸ¬ë¦¬ ë©¤ë²„ ì •ë¦¬ ë° ìŠ¤ë ˆë“œ ì •ë¦¬
 		          																	          
-	bool          Attach(CGroup* pContents, std::wstring& contentsType, UINT groupframe, BOOL shared = FALSE);          // ±×·ì°ü¸® º¤ÅÍ¿¡ µî·ÏÇÒ ÇÔ¼ö
+	bool          Attach(CGroup* pContents, std::wstring& contentsType, UINT groupframe, BOOL shared = FALSE);          // ê·¸ë£¹ê´€ë¦¬ ë²¡í„°ì— ë“±ë¡í•  í•¨ìˆ˜
 
 private:
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// ÃÊ±âÈ­, ½º·¹µå »ı¼º, Á¦°Å ÇÔ¼ö
+	// ì´ˆê¸°í™”, ìŠ¤ë ˆë“œ ìƒì„±, ì œê±° í•¨ìˆ˜
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void          Mem_Init(INT sessionmax, INT createiothread, INT activethread, WORD packet_code, WORD packet_key, INT sendframe, INT sendflag, INT nagle);  // ¸â¹ö ÃÊ±âÈ­
-	void          Net_Init(WCHAR* serverIp, INT serverport);           // ³×Æ®¿öÅ©  ÃÊ±âÈ­
+	void          Mem_Init(INT sessionmax, INT createiothread, INT activethread, WORD packet_code, WORD packet_key, INT sendframe, INT sendflag, INT nagle);  // ë©¤ë²„ ì´ˆê¸°í™”
+	void          Net_Init(WCHAR* serverIp, INT serverport);           // ë„¤íŠ¸ì›Œí¬  ì´ˆê¸°í™”
 	void          Session_Init();
 	void          Group_Init();
 	void          Monitoring_Init();
@@ -118,17 +118,17 @@ private:
 	void          Thread_Destroy();
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// °ÔÀÓ ¶óÀÌºê·¯¸® ½º·¹µå
+	// ê²Œì„ ë¼ì´ë¸ŒëŸ¬ë¦¬ ìŠ¤ë ˆë“œ
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void          FrameThread();                                                              // ±×·ì °´Ã¼ ÇÁ·¹ÀÓ ·ÎÁ÷ PQCS·Î ½î±â À§ÇÑ ½º·¹µå
-	void          WorkerThread();                                                             // Task ¹× ³×Æ®¿öÅ© Ã³¸® À§ÇÑ ½º·¹µå 
-	void          SendThread();                                                               // Send ´ã´ç ½º·¹µå
-	void          AcceptThread();                                                             // Accept ½º·¹µå
+	void          FrameThread();                                                              // ê·¸ë£¹ ê°ì²´ í”„ë ˆì„ ë¡œì§ PQCSë¡œ ì˜ê¸° ìœ„í•œ ìŠ¤ë ˆë“œ
+	void          WorkerThread();                                                             // Task ë° ë„¤íŠ¸ì›Œí¬ ì²˜ë¦¬ ìœ„í•œ ìŠ¤ë ˆë“œ 
+	void          SendThread();                                                               // Send ë‹´ë‹¹ ìŠ¤ë ˆë“œ
+	void          AcceptThread();                                                             // Accept ìŠ¤ë ˆë“œ
 
 
 public:
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// ¿ÜºÎ Á¦°ø ÇÔ¼ö
+	// ì™¸ë¶€ ì œê³µ í•¨ìˆ˜
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	bool          SendPacket(UINT64 SessionID, CMessage* pMessage);
 	bool          Disconnect(UINT64 SessionID);
@@ -149,18 +149,18 @@ public:
 
 private:
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// °ÔÀÓ¶óÀÌºê·¯¸® ³×Æ®¿öÅ© ³»ºÎ Ã³¸® ÇÔ¼ö
+	// ê²Œì„ë¼ì´ë¸ŒëŸ¬ë¦¬ ë„¤íŠ¸ì›Œí¬ ë‚´ë¶€ ì²˜ë¦¬ í•¨ìˆ˜
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	bool          RecvPost(CSession* pSession);
 	bool          SendPost(CSession* pSession);
 	bool          Release(CSession* pSession,long long retIOCount);
-	bool          SessionInvalid(CSession* pSession, UINT64 CheckID);                         // ¼¼¼Ç À¯È¿¼º Ã¼Å© ÇÔ¼ö(true¸é Count ÇÏ³ª ¿Ã¸²)
+	bool          SessionInvalid(CSession* pSession, UINT64 CheckID);                         // ì„¸ì…˜ ìœ íš¨ì„± ì²´í¬ í•¨ìˆ˜(trueë©´ Count í•˜ë‚˜ ì˜¬ë¦¼)
 																	                          
 	void          RecvIOProc(CSession* pSession, DWORD cbTransferred);                        
 	void          SendIOProc(CSession* pSession, DWORD cbTransferred);                        
-	void          Encoding(char* ptr, int len, UCHAR randkey);                                //ÇØ´ç À§Ä¡ ºÎÅÍ len¸¸Å­ ÀÎÄÚµù ÀÛ¾÷
-	void          Decoding(char* ptr, int len, UCHAR randkey);                                //ÇØ´ç À§Ä¡ ºÎÅÍ len¸¸Å­ µğÄÚµù ÀÛ¾÷ 
-	void          FindSession(UINT64 sessionID, CSession** ppSession);                        // ´Ü¼øÈ÷ ¼¼¼ÇID·Î ¼¼¼Ç ¹è¿­ÀÇ ¼¼¼Ç Ã£´Â ÇÔ¼ö, ¾Æ¿ôÆÄ¶ó¹ÌÅÍ nullptrÀÌ¸é ¼¼¼ÇID°¡ INVALID
+	void          Encoding(char* ptr, int len, UCHAR randkey);                                //í•´ë‹¹ ìœ„ì¹˜ ë¶€í„° lenë§Œí¼ ì¸ì½”ë”© ì‘ì—…
+	void          Decoding(char* ptr, int len, UCHAR randkey);                                //í•´ë‹¹ ìœ„ì¹˜ ë¶€í„° lenë§Œí¼ ë””ì½”ë”© ì‘ì—… 
+	void          FindSession(UINT64 sessionID, CSession** ppSession);                        // ë‹¨ìˆœíˆ ì„¸ì…˜IDë¡œ ì„¸ì…˜ ë°°ì—´ì˜ ì„¸ì…˜ ì°¾ëŠ” í•¨ìˆ˜, ì•„ì›ƒíŒŒë¼ë¯¸í„° nullptrì´ë©´ ì„¸ì…˜IDê°€ INVALID
 	UINT64        MakeSessionID(UINT16 index, UINT64 allocID);
 
 
@@ -168,7 +168,7 @@ private:
 
 private:
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// IOCP Worker ½º·¹µå PQCS Ã³¸® ÇÔ¼ö
+	// IOCP Worker ìŠ¤ë ˆë“œ PQCS ì²˜ë¦¬ í•¨ìˆ˜
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void          ReleaseProc(CSession* pSession);
 	void          FrameProc(UINT16 groupID);

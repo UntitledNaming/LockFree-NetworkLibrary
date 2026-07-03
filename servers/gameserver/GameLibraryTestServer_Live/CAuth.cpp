@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+ï»¿#define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <windows.h>
 #include <unordered_map>
@@ -73,13 +73,13 @@ void CAuth::OnRecv(UINT64 sessionID, CMessage* pMessage)
 
 void CAuth::OnIUserMove(UINT64 sessioID, IUser* pUser)
 {
-	// À¯Àú°¡ ÀÎÁõ ÄÁÅÙÃ÷·Î ¿Ã ¼ö ¾øÀ½. ±×·¡¼­ ¹ß»ıÇÏ¸é Áß´Ü
+	// ìœ ì €ê°€ ì¸ì¦ ì»¨í…ì¸ ë¡œ ì˜¬ ìˆ˜ ì—†ìŒ. ê·¸ë˜ì„œ ë°œìƒí•˜ë©´ ì¤‘ë‹¨
 	__debugbreak();
 }
 
 void CAuth::OnUpdate()
 {
-	//// NonUser Å¸ÀÓ¾Æ¿ô
+	//// NonUser íƒ€ì„ì•„ì›ƒ
 	//std::unordered_map<UINT64, DWORD>::iterator it = m_NonUserMap.begin();
 	//for (; it != m_NonUserMap.end(); ++it)
 	//{
@@ -107,7 +107,7 @@ void CAuth::LoginRequsetProc(UINT64 sessionID, CMessage* pMessage)
 	if (pMessage->GetLastError())
 	{
 		LOG(L"Auth", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Flag Error... / UniqID : %lld", sessionID);
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ ÀûÀ¸¸é ÇÃ·¡±× ÄÑÁü.
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ ì ìœ¼ë©´ í”Œë˜ê·¸ ì¼œì§.
 		Disconnect(sessionID);
 		return;
 	}
@@ -115,22 +115,22 @@ void CAuth::LoginRequsetProc(UINT64 sessionID, CMessage* pMessage)
 	if (pMessage->GetDataSize() > 0)
 	{
 		LOG(L"Auth", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"EchoRequest::CMessage Size Overflow Error... / UniqID : %lld ", sessionID);
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ Å©¸é ²÷±â
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ í¬ë©´ ëŠê¸°
 		Disconnect(sessionID);
 		return;
 	}
 
-	// NonUser ÀÚ·á±¸Á¶¿¡¼­ Á¦°Å
+	// NonUser ìë£Œêµ¬ì¡°ì—ì„œ ì œê±°
 	m_NonUserMap.erase(sessionID);
 
-	// À¯Àú °´Ã¼ »ı¼º
+	// ìœ ì € ê°ì²´ ìƒì„±
 	pUser = CUser::UserAlloc();
 	pUser->Clear(sessionID, accountNo);
 
-	// ±×·ì ÀÌµ¿
+	// ê·¸ë£¹ ì´ë™
 	if (!GroupMove(L"Echo", sessionID, dynamic_cast<IUser*>(pUser)))
 	{
-		// ±×·ì ÀÌµ¿ ½ÇÆĞ½Ã(±× »çÀÌ¿¡ ¼¼¼ÇÀÌ ¹«È¿È­ µÈ °æ¿ì)
+		// ê·¸ë£¹ ì´ë™ ì‹¤íŒ¨ì‹œ(ê·¸ ì‚¬ì´ì— ì„¸ì…˜ì´ ë¬´íš¨í™” ëœ ê²½ìš°)
 		CUser::UserFree(pUser);
 	}
 

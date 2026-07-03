@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+ï»¿#define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <windows.h>
 #include <ws2tcpip.h>
@@ -33,7 +33,7 @@ CLanServer::~CLanServer()
 
 bool CLanServer::Start(WCHAR* SERVERIP, int SERVERPORT, int numberOfCreateThread, int numberOfRunningThread, int maxNumOfSession, int SendSleep, int SendTHFL, bool OffNagle)
 {
-	// Config ÆÄÀÏ¿¡¼­ ¾ò¾î¿Â Á¤º¸ ³×Æ®¿öÅ© ¶óÀÌºê·¯¸® ¸â¹ö ¼¼ÆÃ
+	// Config íŒŒì¼ì—ì„œ ì–»ì–´ì˜¨ ì •ë³´ ë„¤íŠ¸ì›Œí¬ ë¼ì´ë¸ŒëŸ¬ë¦¬ ë©¤ë²„ ì„¸íŒ…
 	m_IP = SERVERIP;
 	m_Port = SERVERPORT;
 	m_MaxSessionCnt = maxNumOfSession;
@@ -61,7 +61,7 @@ bool CLanServer::Disconnect(UINT64 SessionID)
 	if (pSession == nullptr)
 		return false;
 
-	// ¼¼¼Ç Ã£¾ÒÀ¸¸é À¯È¿¼º È®ÀÎÇØ¾ß ÇÔ.
+	// ì„¸ì…˜ ì°¾ì•˜ìœ¼ë©´ ìœ íš¨ì„± í™•ì¸í•´ì•¼ í•¨.
 	if (!SessionInvalid(pSession, SessionID))
 		return false;
 
@@ -87,11 +87,11 @@ bool CLanServer::SendPacket(UINT64 SessionID, CMessage* pMessage)
 
 	FindSession(SessionID, &pSession);
 
-	//¸øÃ£Àº °ÍÀÓ
+	//ëª»ì°¾ì€ ê²ƒì„
 	if (pSession == nullptr)
 		return false;
 
-	// ¼¼¼Ç Ã£¾ÒÀ¸¸é À¯È¿¼º È®ÀÎÇØ¾ß ÇÔ.
+	// ì„¸ì…˜ ì°¾ì•˜ìœ¼ë©´ ìœ íš¨ì„± í™•ì¸í•´ì•¼ í•¨.
 	if (!SessionInvalid(pSession, SessionID))
 		return false;
 
@@ -132,7 +132,7 @@ bool CLanServer::FindIP(UINT64 SessionID, WCHAR* OutIP)
 	if (pSession == nullptr)
 		return false;
 
-	// ¼¼¼Ç Ã£¾ÒÀ¸¸é À¯È¿¼º È®ÀÎÇØ¾ß ÇÔ.
+	// ì„¸ì…˜ ì°¾ì•˜ìœ¼ë©´ ìœ íš¨ì„± í™•ì¸í•´ì•¼ í•¨.
 	if (!SessionInvalid(pSession, SessionID))
 		return false;
 
@@ -152,7 +152,7 @@ void CLanServer::Stop()
 	closesocket(m_Listen);
 	LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanServer::Stop()_closesocekt(g_ListenSocket) Complete...");
 
-	// ÀüÃ¼ ¼¼¼Ç Release ÀÛ¾÷
+	// ì „ì²´ ì„¸ì…˜ Release ì‘ì—…
 	while (1)
 	{
 		if (m_CurSessionCnt == 0)
@@ -168,7 +168,7 @@ void CLanServer::Stop()
 
 	}
 
-	// IOCP ´İÀ¸¸é ¿öÄ¿ ½º·¹µå´Â ÀÚµ¿À¸·Î while¹® Å»ÃâÇÔ
+	// IOCP ë‹«ìœ¼ë©´ ì›Œì»¤ ìŠ¤ë ˆë“œëŠ” ìë™ìœ¼ë¡œ whileë¬¸ íƒˆì¶œí•¨
 	CloseHandle(m_IOCP);
 	LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanServer::Stop()_CloseHandle(IOCP) Complete...");
 
@@ -176,7 +176,7 @@ void CLanServer::Stop()
 	Thread_Destroy();
 
 
-	// ¸â¹ö °´Ã¼ Á¤¸®
+	// ë©¤ë²„ ê°ì²´ ì •ë¦¬
 	delete[] m_SessionTable;
 	delete m_pSessionIdxStack;
 }
@@ -194,13 +194,13 @@ void CLanServer::WorkerThread()
 		BOOL  retval;
 		DWORD err;
 		DWORD       cbTransferred = -1;
-		OVERLAPPED* pOverlapped = nullptr;     // IO¿¡ »ç¿ëµÈ Overlapped ±¸Á¶Ã¼ ÁÖ¼Ò°ª or Task Type
+		OVERLAPPED* pOverlapped = nullptr;     // IOì— ì‚¬ìš©ëœ Overlapped êµ¬ì¡°ì²´ ì£¼ì†Œê°’ or Task Type
 		CSession* pSession = nullptr;
 
 		retval = GetQueuedCompletionStatus(m_IOCP, &cbTransferred, (PULONG_PTR)&pSession, (LPOVERLAPPED*)&pOverlapped, INFINITE);
 
 
-		//false ÀÎ »óÈ²
+		//false ì¸ ìƒí™©
 		if (retval == false)
 		{
 
@@ -213,7 +213,7 @@ void CLanServer::WorkerThread()
 				break;
 			}
 
-			//WSASend, WSARecv·Î ¿äÃ»ÇÑ IO°¡ ½ÇÆĞÇÑ °æ¿ì(TCP°¡ ²÷±ä °ÍÀÓ)
+			//WSASend, WSARecvë¡œ ìš”ì²­í•œ IOê°€ ì‹¤íŒ¨í•œ ê²½ìš°(TCPê°€ ëŠê¸´ ê²ƒì„)
 			else
 			{
 				err = GetLastError();
@@ -272,7 +272,7 @@ void CLanServer::AcceptThread()
 		InterlockedIncrement(&m_AcceptTPS);
 
 
-		//¼­¹ö °¡µ¿½Ã ¼³Á¤ÇÑ ÃÖ´ë ¼¼¼Ç°ª ÀÌ»óÀ¸·Î ¿¬°áÀÌ µé¾î¿À¸é ²÷À½.
+		//ì„œë²„ ê°€ë™ì‹œ ì„¤ì •í•œ ìµœëŒ€ ì„¸ì…˜ê°’ ì´ìƒìœ¼ë¡œ ì—°ê²°ì´ ë“¤ì–´ì˜¤ë©´ ëŠìŒ.
 		if (InterlockedIncrement16(&m_CurSessionCnt) > m_MaxSessionCnt)
 		{
 			closesocket(client_socket);
@@ -284,7 +284,7 @@ void CLanServer::AcceptThread()
 		InetNtopW(AF_INET, &clientAddr.sin_addr, szClientIP, IP_LEN);
 		OnConnectionRequest(szClientIP, clientAddr.sin_port);
 
-		//Overlapped IO·Î ÀÛµ¿½ÃÅ°±â À§ÇØ ¼ÒÄÏ ¼Û½Å ¹öÆÛ 0À¸·Î ¼³Á¤
+		//Overlapped IOë¡œ ì‘ë™ì‹œí‚¤ê¸° ìœ„í•´ ì†Œì¼“ ì†¡ì‹  ë²„í¼ 0ìœ¼ë¡œ ì„¤ì •
 		int sendBufferSize = 0;
 		if (setsockopt(client_socket, SOL_SOCKET, SO_SNDBUF, (char*)&sendBufferSize, sizeof(sendBufferSize)) < 0)
 		{
@@ -293,8 +293,8 @@ void CLanServer::AcceptThread()
 		}
 
 		linger so_linger;
-		so_linger.l_onoff = 1;  // linger ¿É¼Ç »ç¿ë
-		so_linger.l_linger = 0; // Áö¿¬ ½Ã°£ 0 -> Áï½Ã RST
+		so_linger.l_onoff = 1;  // linger ì˜µì…˜ ì‚¬ìš©
+		so_linger.l_linger = 0; // ì§€ì—° ì‹œê°„ 0 -> ì¦‰ì‹œ RST
 
 		if (setsockopt(client_socket, SOL_SOCKET, SO_LINGER, (char*)&so_linger, sizeof(so_linger)) == SOCKET_ERROR)
 		{
@@ -303,14 +303,14 @@ void CLanServer::AcceptThread()
 		}
 
 
-		//¼¼¼Ç ¹è¿­¿¡ ³Ö±â Àü¿¡ ÀÏ´Ü Index Ã£±â
+		//ì„¸ì…˜ ë°°ì—´ì— ë„£ê¸° ì „ì— ì¼ë‹¨ Index ì°¾ê¸°
 		UINT16 Index;
 		m_pSessionIdxStack->Pop(Index);
 
-		// ¼¼¼Ç ID ¸¸µé±â
+		// ì„¸ì…˜ ID ë§Œë“¤ê¸°
 		UINT64 sessionID = MakeSessionID(Index, m_AllocID);
 
-		// ¼¼¼Ç ÃÊ±âÈ­(±×·ì ID 0¹øÀ¸·Î ÃÊ±âÈ­)
+		// ì„¸ì…˜ ì´ˆê¸°í™”(ê·¸ë£¹ ID 0ë²ˆìœ¼ë¡œ ì´ˆê¸°í™”)
 		m_SessionTable[Index].Init(client_socket, sessionID);
 
 
@@ -318,7 +318,7 @@ void CLanServer::AcceptThread()
 		m_AcceptTotal++;
 
 
-		//Å¬¶óÀÌ¾ğÆ® ¼ÒÄÏ IOCP¿¡ µî·Ï ¹× key°ªÀ¸·Î ¼¼¼Ç Æ÷ÀÎÅÍ¸¦ ¼³Á¤
+		//í´ë¼ì´ì–¸íŠ¸ ì†Œì¼“ IOCPì— ë“±ë¡ ë° keyê°’ìœ¼ë¡œ ì„¸ì…˜ í¬ì¸í„°ë¥¼ ì„¤ì •
 		HANDLE retCIOCP;
 		retCIOCP = CreateIoCompletionPort((HANDLE)client_socket, m_IOCP, (ULONG_PTR)&m_SessionTable[Index], 0);
 		if (retCIOCP == NULL)
@@ -328,10 +328,10 @@ void CLanServer::AcceptThread()
 		}
 
 
-		// ¼¼¼ÇÀÌ ¼ÓÇÑ ±×·ìÀÇ OnClientJoin È£Ãâ
+		// ì„¸ì…˜ì´ ì†í•œ ê·¸ë£¹ì˜ OnClientJoin í˜¸ì¶œ
 		OnClientJoin(sessionID);
 
-		//Recv µî·Ï
+		//Recv ë“±ë¡
 		RecvPost(&m_SessionTable[Index]);
 
 		Release(&m_SessionTable[Index],  InterlockedDecrement64(&m_SessionTable[Index].m_RefCnt));
@@ -359,11 +359,11 @@ void CLanServer::SendThread()
 			if (m_SessionTable[i].m_SessionID == df_INVALID_SESSIONID)
 				continue;
 
-			// ¼¼¼Ç È®º¸
+			// ì„¸ì…˜ í™•ë³´
 			if (!SessionInvalid(&m_SessionTable[i], m_SessionTable[i].m_SessionID))
 				continue;
 
-			// Send ÇÃ·¡±× ¹× SendQ Ã¼Å© ½Ã º¸³»¸é ¾ÈµÇ´Â »óÈ²¿¡¼­ ¼¼¼Ç Æ÷±â
+			// Send í”Œë˜ê·¸ ë° SendQ ì²´í¬ ì‹œ ë³´ë‚´ë©´ ì•ˆë˜ëŠ” ìƒí™©ì—ì„œ ì„¸ì…˜ í¬ê¸°
 			if (m_SessionTable[i].m_SendFlag != 0 
 				|| m_SessionTable[i].m_SendQ.GetUseSize() == 0)
 			{
@@ -383,7 +383,7 @@ void CLanServer::SendThread()
 			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"SendThread 1Frame Send Proc Time : %d ", endtime - starttime);
 		}
 
-		// ÀüÃ¼ ¼¼¼Ç¿¡ ´ëÇØ¼­ Send ÀÛ¾÷ ÇßÀ¸¸ç SleepÀ¸·Î ¹öÆÛ¸µ
+		// ì „ì²´ ì„¸ì…˜ì— ëŒ€í•´ì„œ Send ì‘ì—… í–ˆìœ¼ë©° Sleepìœ¼ë¡œ ë²„í¼ë§
 		Sleep(m_SendFrame);
 	}
 
@@ -401,7 +401,7 @@ void CLanServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool Nagle)
 		__debugbreak();
 	}
 
-	// ¸®½¼ ¼ÒÄÏ »ı¼º
+	// ë¦¬ìŠ¨ ì†Œì¼“ ìƒì„±
 	m_Listen = socket(AF_INET, SOCK_STREAM, 0);
 	if (m_Listen == INVALID_SOCKET)
 	{
@@ -411,10 +411,10 @@ void CLanServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool Nagle)
 	}
 	wprintf(L"socket() Complete... \n");
 
-	//³×ÀÌ±Û On/Off
+	//ë„¤ì´ê¸€ On/Off
 	if (Nagle == true)
 	{
-		//³×ÀÌ±Û Å°°í ½ÍÀ» ¶§
+		//ë„¤ì´ê¸€ í‚¤ê³  ì‹¶ì„ ë•Œ
 		int flag = 0;
 		if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
 		{
@@ -425,7 +425,7 @@ void CLanServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool Nagle)
 	}
 	else
 	{
-		//³×ÀÌ±Û ²ô°í ½ÍÀ» ¶§
+		//ë„¤ì´ê¸€ ë„ê³  ì‹¶ì„ ë•Œ
 		int flag = 1;
 		if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
 		{
@@ -436,7 +436,7 @@ void CLanServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool Nagle)
 	}
 
 
-	//bind() Ã³¸®
+	//bind() ì²˜ë¦¬
 	SOCKADDR_IN serveraddr;
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
@@ -474,7 +474,7 @@ void CLanServer::Mem_Init()
 	m_CurSessionCnt = 0;
 
 
-	m_IOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, m_ConcurrentCnt); // ·¯´× ½º·¹µå °¹¼ö·Î ÄÁÄ¿·±Æ® ½º·¹µå ¼³Á¤
+	m_IOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, m_ConcurrentCnt); // ëŸ¬ë‹ ìŠ¤ë ˆë“œ ê°¯ìˆ˜ë¡œ ì»¨ì»¤ëŸ°íŠ¸ ìŠ¤ë ˆë“œ ì„¤ì •
 	if (m_IOCP == NULL)
 	{
 		wprintf(L"CreateIoCompletionPort Failed...\n");
@@ -510,13 +510,13 @@ void CLanServer::Thread_Create()
 
 void CLanServer::Thread_Destroy()
 {
-	//Accept ½º·¹µå Á¾·á È®ÀÎ
+	//Accept ìŠ¤ë ˆë“œ ì¢…ë£Œ í™•ì¸
 	if (m_AcceptThread.joinable())
 	{
 		m_AcceptThread.join();
 	}
 
-	//»ı¼ºµÈ ¿öÄ¿ ½º·¹µå Á¾·á È®ÀÎ
+	//ìƒì„±ëœ ì›Œì»¤ ìŠ¤ë ˆë“œ ì¢…ë£Œ í™•ì¸
 	for (int i = 0; i < m_CreateWorkerCnt; i++)
 	{
 		if (m_IOCPWorkerThread[i].joinable())
@@ -525,7 +525,7 @@ void CLanServer::Thread_Destroy()
 		}
 	}
 
-	// send ÇÃ·¡±× ÄÑÁ® ÀÖÀ¸¸é 
+	// send í”Œë˜ê·¸ ì¼œì ¸ ìˆìœ¼ë©´ 
 	if (m_SendThFL == 1)
 	{
 		m_SendThFL = 0;
@@ -546,7 +546,7 @@ void CLanServer::FindSession(UINT64 SessionID, CSession** ppSession)
 	if (SessionID == df_INVALID_SESSIONID)
 		return;
 
-	// ÀÎÀÚ·Î¹ŞÀº ¼¼¼Ç ID¿¡¼­ Index ÃßÃâ
+	// ì¸ìë¡œë°›ì€ ì„¸ì…˜ IDì—ì„œ Index ì¶”ì¶œ
 	index = SessionID >> df_LAN_INDEX_POS;
 
 	*ppSession = &m_SessionTable[index];
@@ -583,7 +583,7 @@ bool CLanServer::RecvPost(CSession* pSession)
 	{
 		err = WSAGetLastError();
 
-		//ºñµ¿±â µî·ÏÇßÀ¸¸é
+		//ë¹„ë™ê¸° ë“±ë¡í–ˆìœ¼ë©´
 		if (err == ERROR_IO_PENDING)
 			return true;
 
@@ -592,7 +592,7 @@ bool CLanServer::RecvPost(CSession* pSession)
 
 			Disconnect(pSession->m_SessionID);
 
-			//ºñÁ¤»óÀûÀÎ ¿¡·¯½Ã ·Î±× ³²±â±â
+			//ë¹„ì •ìƒì ì¸ ì—ëŸ¬ì‹œ ë¡œê·¸ ë‚¨ê¸°ê¸°
 			if (err != WSAECONNRESET && err != WSAECONNABORTED && err != WSAEINTR)
 			{
 				LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed / Error Code : %d / SessionID  : %d ", err, pSession->m_SessionID);
@@ -605,7 +605,7 @@ bool CLanServer::RecvPost(CSession* pSession)
 
 	}
 
-	//wsarecv ¸®ÅÏ°ªÀÌ 0ÀÎ°Ô wsarecv°¡ Á¤»óÀûÀ¸·Î µî·ÏµÇ¾ú°Å³ª µ¿±âÀûÀ¸·Î ¿Ï·áµÇ¾ú´Ù´Â °ÍÀÓ.
+	//wsarecv ë¦¬í„´ê°’ì´ 0ì¸ê²Œ wsarecvê°€ ì •ìƒì ìœ¼ë¡œ ë“±ë¡ë˜ì—ˆê±°ë‚˜ ë™ê¸°ì ìœ¼ë¡œ ì™„ë£Œë˜ì—ˆë‹¤ëŠ” ê²ƒì„.
 	else if (ret == 0)
 		return true;
 
@@ -641,18 +641,18 @@ bool CLanServer::SendPost(CSession* pSession)
 			{
 				InterlockedExchange16(&pSession->m_SendFlag, 0);
 
-				//size ÇÑ¹ø´õ Ã¼Å©
+				//size í•œë²ˆë” ì²´í¬
 				usesize = pSession->m_SendQ.GetUseSize();
 				if (usesize == 0)
 				{
 					return false;
 				}
 
-				//2¹øÂ° size°¡ 0ÀÌ¾Æ´Ï¸é ´©°¡ ³Ö¾úÀ¸´Ï ´Ù½Ã send flag È¹µæ ½Ãµµ
+				//2ë²ˆì§¸ sizeê°€ 0ì´ì•„ë‹ˆë©´ ëˆ„ê°€ ë„£ì—ˆìœ¼ë‹ˆ ë‹¤ì‹œ send flag íšë“ ì‹œë„
 				continue;
 			}
 
-			//Ã¹¹øÂ° size Ã¼Å©½Ã 0¾Æ´Ï¸é SendÀÛ¾÷
+			//ì²«ë²ˆì§¸ size ì²´í¬ì‹œ 0ì•„ë‹ˆë©´ Sendì‘ì—…
 			break;
 		}
 	}
@@ -663,7 +663,7 @@ bool CLanServer::SendPost(CSession* pSession)
 
 	WSABUF wsa[WSABUFSIZE];
 
-	//¼Û½Å ¶ôÇÁ¸®Å¥¿¡¼­ µ¥ÀÌÅÍ ²¨³»±â(¾øÀ¸¸é false ¸®ÅÏ)
+	//ì†¡ì‹  ë½í”„ë¦¬íì—ì„œ ë°ì´í„° êº¼ë‚´ê¸°(ì—†ìœ¼ë©´ false ë¦¬í„´)
 	int index;
 	for (index = 0; index < WSABUFSIZE; index++)
 	{
@@ -672,10 +672,10 @@ bool CLanServer::SendPost(CSession* pSession)
 	}
 
 
-	//Dequeue ¼º°øÇØ¼­ SendArray¿¡ ÀúÀåÇÑ °¹¼ö °»½Å
+	//Dequeue ì„±ê³µí•´ì„œ SendArrayì— ì €ì¥í•œ ê°¯ìˆ˜ ê°±ì‹ 
 	pSession->m_SendMsgCnt = index;
 
-	//SendArray¿¡ ÀÖ´Â°ÍÀ» wsaBuf¿¡ ¼ÂÆÃ
+	//SendArrayì— ìˆëŠ”ê²ƒì„ wsaBufì— ì…‹íŒ…
 	for (int i = 0; i < index; i++)
 	{
 		wsa[i].buf = pSession->m_SendArray[i]->GetAllocPos();
@@ -701,7 +701,7 @@ bool CLanServer::SendPost(CSession* pSession)
 		{
 			Disconnect(pSession->m_SessionID);
 
-			//ºñÁ¤»óÀûÀÎ ¿¡·¯½Ã ·Î±× ³²±â±â
+			//ë¹„ì •ìƒì ì¸ ì—ëŸ¬ì‹œ ë¡œê·¸ ë‚¨ê¸°ê¸°
 			if (err != WSAECONNRESET && err != WSAECONNABORTED && err != WSAEINTR)
 			{
 				LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"SendPost WSASend Return Failed / Error Code : %d / SessionID  : %llu ", err, pSession->m_SessionID);
@@ -729,14 +729,14 @@ bool CLanServer::SessionInvalid(CSession* pSession, UINT64 SessionID)
 {
 	InterlockedIncrement64(&pSession->m_RefCnt);
 
-	//±×·±µ¥ ÀÌ¹Ì ´©°¡ Release ÇÏ°í ÀÖÀ¸¸é ¾²¸é ¾ÈµÇ´Ï °¨¼Ò ½ÃÅ°°í Release 
+	//ê·¸ëŸ°ë° ì´ë¯¸ ëˆ„ê°€ Release í•˜ê³  ìˆìœ¼ë©´ ì“°ë©´ ì•ˆë˜ë‹ˆ ê°ì†Œ ì‹œí‚¤ê³  Release 
 	if (pSession->m_RelFlag == 1)
 	{
 		Release(pSession, InterlockedDecrement64((long long*)&pSession->m_RefCnt));
 		return false;
 	}
 
-	//³»°¡ Ã£´ø ¼¼¼ÇÀÌ ¾Æ´Ï¶ó¸é Áõ°¡½ÃÅ²°Í °¨¼Ò
+	//ë‚´ê°€ ì°¾ë˜ ì„¸ì…˜ì´ ì•„ë‹ˆë¼ë©´ ì¦ê°€ì‹œí‚¨ê²ƒ ê°ì†Œ
 	if (SessionID != pSession->m_SessionID)
 	{
 		Release(pSession,  InterlockedDecrement64((long long*)&pSession->m_RefCnt));
@@ -775,7 +775,7 @@ void CLanServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 
 	pSession->m_RecvQ.MoveWritePos(cbTransferred);
 
-	//¼ö½Å ¸µ¹öÆÛ ºô ¶§ ±îÁö ¸Ş¼¼Áö ÃßÃâÇØ¼­ ¹Ù·Î Å¬¶óÀÌ¾ğÆ®¿¡°Ô º¸³¿
+	//ìˆ˜ì‹  ë§ë²„í¼ ë¹Œ ë•Œ ê¹Œì§€ ë©”ì„¸ì§€ ì¶”ì¶œí•´ì„œ ë°”ë¡œ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ë³´ëƒ„
 	while (1)
 	{
 		if (pSession->m_DCFlag == 1)
@@ -784,10 +784,10 @@ void CLanServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 		CMessage* pPacket = CMessage::Alloc();
 		pPacket->Clear();
 
-		//RecvQ¿¡¼­ ¿Ï¼ºµÈ ¸Ş¼¼Áö È®ÀÎ
+		//RecvQì—ì„œ ì™„ì„±ëœ ë©”ì„¸ì§€ í™•ì¸
 		LANHEADER header;
 
-		//¼ö½Å ¸µ¹öÆÛ¿¡ lenÀÌ ³×Æ®¿öÅ© Çì´õÀÎµ¥ ÀÌÁ¤µµµµ ¾øÀ¸¸é ±×³É ³¡³»±â
+		//ìˆ˜ì‹  ë§ë²„í¼ì— lenì´ ë„¤íŠ¸ì›Œí¬ í—¤ë”ì¸ë° ì´ì •ë„ë„ ì—†ìœ¼ë©´ ê·¸ëƒ¥ ëë‚´ê¸°
 		unsigned long long usesize = pSession->m_RecvQ.GetUseSize();
 		if (usesize <= sizeof(LANHEADER))
 		{
@@ -795,10 +795,10 @@ void CLanServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 			break;
 		}
 
-		//³×Æ®¿öÅ© Çì´õ ÃßÃâ½Ã Ã¼Å©¼¶ Á¦¿ÜÇÏ°í ÃßÃâ
+		//ë„¤íŠ¸ì›Œí¬ í—¤ë” ì¶”ì¶œì‹œ ì²´í¬ì„¬ ì œì™¸í•˜ê³  ì¶”ì¶œ
 		retPeekHeader = pSession->m_RecvQ.Peek((char*)&header, sizeof(LANHEADER));
 
-		//¼ö½Å ¸µ¹öÆÛ¿¡ ³²Àº°Ô ³×Æ®¿öÅ© Çì´õ + payload Å©±â º¸´Ù ÀÛÀ¸¸é ±×³É peek¸¸ ÇØ¼­ ³×Æ®¿öÅ© Çì´õ º¸°í ³ª°¡´Â °ÍÀÓ.
+		//ìˆ˜ì‹  ë§ë²„í¼ì— ë‚¨ì€ê²Œ ë„¤íŠ¸ì›Œí¬ í—¤ë” + payload í¬ê¸° ë³´ë‹¤ ì‘ìœ¼ë©´ ê·¸ëƒ¥ peekë§Œ í•´ì„œ ë„¤íŠ¸ì›Œí¬ í—¤ë” ë³´ê³  ë‚˜ê°€ëŠ” ê²ƒì„.
 		if (usesize < header.s_len + sizeof(LANHEADER))
 		{
 			CMessage::Free(pPacket);
@@ -806,11 +806,11 @@ void CLanServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 		}
 
 
-		//³×Æ®¿öÅ© Çì´õ »ÌÀº ¸¸Å­ ¿Å±â±â
+		//ë„¤íŠ¸ì›Œí¬ í—¤ë” ë½‘ì€ ë§Œí¼ ì˜®ê¸°ê¸°
 		pSession->m_RecvQ.MoveReadPos(retPeekHeader);
 
 
-		// ¼ö½Å ¸µ¹öÆÛ¿¡¼­ Ã¼Å©¼¶ ¹× ÆäÀÌ·Îµå ÃßÃâ ÈÄ Á÷·ÄÈ­ ¹öÆÛ¿¡ ÀúÀå
+		// ìˆ˜ì‹  ë§ë²„í¼ì—ì„œ ì²´í¬ì„¬ ë° í˜ì´ë¡œë“œ ì¶”ì¶œ í›„ ì§ë ¬í™” ë²„í¼ì— ì €ì¥
 		retPeekPayload = pSession->m_RecvQ.Peek(pPacket->GetWritePos(), header.s_len);
 
 		pPacket->MoveWritePos(retPeekPayload);
@@ -819,14 +819,14 @@ void CLanServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 
 		CMessage::Free(pPacket);
 
-		//Recv ¹öÆÛ ¹Ğ±â
+		//Recv ë²„í¼ ë°€ê¸°
 		pSession->m_RecvQ.MoveReadPos(retPeekPayload);
 
 	}
 
 	InterlockedIncrement(&m_RecvIOTPS);
 
-	// Disconnect ¾Æ´Ò ¶§ RecvIO µî·Ï
+	// Disconnect ì•„ë‹ ë•Œ RecvIO ë“±ë¡
 	if (pSession->m_DCFlag != 1)
 	{
 		RecvPost(pSession);
@@ -840,13 +840,13 @@ void CLanServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 void CLanServer::SendIOProc(CSession* pSession, DWORD cbTransferred)
 {
 
-	//»ç¿ëÇÑ Á÷·ÄÈ­ ¹öÆÛ ¸Ş¼¼Áö ¸Ş¸ğ¸® Ç®¿¡ ¹İ³³
+	//ì‚¬ìš©í•œ ì§ë ¬í™” ë²„í¼ ë©”ì„¸ì§€ ë©”ëª¨ë¦¬ í’€ì— ë°˜ë‚©
 	for (int i = 0; i < pSession->m_SendMsgCnt; i++)
 	{
 		CMessage::Free(pSession->m_SendArray[i]);
 	}
 
-	//SendMessage ¿Ï·á ÇßÀ¸´Ï Áõ°¡
+	//SendMessage ì™„ë£Œ í–ˆìœ¼ë‹ˆ ì¦ê°€
 	InterlockedIncrement(&m_SendIOTPS);
 
 	pSession->m_SendMsgCnt = 0;
@@ -866,19 +866,19 @@ void CLanServer::ReleaseProc(CSession* pSession)
 	CMessage* peek = nullptr;
 
 	/*
-	* ½ÇÁ¦ Release ÀÛ¾÷
+	* ì‹¤ì œ Release ì‘ì—…
 	*/
 
-	//SendArray¿¡ ÀÖ´Â Á÷·ÄÈ­ ¹öÆÛ ¹İ³³.(SendPost ³»ºÎ¿¡¼­ ReleaseµÉ ¼ö ÀÖÀ½)
+	//SendArrayì— ìˆëŠ” ì§ë ¬í™” ë²„í¼ ë°˜ë‚©.(SendPost ë‚´ë¶€ì—ì„œ Releaseë  ìˆ˜ ìˆìŒ)
 	for (int i = 0; i < pSession->m_SendMsgCnt; i++)
 	{
 		CMessage::Free(pSession->m_SendArray[i]);
 	}
 
-	//Send ¶ôÇÁ¸® Å¥¿¡ ÀÖ´Â Á÷·ÄÈ­ ¹öÆÛ ¹İ³³(SendPacket ÇÔ¼ö¿¡¼­ Release µÉ ¼ö ÀÖÀ½)
+	//Send ë½í”„ë¦¬ íì— ìˆëŠ” ì§ë ¬í™” ë²„í¼ ë°˜ë‚©(SendPacket í•¨ìˆ˜ì—ì„œ Release ë  ìˆ˜ ìˆìŒ)
 	while (1)
 	{
-		//»©³¾°Ô ¾øÀ¸¸é Å»Ãâ
+		//ë¹¼ë‚¼ê²Œ ì—†ìœ¼ë©´ íƒˆì¶œ
 		if (!pSession->m_SendQ.Dequeue(peek))
 			break;
 
@@ -889,8 +889,8 @@ void CLanServer::ReleaseProc(CSession* pSession)
 	OnClientLeave(pSession->m_SessionID);
 
 
-	//±× ÇÃ·¡±×¸¦ ¹Ù²Û ½º·¹µå°¡ EmptyIndexStack¿¡ index¸¦ push ÇØ¾ß ÇÔ.
-	//index ÃßÃâ
+	//ê·¸ í”Œë˜ê·¸ë¥¼ ë°”ê¾¼ ìŠ¤ë ˆë“œê°€ EmptyIndexStackì— indexë¥¼ push í•´ì•¼ í•¨.
+	//index ì¶”ì¶œ
 	uint16_t index;
 
 	index = pSession->m_SessionID >> df_LAN_INDEX_POS;

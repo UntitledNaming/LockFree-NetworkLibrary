@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #define ID_MAX          20
 #define NICK_MAX        20
@@ -29,12 +29,12 @@ private:
 private:
 	std::unordered_map<UINT64, CUser*>             m_UserMap;
 	std::unordered_map<UINT64, DWORD>              m_NonUserMap;
-	std::unordered_map<std::wstring, SERVERINFO*>  m_ServerInfoMap;     // key : ´õ¹Ì or ½ÇÁ¦ Å¬¶óIP / value : ÇØ´çÇÏ´Â ¼­¹ö ip ¹× port
+	std::unordered_map<std::wstring, SERVERINFO*>  m_ServerInfoMap;     // key : ë”ë¯¸ or ì‹¤ì œ í´ë¼IP / value : í•´ë‹¹í•˜ëŠ” ì„œë²„ ip ë° port
 
 	DBTLS*                                         m_DBTLS;
 	CMemoryPool<CUser>*                            m_pUserPool;
-	CMonitorClient*                                m_pMonitorClient;    // ¸ğ´ÏÅÍ¸µ ¼­¹ö Á¢¼Ó Å¬¶óÀÌ¾ğÆ®
-	BOOL                                           m_EndFlag;           // ¸ğ´ÏÅÍ¸µ ½º·¹µå Á¾·á ÇÃ·¡±×
+	CMonitorClient*                                m_pMonitorClient;    // ëª¨ë‹ˆí„°ë§ ì„œë²„ ì ‘ì† í´ë¼ì´ì–¸íŠ¸
+	BOOL                                           m_EndFlag;           // ëª¨ë‹ˆí„°ë§ ìŠ¤ë ˆë“œ ì¢…ë£Œ í”Œë˜ê·¸
 	SRWLOCK                                        m_UserMapLock;
 	SRWLOCK                                        m_NonUserMapLock;
 	SRWLOCK                                        m_ServerInfoMapLock;
@@ -43,17 +43,17 @@ private:
 
 	cpp_redis::client*                             m_pRedisClient;
 
-	std::thread                                    m_Frame;             // TimeOut Ã¼Å©ÇÒ ½º·¹µå
+	std::thread                                    m_Frame;             // TimeOut ì²´í¬í•  ìŠ¤ë ˆë“œ
 	std::thread                                    m_Monitor;       
 
 	ProcessMonitor*                                m_pPDH;
 
 	/*
-	*   ¸ğ´ÏÅÍ¸µ¿ë º¯¼ö
+	*   ëª¨ë‹ˆí„°ë§ìš© ë³€ìˆ˜
 	*/
 	INT                                            m_LoginComTPS;
 											       
-	// Config Á¤º¸						   	       
+	// Config ì •ë³´						   	       
 	INT                                            m_MaxUserCnt;
 
 public:
@@ -74,7 +74,7 @@ public:
 	virtual void  OnRecv(UINT64 SessionID, CMessage* pMessage);
 
 	/*
-	*     ·Î±×ÀÎ ¿äÃ» ¹× ÀÀ´ä ¸Ş¼¼Áö »ı¼º
+	*     ë¡œê·¸ì¸ ìš”ì²­ ë° ì‘ë‹µ ë©”ì„¸ì§€ ìƒì„±
 	*/
 	void  LoginRequest(CMessage* pMessage, UINT64 sessionid);
 
@@ -85,12 +85,12 @@ public:
 	void  SetRedisToken(UINT64 accountNo, const std::string& token);
 
 	////////////////////////////////////////////////////////////////////
-	// À¯Àú ¸Ê, ³í À¯Àú ¸Ê µ¿½Ã¿¡ Lock°É°í ³íÀ¯Àú or À¯Àú »ğÀÔ
+	// ìœ ì € ë§µ, ë…¼ ìœ ì € ë§µ ë™ì‹œì— Lockê±¸ê³  ë…¼ìœ ì € or ìœ ì € ì‚½ì…
 	////////////////////////////////////////////////////////////////////
 	void  UserInsert(UINT64 sessionID, CUser* pUser);
 
 
-	//Å¸ÀÓ¾Æ¿ô Ã³¸® 
+	//íƒ€ì„ì•„ì›ƒ ì²˜ë¦¬ 
 	void  NonUserTimeOut();
 	void  UserTimeOut();
 

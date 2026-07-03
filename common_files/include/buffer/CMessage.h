@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 class CMessage
 {
 public:
 	enum en_Message
 	{
-		eBuffer_Default = 500, // Á÷·ÄÈ­ ¹öÆÛ ±âº» »çÀÌÁî
+		eBuffer_Default = 500, // ì§ë ¬í™” ë²„í¼ ê¸°ë³¸ ì‚¬ì´ì¦ˆ
 		eBuffer_Max = 10000,
 	};
 
@@ -16,45 +16,44 @@ public:
 
 	static CMessage* Alloc();
 	static bool      Free(CMessage* pMessage);
-	static void      Init(int lanHeaderSize, int netHeaderSize);        // Á÷·ÄÈ­ ¹öÆÛ ¸Ş¸ğ¸® Ç® µ¿ÀûÇÒ´ç ÇÏ±â. ÀÎÀÚ°ªÀ¸·Î ³×Æ®¿öÅ© Çì´õ Å©±â 1¹ø ¹Ş±â
+	static void      Init(int lanHeaderSize, int netHeaderSize);        // ì§ë ¬í™” ë²„í¼ ë©”ëª¨ë¦¬ í’€ ë™ì í• ë‹¹ í•˜ê¸°. ì¸ìê°’ìœ¼ë¡œ ë„¤íŠ¸ì›Œí¬ í—¤ë” í¬ê¸° 1ë²ˆ ë°›ê¸°
 	static void      PoolDestroy();
 				     										                  
 															                  
 public:														                  
-	void             Clear(int type = 0);                               // Á÷·ÄÈ­ ¹öÆÛ °´Ã¼ ÃÊ±âÈ­(Lan È¯°æ(1) or Net È¯°æ(0) ¿¡¼­ ¾µÁö Àü´Ş)
-	void             SetNetHeader(int type);                            // ³×Æ®¿öÅ© Çì´õ¸¦ ¸ÕÀú ¹öÆÛ¿¡ ³Ö±â À§ÇÑ ÇÔ¼ö. ³×Æ®¿öÅ© Çì´õ¸¦ À§ÇÑ °ø°£ È®º¸ÇÔ.
+	void             Clear(int type = 0);                               // ì§ë ¬í™” ë²„í¼ ê°ì²´ ì´ˆê¸°í™”(Lan í™˜ê²½(1) or Net í™˜ê²½(0) ì—ì„œ ì“¸ì§€ ì „ë‹¬)
+	void             SetNetHeader(int type);                            // ë„¤íŠ¸ì›Œí¬ í—¤ë”ë¥¼ ë¨¼ì € ë²„í¼ì— ë„£ê¸° ìœ„í•œ í•¨ìˆ˜. ë„¤íŠ¸ì›Œí¬ í—¤ë”ë¥¼ ìœ„í•œ ê³µê°„ í™•ë³´í•¨.
 	void             SetEncodingFlag(int value);
 
 
-
 	int              GetEncodingFlag();
-	int              GetBufferSize();                                   // ¹İÈ¯°ª : ¹öÆÛ »çÀÌÁî
-	int              GetDataSize();                                     // ¹İÈ¯°ª : ÇöÀç »ç¿ëÁßÀÎ µ¥ÀÌÅÍ Å©±â(³×Æ®¿öÅ© Çì´õ Á¦¿Ü)
-	int              GetRealDataSize(int type = 0);                     // ¹İÈ¯°ª : ³×Æ®¿öÅ© Çì´õ Æ÷ÇÔ Å©±â
+	int              GetBufferSize();                                   // ë°˜í™˜ê°’ : ë²„í¼ ì‚¬ì´ì¦ˆ
+	int              GetDataSize();                                     // ë°˜í™˜ê°’ : í˜„ì¬ ì‚¬ìš©ì¤‘ì¸ ë°ì´í„° í¬ê¸°(ë„¤íŠ¸ì›Œí¬ í—¤ë” ì œì™¸)
+	int              GetRealDataSize(int type = 0);                     // ë°˜í™˜ê°’ : ë„¤íŠ¸ì›Œí¬ í—¤ë” í¬í•¨ í¬ê¸°
 
 	char*            GetReadPos();
 	char*            GetWritePos();
 	char*            GetAllocPos();
 
-	bool             GetLastError();                                    // ¿¬»êÀÚ ¿À¹ö·Îµù¿¡¼­ ¿À·ù°¡ ³µ´ÂÁö Ã¼Å©ÇÏ´Â ÇÔ¼ö
+	bool             GetLastError();                                    // ì—°ì‚°ì ì˜¤ë²„ë¡œë”©ì—ì„œ ì˜¤ë¥˜ê°€ ë‚¬ëŠ”ì§€ ì²´í¬í•˜ëŠ” í•¨ìˆ˜
 																        
-	int              MoveWritePos(int iSize);                           // ¹öÆÛÀÇ Pos ÀÌµ¿
+	int              MoveWritePos(int iSize);                           // ë²„í¼ì˜ Pos ì´ë™
 	int              MoveReadPos(int iSize);					        
 	                 											        
-	int              GetData(char* chpDest, int iSize);                 // ¹İÈ¯°ª : ¿ÜºÎ·Î º¹»çÇÑ µ¥ÀÌÅÍ Å©±â
-	int              PutData(char* chpSrc, int iSrcSize);               // ¹İÈ¯°ª : Á÷·ÄÈ­ ¹öÆÛ·Î º¹»çÇÑ »çÀÌÁî
+	int              GetData(char* chpDest, int iSize);                 // ë°˜í™˜ê°’ : ì™¸ë¶€ë¡œ ë³µì‚¬í•œ ë°ì´í„° í¬ê¸°
+	int              PutData(char* chpSrc, int iSrcSize);               // ë°˜í™˜ê°’ : ì§ë ¬í™” ë²„í¼ë¡œ ë³µì‚¬í•œ ì‚¬ì´ì¦ˆ
 																           
-	bool             Resize();                                          // Á÷·ÄÈ­ ¹öÆÛ Å©±â resize
+	bool             Resize();                                          // ì§ë ¬í™” ë²„í¼ í¬ê¸° resize
 																           
-	int              ResizeCount();                                     // resize È½¼ö È®ÀÎ ÇÔ¼ö
+	int              ResizeCount();                                     // resize íšŸìˆ˜ í™•ì¸ í•¨ìˆ˜
 
 	int              AddRef();
 	int              SubRef();
 
-	//¿¬»êÀÚ ¿À¹ö·Îµù =
+	//ì—°ì‚°ì ì˜¤ë²„ë¡œë”© =
 	CMessage& operator=(CMessage& clSrcMessage);
 
-	//¿¬»êÀÚ ¿À¹ö·Îµù << , Á÷·ÄÈ­ ¹öÆÛ¿¡ µ¥ÀÌÅÍ ³Ö±â
+	//ì—°ì‚°ì ì˜¤ë²„ë¡œë”© << , ì§ë ¬í™” ë²„í¼ì— ë°ì´í„° ë„£ê¸°
 	CMessage& operator<<(BYTE byValue);
 	CMessage& operator<<(char chValue);
 	CMessage& operator<<(short shValue);
@@ -67,7 +66,7 @@ public:
 	CMessage& operator<<(double iValue);
 
 
-	//¿¬»êÀÚ ¿À¹ö·Îµù >> , Á÷·ÄÈ­ ¹öÆÛ¿¡¼­ µ¥ÀÌÅÍ »©±â
+	//ì—°ì‚°ì ì˜¤ë²„ë¡œë”© >> , ì§ë ¬í™” ë²„í¼ì—ì„œ ë°ì´í„° ë¹¼ê¸°
 	CMessage& operator >> (BYTE& byValue);
 	CMessage& operator >> (char& chValue);
 	CMessage& operator >> (short& shValue);
@@ -82,22 +81,22 @@ public:
 public:
 	static CMPoolTLS<CMessage>* m_pMessagePool;
 
-	static INT                  m_iNetHeaderSize;    // Çì´õ »çÀÌÁî
-	static INT                  m_iLanHeaderSize;    // Çì´õ »çÀÌÁî
+	static INT                  m_iNetHeaderSize;    // í—¤ë” ì‚¬ì´ì¦ˆ
+	static INT                  m_iLanHeaderSize;    // í—¤ë” ì‚¬ì´ì¦ˆ
 											         
-	static bool                 m_netHderFlag;       // ³×Æ®¿öÅ© Çì´õ »ç¿ë ÇÃ·¡±×
+	static bool                 m_netHderFlag;       // ë„¤íŠ¸ì›Œí¬ í—¤ë” ì‚¬ìš© í”Œë˜ê·¸
 
 private:
-	CHAR*                       m_iAllocPtr;           // Á÷·ÄÈ­ ¹öÆÛ ÇÒ´ç ¸Ş¸ğ¸® Æ÷ÀÎÅÍ
+	CHAR*                       m_iAllocPtr;           // ì§ë ¬í™” ë²„í¼ í• ë‹¹ ë©”ëª¨ë¦¬ í¬ì¸í„°
 	CHAR*                       m_iReadPos;
 	CHAR*                       m_iWritePos;
 		                        
-	INT                         m_iBufferSize;       // Á÷·ÄÈ­ ¹öÆÛ Å©±â
-	INT                         m_iDataSize;         // ÇöÀç »ç¿ëÁßÀÎ Å©±â(³×Æ®¿öÅ© Çì´õ Á¦¿Ü)
-	INT                         m_iResizeCount;      // resize È½¼ö
+	INT                         m_iBufferSize;       // ì§ë ¬í™” ë²„í¼ í¬ê¸°
+	INT                         m_iDataSize;         // í˜„ì¬ ì‚¬ìš©ì¤‘ì¸ í¬ê¸°(ë„¤íŠ¸ì›Œí¬ í—¤ë” ì œì™¸)
+	INT                         m_iResizeCount;      // resize íšŸìˆ˜
 	INT                         m_iRefCnt;	       
 	INT                         m_EncodingFlag;      
 			                      			       
-	BOOL                        m_iError;            // ¿¬»êÀÚ ¿À¹ö·Îµù¿¡¼­ ¿À·ù Å½Áö ÇÃ·¡±×
+	BOOL                        m_iError;            // ì—°ì‚°ì ì˜¤ë²„ë¡œë”©ì—ì„œ ì˜¤ë¥˜ íƒì§€ í”Œë˜ê·¸
 };
 

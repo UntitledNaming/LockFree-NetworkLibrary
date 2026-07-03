@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+ï»¿#define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <windows.h>
 #include <timeapi.h>
@@ -70,7 +70,7 @@ BOOL CLoginServer::RunServer()
 	INT Loglevel;
 
 
-	//Parsing ÀÛ¾÷
+	//Parsing ì‘ì—…
 	Parser parser;
 
 	if (!parser.LoadFile("LServerConfig.txt"))
@@ -84,7 +84,7 @@ BOOL CLoginServer::RunServer()
 	parser.GetValue("MORNITOR_IP", &monitorip);
 
 
-	//charÇü ¹®ÀÚ¿­À» wchar·Î º¯È¯
+	//charí˜• ë¬¸ìì—´ì„ wcharë¡œ ë³€í™˜
 	loginipstr = converter.from_bytes(loginip.s_ptr);
 	monitoripstr = converter.from_bytes(monitorip.s_ptr);
 
@@ -201,9 +201,9 @@ void CLoginServer::Thread_Destroy()
 
 void CLoginServer::ServerRoutInfo_Init()
 {
-	// ServerInfo ÀúÀå
-	SERVERINFO* pInfo1 = new SERVERINFO; // ´õ¹Ì 1 ¿ë
-	SERVERINFO* pInfo2 = new SERVERINFO; // ´õ¹Ì 2 ¿ë
+	// ServerInfo ì €ì¥
+	SERVERINFO* pInfo1 = new SERVERINFO; // ë”ë¯¸ 1 ìš©
+	SERVERINFO* pInfo2 = new SERVERINFO; // ë”ë¯¸ 2 ìš©
 	INT         gameport;
 	INT         chatport;
 	Parser      parser;
@@ -215,47 +215,47 @@ void CLoginServer::ServerRoutInfo_Init()
 	Parser::st_Msg dummy2;
 	Parser::st_Msg dummy2_re;
 
-	// ´õ¹Ì 1ÀÇ IP, Key·Î ÃßÃâ
+	// ë”ë¯¸ 1ì˜ IP, Keyë¡œ ì¶”ì¶œ
 	parser.GetValue("DUMMY_IP1", &dummy1);
 
-	//charÇü ¹®ÀÚ¿­À» wchar·Î º¯È¯
+	//charí˜• ë¬¸ìì—´ì„ wcharë¡œ ë³€í™˜
 	std::wstring wstr1;
 	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
 	wstr1 = converter.from_bytes(dummy1.s_ptr);
 
-	// ´õ¹Ì 2ÀÇ IP, Key·Î ÃßÃâ
+	// ë”ë¯¸ 2ì˜ IP, Keyë¡œ ì¶”ì¶œ
 	parser.GetValue("DUMMY_IP2", &dummy2);
 
-	//charÇü ¹®ÀÚ¿­À» wchar·Î º¯È¯
+	//charí˜• ë¬¸ìì—´ì„ wcharë¡œ ë³€í™˜
 	std::wstring wstr2;
 	wstr2 = converter.from_bytes(dummy2.s_ptr);
 
-	// ´õ¹Ì 1 IP¿¡°Ô ÁÙ IP ÃßÃâ
+	// ë”ë¯¸ 1 IPì—ê²Œ ì¤„ IP ì¶”ì¶œ
 	parser.GetValue("DUMMY_IP1_RESULT", &dummy1_re);
 
-	//charÇü ¹®ÀÚ¿­À» wchar·Î º¯È¯
+	//charí˜• ë¬¸ìì—´ì„ wcharë¡œ ë³€í™˜
 	std::wstring wstr1_re;
 	wstr1_re = converter.from_bytes(dummy1_re.s_ptr);
 
-	// ´õ¹Ì 2 IP¿¡°Ô ÁÙ IP ÃßÃâ
+	// ë”ë¯¸ 2 IPì—ê²Œ ì¤„ IP ì¶”ì¶œ
 	parser.GetValue("DUMMY_IP2_RESULT", &dummy2_re);
 
-	//charÇü ¹®ÀÚ¿­À» wchar·Î º¯È¯
+	//charí˜• ë¬¸ìì—´ì„ wcharë¡œ ë³€í™˜
 	std::wstring wstr2_re;
 	wstr2_re = converter.from_bytes(dummy2_re.s_ptr);
 
-	// °ÔÀÓ ¼­¹ö Port ÃßÃâ
+	// ê²Œì„ ì„œë²„ Port ì¶”ì¶œ
 	parser.GetValue("GAME_PORT", &gameport);
 
-	// Ã¤ÆÃ ¼­¹ö Port ÃßÃâ
+	// ì±„íŒ… ì„œë²„ Port ì¶”ì¶œ
 	parser.GetValue("CHAT_PORT", &chatport);
 
-	// ´õ¹Ì 1 Routing Á¤º¸ ¼¼ÆÃ
+	// ë”ë¯¸ 1 Routing ì •ë³´ ì„¸íŒ…
 	pInfo1->s_ServerIP = wstr1_re;
 	pInfo1->s_GamePort = gameport;
 	pInfo1->s_ChatPort = chatport;
 
-	// ´õ¹Ì 2 Routing Á¤º¸ ¼¼ÆÃ
+	// ë”ë¯¸ 2 Routing ì •ë³´ ì„¸íŒ…
 	pInfo2->s_ServerIP = wstr2_re;
 	pInfo2->s_GamePort = gameport;
 	pInfo2->s_ChatPort = chatport;
@@ -282,7 +282,7 @@ void CLoginServer::OnClientLeave(UINT64 SessionID)
 
 	AcquireSRWLockExclusive(&m_UserMapLock);
 
-	// À¯Àú ÀÚ·á±¸Á¶ ¸ÕÀú Ã£¾Æº¸°í Á¦°Å
+	// ìœ ì € ìë£Œêµ¬ì¡° ë¨¼ì € ì°¾ì•„ë³´ê³  ì œê±°
 	std::unordered_map<UINT64, CUser*>::iterator iton;
 	iton = m_UserMap.find(SessionID);
 
@@ -292,7 +292,7 @@ void CLoginServer::OnClientLeave(UINT64 SessionID)
 
 
 		AcquireSRWLockExclusive(&m_NonUserMapLock);
-		// À¯Àú ÀÚ·á±¸Á¶¿¡ ¾øÀ¸¸é NonUser ÀÚ·á±¸Á¶ Ã£À½.
+		// ìœ ì € ìë£Œêµ¬ì¡°ì— ì—†ìœ¼ë©´ NonUser ìë£Œêµ¬ì¡° ì°¾ìŒ.
 		std::unordered_map<UINT64, DWORD>::iterator itNon;
 		itNon = m_NonUserMap.find(SessionID);
 		if (itNon == m_NonUserMap.end())
@@ -311,7 +311,7 @@ void CLoginServer::OnClientLeave(UINT64 SessionID)
 
 	ReleaseSRWLockExclusive(&m_UserMapLock);
 
-	//Ç®¿¡ ¹İ³³
+	//í’€ì— ë°˜ë‚©
 	m_pUserPool->Free(pUser);
 }
 
@@ -321,7 +321,7 @@ void CLoginServer::OnRecv(UINT64 SessionID, CMessage* pMessage)
 	*pMessage >> type;
 	if (pMessage->GetLastError())
 	{
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ ÀûÀ¸¸é ÇÃ·¡±× ÄÑÁü.
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ ì ìœ¼ë©´ í”Œë˜ê·¸ ì¼œì§.
 		Disconnect(SessionID);
 		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"OnRecv::CMessage Flag Error... / UniqID : %lld ", SessionID);
 		return;
@@ -357,13 +357,13 @@ void CLoginServer::LoginRequest(CMessage* pMessage, UINT64 sessionid)
 	SERVERINFO*   OutInfo;
 
 
-	// Ã³¸® ½Ã°£ start
+	// ì²˜ë¦¬ ì‹œê°„ start
 	startTime = timeGetTime();
 
-	// Á÷·ÄÈ­ ¹öÆÛ ¿¡·¯ Ã¼Å©
+	// ì§ë ¬í™” ë²„í¼ ì—ëŸ¬ ì²´í¬
 	*pMessage >> AccountNo;
 
-	// Á÷·ÄÈ­ ¹öÆÛ¿¡ ´ã±ä µ¥ÀÌÅÍ°¡ ¾øÀ» ¶§ ²÷±â
+	// ì§ë ¬í™” ë²„í¼ì— ë‹´ê¸´ ë°ì´í„°ê°€ ì—†ì„ ë•Œ ëŠê¸°
 	if (pMessage->GetData(SessionKey, SESSION_KEY_MAX) == 0)
 	{
 		Disconnect(sessionid);
@@ -373,7 +373,7 @@ void CLoginServer::LoginRequest(CMessage* pMessage, UINT64 sessionid)
 
 	if (pMessage->GetLastError())
 	{
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ ÀûÀ¸¸é ÇÃ·¡±× ÄÑÁü.
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ ì ìœ¼ë©´ í”Œë˜ê·¸ ì¼œì§.
 		Disconnect(sessionid);
 		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"LoginRequest::CMessage Flag Error... / UniqID : %lld ", sessionid);
 		return;
@@ -381,13 +381,13 @@ void CLoginServer::LoginRequest(CMessage* pMessage, UINT64 sessionid)
 
 	if (pMessage->GetDataSize() > 0)
 	{
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ Å©¸é ²÷±â
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ í¬ë©´ ëŠê¸°
 		Disconnect(sessionid);
 		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"LoginRequest::CMessage Size Overflow Error... / UniqID : %lld / Account No : %lld", sessionid, AccountNo);
 		return;
 	}
 
-	// ¼¼¼ÇÀÇ IP ¾ò°í À¯Àú °´Ã¼¿¡ ÀúÀå
+	// ì„¸ì…˜ì˜ IP ì–»ê³  ìœ ì € ê°ì²´ì— ì €ì¥
 	if (!FindIP(sessionid, IP))
 	{
 		Disconnect(sessionid);
@@ -396,33 +396,33 @@ void CLoginServer::LoginRequest(CMessage* pMessage, UINT64 sessionid)
 
 	FindServerInfo(IP, &OutInfo);
 
-	// ÇöÀç´Â ´õ¹Ì´Â »ç¼³ip ´ë¿ªÀÌ¶ó¼­ ¸¸¾à ÀúÀåµÇÁö ¾Ê´Â ´Ù¸¥ ´ë¿ªÀ¸·Î ¼¼¼ÇÀÇ ip ´ë¿ªÀÌ ³ª¿Í¼­ FindServerINfoÇÔ¼ö¿¡¼­ ¸øÃ£Àº °ÍÀÌ¸é ±× ¼¼¼ÇÀ» ²÷¾î¾ß ÇÔ.
-	// ¿ø·¡´Â ´õ¹Ì¿Í ½ÇÁ¦ Å¬¶ó°¡ ·Î±×ÀÎ ¼­¹ö¿¡ Á¢¼Ó °¡´ÉÇÑ È¯°æÀÌ¸é ¹®Á¦°¡ ¾ø´Âµ¥ ÇöÀç Å×½ºÆ®¿¡¼­´Â ´õ¹Ì¸¸ ÀÖÀ¸´Ï ´õ¹Ì ip ´ë¿ªÀÌ ¾Æ´Ñ ´Ù¸¥ ip ´ë¿ªÀÌ ³ª¿À¸é ²÷¾î¾ß ÇÔ.
+	// í˜„ì¬ëŠ” ë”ë¯¸ëŠ” ì‚¬ì„¤ip ëŒ€ì—­ì´ë¼ì„œ ë§Œì•½ ì €ì¥ë˜ì§€ ì•ŠëŠ” ë‹¤ë¥¸ ëŒ€ì—­ìœ¼ë¡œ ì„¸ì…˜ì˜ ip ëŒ€ì—­ì´ ë‚˜ì™€ì„œ FindServerINfoí•¨ìˆ˜ì—ì„œ ëª»ì°¾ì€ ê²ƒì´ë©´ ê·¸ ì„¸ì…˜ì„ ëŠì–´ì•¼ í•¨.
+	// ì›ë˜ëŠ” ë”ë¯¸ì™€ ì‹¤ì œ í´ë¼ê°€ ë¡œê·¸ì¸ ì„œë²„ì— ì ‘ì† ê°€ëŠ¥í•œ í™˜ê²½ì´ë©´ ë¬¸ì œê°€ ì—†ëŠ”ë° í˜„ì¬ í…ŒìŠ¤íŠ¸ì—ì„œëŠ” ë”ë¯¸ë§Œ ìˆìœ¼ë‹ˆ ë”ë¯¸ ip ëŒ€ì—­ì´ ì•„ë‹Œ ë‹¤ë¥¸ ip ëŒ€ì—­ì´ ë‚˜ì˜¤ë©´ ëŠì–´ì•¼ í•¨.
 	if (OutInfo == nullptr)
 	{
 		Disconnect(sessionid);
 		return;
 	}
 
-	// DB Åë½Å
+	// DB í†µì‹ 
 	GetDBData(ID, NICK, AccountNo);
 
 
-	// ÅäÅ« ¼­¹ö¿¡ ÅäÅ« ÀúÀå(ÇÃ·§ÆûÀÌ ¹ß±ŞÇÑ ¼¼¼Çkey¸¦ Å¬¶óÀÌ¾ğÆ®°¡ µé°í¿Ô°í ·Î±×ÀÎ ¼­¹ö°¡ µû·Î ¹ß±ŞÇÏÁö ¾Ê°í ÀÌ°É ±×´ë·Î »ç¿ëÇÏ´Â È¯°æÀÓ)
+	// í† í° ì„œë²„ì— í† í° ì €ì¥(í”Œë«í¼ì´ ë°œê¸‰í•œ ì„¸ì…˜keyë¥¼ í´ë¼ì´ì–¸íŠ¸ê°€ ë“¤ê³ ì™”ê³  ë¡œê·¸ì¸ ì„œë²„ê°€ ë”°ë¡œ ë°œê¸‰í•˜ì§€ ì•Šê³  ì´ê±¸ ê·¸ëŒ€ë¡œ ì‚¬ìš©í•˜ëŠ” í™˜ê²½ì„)
 	std::string token(SessionKey, SESSION_KEY_MAX);
 	SetRedisToken(AccountNo, token);
 
 
-	// À¯Àú °´Ã¼ ÃÊ±âÈ­
+	// ìœ ì € ê°ì²´ ì´ˆê¸°í™”
 	pUser = m_pUserPool->Alloc();
 	pUser->User_Init(sessionid, AccountNo);
 
-	// À¯Àú ÀÚ·á±¸Á¶¿¡ ³Ö±â
+	// ìœ ì € ìë£Œêµ¬ì¡°ì— ë„£ê¸°
 	UserInsert(sessionid, pUser);
 
 	Status = dfLOGIN_STATUS_OK;
 
-	//·Î±×ÀÎ ¼­¹ö ·Î±×ÀÎ ÀÀ´ä ÆĞÅ¶ »ı¼º ¹× Àü¼Û
+	//ë¡œê·¸ì¸ ì„œë²„ ë¡œê·¸ì¸ ì‘ë‹µ íŒ¨í‚· ìƒì„± ë° ì „ì†¡
 	CMessage* pPacket = CMessage::Alloc();
 	pPacket->Clear();
 
@@ -442,7 +442,7 @@ void CLoginServer::LoginRequest(CMessage* pMessage, UINT64 sessionid)
 
 	endTime = timeGetTime();
 
-	// ·Î±×ÀÎ ¿äÃ» Ã³¸® ½Ã°£ Ã¼Å©
+	// ë¡œê·¸ì¸ ìš”ì²­ ì²˜ë¦¬ ì‹œê°„ ì²´í¬
 	if (endTime - startTime >= 2000)
 	{
 		LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"LoginRequest::LoginRequest Proc Time Too Long / UniqID : %lld / Account No : %lld / Time : %lld", sessionid, pUser->s_AccountNo, endTime - startTime);
@@ -485,7 +485,7 @@ void CLoginServer::GetDBData(WCHAR* id, WCHAR* nick, UINT64 accountNo)
 	sql_row = m_DBTLS->DB_Fetch_Row(sql_result);
 
 
-	// sql_row[0]¿¡ userid ÄÃ·³ µ¥ÀÌÅÍ°¡ ¹®ÀÚ¿­ ÇüÅÂ·Î ÀúÀåµÇ¾î ÀÖ´Âµ¥ ±× ÁÖ¼Ò°ªÀÌ ÀúÀåµÊ.
+	// sql_row[0]ì— userid ì»¬ëŸ¼ ë°ì´í„°ê°€ ë¬¸ìì—´ í˜•íƒœë¡œ ì €ì¥ë˜ì–´ ìˆëŠ”ë° ê·¸ ì£¼ì†Œê°’ì´ ì €ì¥ë¨.
 	IDLen = static_cast<INT>(strlen((*sql_row)[0]));
 	NICKLen = static_cast<INT>(strlen((*sql_row)[1]));
 
@@ -584,8 +584,8 @@ void CLoginServer::UserTimeOut()
 
 void CLoginServer::FrameThread()
 {
-	DWORD OldTimeOutTick1; //3ÃÊ  Å¸ÀÓ¾Æ¿ô
-	DWORD OldTimeOutTick2; //10ÃÊ Å¸ÀÓ¾Æ¿ô
+	DWORD OldTimeOutTick1; //3ì´ˆ  íƒ€ì„ì•„ì›ƒ
+	DWORD OldTimeOutTick2; //10ì´ˆ íƒ€ì„ì•„ì›ƒ
 	DWORD curTick;
 
 	OldTimeOutTick1 = timeGetTime();

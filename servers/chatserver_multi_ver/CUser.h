@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #define ID_MAX          20
 #define NICK_MAX        20
 #define SESSION_KEY_MAX 64
@@ -6,8 +6,8 @@
 class CUser
 {
 public:
-	UINT64     s_UniqID;               // ³×Æ®¿öÅ© ¶óÀÌºê·¯¸®¿¡°Ô ºÎ¿©¹ŞÀº key
-	UCHAR      s_Sector;               // ¼½ÅÍ
+	UINT64     s_UniqID;               // ë„¤íŠ¸ì›Œí¬ ë¼ì´ë¸ŒëŸ¬ë¦¬ì—ê²Œ ë¶€ì—¬ë°›ì€ key
+	UCHAR      s_Sector;               // ì„¹í„°
 	UCHAR      s_TimeOut;
 	LONGLONG   s_RecvTime;
 	INT64      s_AccountNo;

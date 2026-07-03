@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 template<typename T>
 struct Node
@@ -110,10 +110,10 @@ public:
 		prevNode->_Next = nextNode;
 		nextNode->_Prev = prevNode;
 
-		//³ëµå Áö¿ì±â
+		//ë…¸ë“œ ì§€ìš°ê¸°
 		delete it._node;
 
-		//´ÙÀ½ ³ëµå °¡¸®Å°´Â iterator ¹İÈ¯
+		//ë‹¤ìŒ ë…¸ë“œ ê°€ë¦¬í‚¤ëŠ” iterator ë°˜í™˜
 		iterator ret = nextNode;
 		_size--;
 
@@ -121,13 +121,13 @@ public:
 	}
 	List()
 	{
-		//Dummy ³ëµå »ı¼º
+		//Dummy ë…¸ë“œ ìƒì„±
 		_head = new Node;
 		_tail = new Node;
 		_head->_Prev = nullptr;
 		_tail->_Next = nullptr;
 
-		//Çìµå, Å×ÀÏ ³ëµå ¿¬°á
+		//í—¤ë“œ, í…Œì¼ ë…¸ë“œ ì—°ê²°
 		_head->_Next = _tail;
 		_tail->_Prev = _head;
 
@@ -137,12 +137,12 @@ public:
 	{
 		if (_size > 0)
 		{
-			//¸®½ºÆ®¿¡ ³²¾ÆÀÖ´Â ¿ø¼Ò »èÁ¦
+			//ë¦¬ìŠ¤íŠ¸ì— ë‚¨ì•„ìˆëŠ” ì›ì†Œ ì‚­ì œ
 			clear();
 
 		}
 
-		//Çìµå, Å×ÀÏ ³ëµå »èÁ¦
+		//í—¤ë“œ, í…Œì¼ ë…¸ë“œ ì‚­ì œ
 		delete _head;
 		delete _tail;
 	}
@@ -195,7 +195,7 @@ public:
 	{
 		for (iterator it = begin(); it != end();++it)
 		{
-			//iterator·Î ¸®½ºÆ® ¼øÈ¸ÇÏ¸é¼­ ÀÎÀÚ·Î ¹ŞÀº Data Ã£±â
+			//iteratorë¡œ ë¦¬ìŠ¤íŠ¸ ìˆœíšŒí•˜ë©´ì„œ ì¸ìë¡œ ë°›ì€ Data ì°¾ê¸°
 			if (*it == Data)
 			{
 				erase(it);
@@ -209,7 +209,7 @@ public:
 	{
 		for (iterator it = begin(); it != end(); ++it)
 		{
-			//iterator·Î ¸®½ºÆ® ¼øÈ¸ÇÏ¸é¼­ ÀÎÀÚ·Î ¹ŞÀº Data Ã£±â
+			//iteratorë¡œ ë¦¬ìŠ¤íŠ¸ ìˆœíšŒí•˜ë©´ì„œ ì¸ìë¡œ ë°›ì€ Data ì°¾ê¸°
 			if (*it == Data)
 			{
 				return it;

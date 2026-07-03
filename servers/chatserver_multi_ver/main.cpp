@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+ï»¿#define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <windows.h>
 #include <ws2tcpip.h>
@@ -41,7 +41,7 @@ int main()
     while (!ESC)
     {
         Sleep(1000);
-        //ESC Å° ´­·¶À¸¸é 
+        //ESC í‚¤ ëˆŒë €ìœ¼ë©´ 
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8001)
         {
 

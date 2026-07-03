@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <windows.h>
 #include <time.h>
 #include "MemoryPoolTLS.h"
@@ -13,7 +13,7 @@ INT CMessage::m_iLanHeaderSize = 0;
 bool CMessage::m_netHderFlag = false;
 
 
-//Á÷·ÄÈ­ ¹öÆÛ »ı¼ºÀÚ¿¡¼­´Â refCnt = 0À¸·Î ÇÏ°í Alloc ÇÏ°í ClearÇÒ ¶§ refCnt = 1·Î ¸¸µë.
+//ì§ë ¬í™” ë²„í¼ ìƒì„±ìì—ì„œëŠ” refCnt = 0ìœ¼ë¡œ í•˜ê³  Alloc í•˜ê³  Clearí•  ë•Œ refCnt = 1ë¡œ ë§Œë“¬.
 
 CMessage::CMessage()
 {
@@ -233,17 +233,17 @@ bool CMessage::Resize()
 	if (m_iBufferSize * 2 >= eBuffer_Max)
 		return false;
 
-	// ÀÓ½Ã ¹öÆÛ »ı¼º
-	char* pTemp = (char*)malloc(m_iBufferSize * 2); //2¹è Å« Á÷·ÄÈ­ ¹öÆÛ »ı¼º
-	memcpy_s(pTemp, m_iBufferSize, m_iAllocPtr, m_iBufferSize); //±âÁ¸ Á÷·ÄÈ­ ¹öÆÛ º¹»ç
+	// ì„ì‹œ ë²„í¼ ìƒì„±
+	char* pTemp = (char*)malloc(m_iBufferSize * 2); //2ë°° í° ì§ë ¬í™” ë²„í¼ ìƒì„±
+	memcpy_s(pTemp, m_iBufferSize, m_iAllocPtr, m_iBufferSize); //ê¸°ì¡´ ì§ë ¬í™” ë²„í¼ ë³µì‚¬
 	
-	__int64 tempWpos = m_iWritePos - m_iAllocPtr; //offset ±¸ÇÏ±â
+	__int64 tempWpos = m_iWritePos - m_iAllocPtr; //offset êµ¬í•˜ê¸°
 	__int64 tempRpos = m_iReadPos - m_iAllocPtr;
 
-	//±âÁ¸ ¹öÆÛ ÇØÁ¦
+	//ê¸°ì¡´ ë²„í¼ í•´ì œ
 	free(m_iAllocPtr);
 
-	//ÀÓ½Ã ¹öÆÛ Æ÷ÀÎÅÍ¸¦ m_iBuffer °ªÀ¸·Î ¼³Á¤ ¹× ¹öÆÛ Å©±â Àç¼³Á¤
+	//ì„ì‹œ ë²„í¼ í¬ì¸í„°ë¥¼ m_iBuffer ê°’ìœ¼ë¡œ ì„¤ì • ë° ë²„í¼ í¬ê¸° ì¬ì„¤ì •
 	m_iAllocPtr = pTemp;
 	m_iBufferSize = m_iBufferSize * 2;
 	m_iWritePos = m_iAllocPtr+ tempWpos;
@@ -269,7 +269,7 @@ int CMessage::SubRef()
 	return InterlockedDecrement((volatile long*)&m_iRefCnt);
 }
 
-#pragma region ¿¬»êÀÚ ¿À¹ö·Îµù
+#pragma region ì—°ì‚°ì ì˜¤ë²„ë¡œë”©
 CMessage& CMessage::operator=(CMessage& clSrcMessage)
 {
 	m_iDataSize = clSrcMessage.GetDataSize();

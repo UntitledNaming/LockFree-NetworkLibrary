@@ -1,6 +1,6 @@
-#pragma once
-#define df_TIMEOUT1        3000      // 3ÃÊ Å¸ÀÓ¾Æ¿ô
-#define df_TIMEOUT2        40000     // 30ÃÊ Å¸ÀÓ¾Æ¿ô
+ï»¿#pragma once
+#define df_TIMEOUT1        3000      // 3ì´ˆ íƒ€ì„ì•„ì›ƒ
+#define df_TIMEOUT2        40000     // 30ì´ˆ íƒ€ì„ì•„ì›ƒ
 #define df_FRAME           10
 
 class CMonitorClient;
@@ -28,7 +28,7 @@ private:
 
 private:
 	////////////////////////////////////////////////////////////////////////////
-	// ChatServer ÀÚ·á ±¸Á¶ ¹× ¸â¹ö °´Ã¼
+	// ChatServer ìë£Œ êµ¬ì¡° ë° ë©¤ë²„ ê°ì²´
 	////////////////////////////////////////////////////////////////////////////
 	std::unordered_map<UINT64, CUser*>  m_UserMap;
 	std::unordered_map<UINT64, DWORD>   m_NonUserMap;
@@ -37,32 +37,32 @@ private:
 	SRWLOCK                             m_NonUserMapLock;
 	CMemoryPool<CUser>*                 m_pUserPool;
 	ProcessMonitor*                     m_pPDH;
-	CMonitorClient*                     m_pMonitorClient;  // ¸ğ´ÏÅÍ¸µ ¼­¹ö Á¢¼Ó Å¬¶óÀÌ¾ğÆ®
-	BOOL                                m_EndFlag;         // ¸ğ´ÏÅÍ,  ½º·¹µå Á¾·á ÇÃ·¡±×
+	CMonitorClient*                     m_pMonitorClient;  // ëª¨ë‹ˆí„°ë§ ì„œë²„ ì ‘ì† í´ë¼ì´ì–¸íŠ¸
+	BOOL                                m_EndFlag;         // ëª¨ë‹ˆí„°,  ìŠ¤ë ˆë“œ ì¢…ë£Œ í”Œë˜ê·¸
 
 
 private:
 	///////////////////////////////////////////////////////////////////////////
-	// ChatServer ½º·¹µå
+	// ChatServer ìŠ¤ë ˆë“œ
 	///////////////////////////////////////////////////////////////////////////
 	std::thread                         m_Frame;
 	std::thread                         m_Monitor;
 
 private:
 	///////////////////////////////////////////////////////////////////////////
-    // ChatServer ¸ğ´ÏÅÍ¸µ º¯¼ö
+    // ChatServer ëª¨ë‹ˆí„°ë§ ë³€ìˆ˜
     ///////////////////////////////////////////////////////////////////////////
-	LONG                                m_ReqTPS;        // ÃÊ´ç ¸Ş¼¼Áö ÀÀ´ä °¹¼ö(¼½ÅÍ ÀÌµ¿, Ã¤ÆÃ ¸Ş¼¼Áö, ·Î±×ÀÎ ¿äÃ» ÇÕº»)
-	LONG                                m_ReqLoginTPS;   // ÃÊ´ç ¸Ş¼¼Áö ÀÀ´ä °¹¼ö(·Î±×ÀÎ ¿äÃ»¿¡ ´ëÇÑ ÀÀ´ä)
-	LONG                                m_ResLoginTPS;   // ÃÊ´ç ¸Ş¼¼Áö ÀÀ´ä °¹¼ö(·Î±×ÀÎ ¿äÃ»¿¡ ´ëÇÑ ÀÀ´ä)
-	LONG                                m_ReqMoveTPS;    // ÃÊ´ç ¸Ş¼¼Áö ÀÀ´ä °¹¼ö(¼½ÅÍ ÀÌµ¿ ¿äÃ»¿¡ ´ëÇÑ ÀÀ´ä)
-	LONG                                m_ResMoveTPS;    // ÃÊ´ç ¸Ş¼¼Áö ÀÀ´ä °¹¼ö(¼½ÅÍ ÀÌµ¿ ¿äÃ»¿¡ ´ëÇÑ ÀÀ´ä)
-	LONG                                m_ReqChatMsgTPS; // ÃÊ´ç ¸Ş¼¼Áö ÀÀ´ä °¹¼ö(Ã¤ÆÃ º¸³»±â ¿äÃ»¿¡ ´ëÇÑ ÀÀ´ä, ÁÖº¯ ¼½ÅÍ À¯Àú¿¡°Ô SendPacketÇÒ¶§ ¸¶´Ù Ä«¿îÆÃ)
-	LONG                                m_ResChatMsgTPS; // ÃÊ´ç ¸Ş¼¼Áö ÀÀ´ä °¹¼ö(Ã¤ÆÃ º¸³»±â ¿äÃ»¿¡ ´ëÇÑ ÀÀ´ä, ÁÖº¯ ¼½ÅÍ À¯Àú¿¡°Ô SendPacketÇÒ¶§ ¸¶´Ù Ä«¿îÆÃ)
+	LONG                                m_ReqTPS;        // ì´ˆë‹¹ ë©”ì„¸ì§€ ì‘ë‹µ ê°¯ìˆ˜(ì„¹í„° ì´ë™, ì±„íŒ… ë©”ì„¸ì§€, ë¡œê·¸ì¸ ìš”ì²­ í•©ë³¸)
+	LONG                                m_ReqLoginTPS;   // ì´ˆë‹¹ ë©”ì„¸ì§€ ì‘ë‹µ ê°¯ìˆ˜(ë¡œê·¸ì¸ ìš”ì²­ì— ëŒ€í•œ ì‘ë‹µ)
+	LONG                                m_ResLoginTPS;   // ì´ˆë‹¹ ë©”ì„¸ì§€ ì‘ë‹µ ê°¯ìˆ˜(ë¡œê·¸ì¸ ìš”ì²­ì— ëŒ€í•œ ì‘ë‹µ)
+	LONG                                m_ReqMoveTPS;    // ì´ˆë‹¹ ë©”ì„¸ì§€ ì‘ë‹µ ê°¯ìˆ˜(ì„¹í„° ì´ë™ ìš”ì²­ì— ëŒ€í•œ ì‘ë‹µ)
+	LONG                                m_ResMoveTPS;    // ì´ˆë‹¹ ë©”ì„¸ì§€ ì‘ë‹µ ê°¯ìˆ˜(ì„¹í„° ì´ë™ ìš”ì²­ì— ëŒ€í•œ ì‘ë‹µ)
+	LONG                                m_ReqChatMsgTPS; // ì´ˆë‹¹ ë©”ì„¸ì§€ ì‘ë‹µ ê°¯ìˆ˜(ì±„íŒ… ë³´ë‚´ê¸° ìš”ì²­ì— ëŒ€í•œ ì‘ë‹µ, ì£¼ë³€ ì„¹í„° ìœ ì €ì—ê²Œ SendPacketí• ë•Œ ë§ˆë‹¤ ì¹´ìš´íŒ…)
+	LONG                                m_ResChatMsgTPS; // ì´ˆë‹¹ ë©”ì„¸ì§€ ì‘ë‹µ ê°¯ìˆ˜(ì±„íŒ… ë³´ë‚´ê¸° ìš”ì²­ì— ëŒ€í•œ ì‘ë‹µ, ì£¼ë³€ ì„¹í„° ìœ ì €ì—ê²Œ SendPacketí• ë•Œ ë§ˆë‹¤ ì¹´ìš´íŒ…)
 
 
 	///////////////////////////////////////////////////////////////////////////
-    // ChatServer Config º¯¼ö
+    // ChatServer Config ë³€ìˆ˜
     ///////////////////////////////////////////////////////////////////////////
 	INT                                 m_UserMaxCnt;
 
@@ -82,7 +82,7 @@ private:
 	UINT64       SumResMsgTPS();
 
 	///////////////////////////////////////////////////////////////////////////
-    // CNetServer Callback ÇÔ¼ö ±¸Çö
+    // CNetServer Callback í•¨ìˆ˜ êµ¬í˜„
     ///////////////////////////////////////////////////////////////////////////
 	virtual bool OnConnectionRequest(WCHAR* InputIP, USHORT InputPort);
 	virtual void OnClientJoin(UINT64 SessionID);
@@ -90,13 +90,13 @@ private:
 	virtual void OnRecv(UINT64 SessionID, CMessage* pMessage);
 
 	///////////////////////////////////////////////////////////////////////////
-	// Å¸ÀÓ¾Æ¿ô ÇÔ¼ö
+	// íƒ€ì„ì•„ì›ƒ í•¨ìˆ˜
 	///////////////////////////////////////////////////////////////////////////
 	void NonUserTimeOut();
 	void UserTimeOut();
 
 	///////////////////////////////////////////////////////////////////////////
-	// ¼½ÅÍ °ü·Ã ÇÔ¼ö
+	// ì„¹í„° ê´€ë ¨ í•¨ìˆ˜
 	///////////////////////////////////////////////////////////////////////////
 	void AcquireSectorExclusiveLock(WORD eXpos, WORD eYpos, WORD iXpos, WORD iYpos);
 	void ReleaseSectorExclusiveLock(WORD eXpos, WORD eYpos, WORD iXpos, WORD iYpos);
@@ -106,7 +106,7 @@ private:
 	BOOL SectorRangeCheck(WORD xpos, WORD ypos);
 
 	///////////////////////////////////////////////////////////////////////////
-    // Recv Message ÇÚµé·¯
+    // Recv Message í•¸ë“¤ëŸ¬
     ///////////////////////////////////////////////////////////////////////////
 	void LoginProc(CMessage* pMessage, UINT64 sessionid);
 	void SectorMoveProc(CMessage* pMessage, UINT64 sessionid);

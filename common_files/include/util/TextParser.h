@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #define MAX_NAME_SIZE 256
 #define MAX_STINRG_SIZE 256
 
@@ -27,6 +27,6 @@ public:
 private:
 	char  _FileName[MAX_NAME_SIZE] = { 0, };
 	char* _pTextBuffer = nullptr;
-	char* _pRead = nullptr;//¹öÆÛ¸¦ ÀĞ±â À§ÇÑ ¿ëµµÀÇ Æ÷ÀÎÅÍ
+	char* _pRead = nullptr;//ë²„í¼ë¥¼ ì½ê¸° ìœ„í•œ ìš©ë„ì˜ í¬ì¸í„°
 };
 

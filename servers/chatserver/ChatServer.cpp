@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+ï»¿#define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 #include <windows.h>
 #include <timeapi.h>
@@ -52,7 +52,7 @@ ChatServer::~ChatServer()
 
 BOOL ChatServer::RunServer()
 {
-	//Parsing ÀÛ¾÷
+	//Parsing ì‘ì—…
 	Parser parser;
 	if (!parser.LoadFile("CServerConfig.txt"))
 		return false;
@@ -66,7 +66,7 @@ BOOL ChatServer::RunServer()
 	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
 	monitorstr = converter.from_bytes(monitor.s_ptr);
 
-	//charÇü ¹®ÀÚ¿­À» wchar·Î º¯È¯
+	//charí˜• ë¬¸ìì—´ì„ wcharë¡œ ë³€í™˜
 	std::wstring bindstr;
 	bindstr = converter.from_bytes(bind.s_ptr);
 
@@ -162,8 +162,8 @@ void ChatServer::Mem_Init(INT userMAX, INT updateFrame, WCHAR* monitorserverip, 
 	m_ResChatMsgTPS = 0;
 	m_MonitorFlag = false;
 
-	if (!m_pMonitorClient->Connect(monitorserverip, monitorserverport))
-		__debugbreak();
+	//if (!m_pMonitorClient->Connect(monitorserverip, monitorserverport))
+	//	__debugbreak();
 
 	Thread_Create();
 
@@ -272,7 +272,7 @@ void ChatServer::UserTimeOut()
 
 void ChatServer::SendPacket_SectorOne(CMessage* pMessage, WORD xpos, WORD ypos, CUser* pUser)
 {
-	//¼½ÅÍ¿¡ Á¸ÀçÇÏ´Â pUser Á¦¿ÜÇÏ°í º¸³¿.
+	//ì„¹í„°ì— ì¡´ì¬í•˜ëŠ” pUser ì œì™¸í•˜ê³  ë³´ëƒ„.
 	std::list<CUser*>::iterator it = m_Sector[ypos][xpos].begin();
 
 	for (; it != m_Sector[ypos][xpos].end(); ++it)
@@ -288,13 +288,13 @@ void ChatServer::SendPacket_SectorOne(CMessage* pMessage, WORD xpos, WORD ypos, 
 
 void ChatServer::SendPakcet_SectorAround(CMessage* pMessage, CUser* pUser)
 {
-	//pUser ÁÖÀ§·Î ¸Ş¼¼Áö »Ñ¸®±â
+	//pUser ì£¼ìœ„ë¡œ ë©”ì„¸ì§€ ë¿Œë¦¬ê¸°
 	SECTOR_AROUND around;
 
-	//aroundÀÇ ¼½ÅÍ ¹è¿­ 0¹øÂ°´Â ¹İµå½Ã ÀÚ±â ÀÚ½Å ¼½ÅÍ ÁÂÇ¥ÀÓ.
+	//aroundì˜ ì„¹í„° ë°°ì—´ 0ë²ˆì§¸ëŠ” ë°˜ë“œì‹œ ìê¸° ìì‹  ì„¹í„° ì¢Œí‘œì„.
 	SectorFind(&around, pUser->s_Pos.s_xpos, pUser->s_Pos.s_ypos);
 
-	//³» ÁÖÀ§ ¼½ÅÍ¿¡°Ô º¸³»±â
+	//ë‚´ ì£¼ìœ„ ì„¹í„°ì—ê²Œ ë³´ë‚´ê¸°
 	for (int i = 0; i < around.s_Cnt; i++)
 	{
 		SendPacket_SectorOne(pMessage, around.s_Around[i].s_xpos, around.s_Around[i].s_ypos, nullptr);
@@ -305,7 +305,7 @@ void ChatServer::SectorFind(SECTOR_AROUND* pAround, WORD xpos, WORD ypos)
 {
 	INT cnt = 0;
 
-	//º»ÀÎ ÀÚ½Å ¼½ÅÍ
+	//ë³¸ì¸ ìì‹  ì„¹í„°
 	pAround->s_Around[cnt].s_xpos = xpos;
 	pAround->s_Around[cnt].s_ypos = ypos;
 	cnt++;
@@ -374,7 +374,7 @@ BOOL ChatServer::SectorRemove(CUser* pUser)
 	std::list<CUser*>::iterator it = m_Sector[pUser->s_Pos.s_ypos][pUser->s_Pos.s_xpos].begin();
 	for (; it != m_Sector[pUser->s_Pos.s_ypos][pUser->s_Pos.s_xpos].end(); ++it)
 	{
-		//¼½ÅÍ¿¡¼­ À¯Àú Ã£¾ÒÀ¸¸é
+		//ì„¹í„°ì—ì„œ ìœ ì € ì°¾ì•˜ìœ¼ë©´
 		if (pUser == *it)
 		{
 			m_Sector[pUser->s_Pos.s_ypos][pUser->s_Pos.s_xpos].erase(it);
@@ -420,7 +420,7 @@ void ChatServer::LoginProc(CMessage* pMessage, UINT64 sessionid)
 	{
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"LoginRequest::CMessage Flag Error... / UniqID : %lld", sessionid);
 
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ ÀûÀ¸¸é ÇÃ·¡±× ÄÑÁü.
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ ì ìœ¼ë©´ í”Œë˜ê·¸ ì¼œì§.
 		Disconnect(sessionid);
 
 
@@ -430,7 +430,7 @@ void ChatServer::LoginProc(CMessage* pMessage, UINT64 sessionid)
 	if (pMessage->GetDataSize() > 0)
 	{
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"LoginRequest::CMessage Size Overflow Error... / UniqID : %lld ", sessionid);
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ Å©¸é ²÷±â
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ í¬ë©´ ëŠê¸°
 		Disconnect(sessionid);
 
 		return;
@@ -438,21 +438,21 @@ void ChatServer::LoginProc(CMessage* pMessage, UINT64 sessionid)
 
 	Status = 1;
 
-	//NonUser ±¸Á¶¿¡¼­ Ã£±â
+	//NonUser êµ¬ì¡°ì—ì„œ ì°¾ê¸°
 	itNon = m_NonUserMap.find(sessionid);
 	if (itNon == m_NonUserMap.end())
 		__debugbreak();
 
-	//ÀÌÁ¦ ÁøÂ¥ À¯Àú´Ï NonUser¿¡¼­ Á¦°ÅÇØ¾ß ÇÔ.
+	//ì´ì œ ì§„ì§œ ìœ ì €ë‹ˆ NonUserì—ì„œ ì œê±°í•´ì•¼ í•¨.
 	m_NonUserMap.erase(itNon);
 
-	//À¯Àú°´Ã¼ ÃÊ±âÈ­
+	//ìœ ì €ê°ì²´ ì´ˆê¸°í™”
 	pUser = m_pUserPool->Alloc();
 	pUser->User_Init(sessionid, accountno, ID, NICK);
 
 	m_UserMap.insert(std::pair<UINT64, CUser*>(sessionid, pUser));
 
-	//Ã¤ÆÃ¼­¹ö ·Î±×ÀÎ ÀÀ´ä ÆĞÅ¶ »ı¼º ¹× Àü¼Û
+	//ì±„íŒ…ì„œë²„ ë¡œê·¸ì¸ ì‘ë‹µ íŒ¨í‚· ìƒì„± ë° ì „ì†¡
 	CMessage* pPacket = CMessage::Alloc();
 	pPacket->Clear();
 
@@ -471,13 +471,13 @@ void ChatServer::LoginProc(CMessage* pMessage, UINT64 sessionid)
 
 void ChatServer::SectorMoveProc(CMessage* pMessage, UINT64 sessionid)
 {
-	//À¯Àú ÀÚ·á ±¸Á¶¿¡¼­ Ã£±â
+	//ìœ ì € ìë£Œ êµ¬ì¡°ì—ì„œ ì°¾ê¸°
 	std::unordered_map<UINT64, CUser*>::iterator itOn;
 	CUser* pUser;
 	INT64 AcntNo;
 	SECTOR pos;
 
-	// À¯Àú Ã£±â
+	// ìœ ì € ì°¾ê¸°
 	itOn = m_UserMap.find(sessionid);
 	if (itOn == m_UserMap.end())
 	{
@@ -485,7 +485,7 @@ void ChatServer::SectorMoveProc(CMessage* pMessage, UINT64 sessionid)
 		if (itNon == m_NonUserMap.end())
 			__debugbreak();
 
-		// LoginProc Ã³¸® Àü¿¡ ¸Ş¼¼Áö ¸ÕÀú ¿Â °æ¿ì´Â »ó´ë¹æ ²÷±â
+		// LoginProc ì²˜ë¦¬ ì „ì— ë©”ì„¸ì§€ ë¨¼ì € ì˜¨ ê²½ìš°ëŠ” ìƒëŒ€ë°© ëŠê¸°
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::UserMap Not Exist NonUserMap Exist Error... / UniqID : %llu ", sessionid);
 		Disconnect(sessionid);
 		return;
@@ -493,7 +493,7 @@ void ChatServer::SectorMoveProc(CMessage* pMessage, UINT64 sessionid)
 	
 	pUser = itOn->second;
 
-	//Ã£¾ÒÀ¸¸é
+	//ì°¾ì•˜ìœ¼ë©´
 	*pMessage >> AcntNo;
 	*pMessage >> pos.s_xpos;
 	*pMessage >> pos.s_ypos;
@@ -501,14 +501,14 @@ void ChatServer::SectorMoveProc(CMessage* pMessage, UINT64 sessionid)
 	if (pMessage->GetLastError())
 	{
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::CMessage Flag Error... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ ÀûÀ¸¸é ÇÃ·¡±× ÄÑÁü.
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ ì ìœ¼ë©´ í”Œë˜ê·¸ ì¼œì§.
 		Disconnect(sessionid);
 		return;
 	}
 	if (pMessage->GetDataSize() > 0)
 	{
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::CMessage Size Overflow Error... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ Å©¸é ²÷±â
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ í¬ë©´ ëŠê¸°
 		Disconnect(sessionid);
 		return;
 	}
@@ -519,18 +519,18 @@ void ChatServer::SectorMoveProc(CMessage* pMessage, UINT64 sessionid)
 		return;
 	}
 
-	//¼½ÅÍ ÀÌµ¿ ¸Ş¼¼Áö Ã³À½ ¿Â °æ¿ì ±×³É º¯°æ ¼½ÅÍ¿¡¸¸ ³Ö¾îÁÖ¸é µÊ. ¾Æ´Ï¸é ±âÁ¸ ¼½ÅÍ¿¡¼­ »èÁ¦ÇÏ°í º¯°æ ÇØ¾ß ÇÔ.
+	//ì„¹í„° ì´ë™ ë©”ì„¸ì§€ ì²˜ìŒ ì˜¨ ê²½ìš° ê·¸ëƒ¥ ë³€ê²½ ì„¹í„°ì—ë§Œ ë„£ì–´ì£¼ë©´ ë¨. ì•„ë‹ˆë©´ ê¸°ì¡´ ì„¹í„°ì—ì„œ ì‚­ì œí•˜ê³  ë³€ê²½ í•´ì•¼ í•¨.
 	if (pUser->s_Sector == 0)
 	{
 		m_Sector[pos.s_ypos][pos.s_xpos].push_back(pUser);
 	}
 	else
 	{
-		//±âÁ¸ ¼½ÅÍ¿¡¼­ Á¦°Å
+		//ê¸°ì¡´ ì„¹í„°ì—ì„œ ì œê±°
 		if (!SectorRemove(pUser))
 			__debugbreak();
 
-		//»õ·Î¿î ¼½ÅÍ¿¡ ³Ö±â
+		//ìƒˆë¡œìš´ ì„¹í„°ì— ë„£ê¸°
 		m_Sector[pos.s_ypos][pos.s_xpos].push_back(pUser);
 	}
 
@@ -539,7 +539,7 @@ void ChatServer::SectorMoveProc(CMessage* pMessage, UINT64 sessionid)
 	pUser->s_Pos.s_ypos = pos.s_ypos;
 	pUser->s_RecvTime = timeGetTime();
 
-	//¼½ÅÍ ÀÌµ¿ ÀÀ´ä ÆĞÅ¶ »Ñ¸®±â
+	//ì„¹í„° ì´ë™ ì‘ë‹µ íŒ¨í‚· ë¿Œë¦¬ê¸°
 	CMessage* pPacket = CMessage::Alloc();
 	pPacket->Clear();
 	*pPacket << (WORD)en_PACKET_CS_CHAT_RES_SECTOR_MOVE;
@@ -563,7 +563,7 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 	WORD   MsgLen;
 	WCHAR  Message[MESSAGE_LEN_MAX];
 
-	//À¯Àú ÀÚ·á ±¸Á¶¿¡¼­ Ã£±â
+	//ìœ ì € ìë£Œ êµ¬ì¡°ì—ì„œ ì°¾ê¸°
 	itOn = m_UserMap.find(sessionid);
 	if (itOn == m_UserMap.end())
 	{
@@ -571,7 +571,7 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 		if (itNon == m_NonUserMap.end())
 			__debugbreak();
 
-		// LoginProc Ã³¸® Àü¿¡ ¸Ş¼¼Áö ¸ÕÀú ¿Â °æ¿ì´Â »ó´ë¹æ ²÷±â
+		// LoginProc ì²˜ë¦¬ ì „ì— ë©”ì„¸ì§€ ë¨¼ì € ì˜¨ ê²½ìš°ëŠ” ìƒëŒ€ë°© ëŠê¸°
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::UserMap Not Exist NonUserMap Exist Error... / UniqID : %llu ", sessionid);
 		Disconnect(sessionid);
 
@@ -579,7 +579,7 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 	}
 
 
-	//Ã£¾ÒÀ¸¸é
+	//ì°¾ì•˜ìœ¼ë©´
 	pUser = itOn->second;
 
 	if (pUser->s_Sector != 1)
@@ -591,11 +591,11 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 
 
 
-	//¿äÃ» ¸Ş¼¼Áö Ã³¸®
-	pMessage->MoveReadPos(sizeof(INT64)); //AccoutNo ¿Å±â±â
+	//ìš”ì²­ ë©”ì„¸ì§€ ì²˜ë¦¬
+	pMessage->MoveReadPos(sizeof(INT64)); //AccoutNo ì˜®ê¸°ê¸°
 
-	//Ã¤ÆÃ ¸Ş¼¼Áö¸¦ »Ì¾Æ¼­ ¾î¶² ±İÁö¾î Ã¼Å©(ÇÊÅÍ¸µ ÀÛ¾÷)
-	*pMessage >> MsgLen;//¸Ş¼¼Áö ¹ÙÀÌÆ® ´ÜÀ§ ±æÀÌ
+	//ì±„íŒ… ë©”ì„¸ì§€ë¥¼ ë½‘ì•„ì„œ ì–´ë–¤ ê¸ˆì§€ì–´ ì²´í¬(í•„í„°ë§ ì‘ì—…)
+	*pMessage >> MsgLen;//ë©”ì„¸ì§€ ë°”ì´íŠ¸ ë‹¨ìœ„ ê¸¸ì´
 
 	if (pMessage->GetData((char*)Message, MsgLen) == 0)
 	{
@@ -607,7 +607,7 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 	{
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::CMessage Flag Error... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
 
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ ÀûÀ¸¸é ÇÃ·¡±× ÄÑÁü.
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ ì ìœ¼ë©´ í”Œë˜ê·¸ ì¼œì§.
 		Disconnect(sessionid);
 
 		return;
@@ -616,14 +616,14 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 	if (pMessage->GetDataSize() > 0)
 	{
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"ChatMessageRequest::CMessage Size Overflow Error... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ Å©¸é ²÷±â
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ í¬ë©´ ëŠê¸°
 		Disconnect(sessionid);
 
 		return;
 	}
 
 	pUser->s_RecvTime = timeGetTime();
-	//Ã¤ÆÃ º¸³»±â ÀÀ´ä ¸Ş¼¼Áö »ı¼º ¹× Àü´Ş
+	//ì±„íŒ… ë³´ë‚´ê¸° ì‘ë‹µ ë©”ì„¸ì§€ ìƒì„± ë° ì „ë‹¬
 	CMessage* pPacket = CMessage::Alloc();
 	pPacket->Clear();
 
@@ -634,7 +634,7 @@ void ChatServer::ChatMessageProc(CMessage* pMessage, UINT64 sessionid)
 	*pPacket << MsgLen;
 	pPacket->PutData((char*)Message, MsgLen);
 
-	//ÁÖÀ§¿¡ »Ñ¸®±â
+	//ì£¼ìœ„ì— ë¿Œë¦¬ê¸°
 	SendPakcet_SectorAround(pPacket, pUser);
 
 	CMessage::Free(pPacket);
@@ -646,13 +646,13 @@ void ChatServer::HeartBeatProc(CMessage* pMessage, UINT64 sessionid)
 	if (pMessage->GetDataSize() > 0)
 	{
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"HeartBeat::CMessage Size Overflow Error... / UniqID : %llu  ", sessionid);
-		//ÇÁ·ÎÅäÄİ º¸´Ù º¸³½ µ¥ÀÌÅÍ Å©±â°¡ Å©¸é ²÷±â
+		//í”„ë¡œí† ì½œ ë³´ë‹¤ ë³´ë‚¸ ë°ì´í„° í¬ê¸°ê°€ í¬ë©´ ëŠê¸°
 		Disconnect(sessionid);
 
 		return;
 	}
 
-	//À¯Àú ÀÚ·á ±¸Á¶¿¡¼­ Ã£±â
+	//ìœ ì € ìë£Œ êµ¬ì¡°ì—ì„œ ì°¾ê¸°
 	std::unordered_map<UINT64, CUser*>::iterator itOn = m_UserMap.find(sessionid);
 	if (itOn == m_UserMap.end())
 	{
@@ -668,13 +668,13 @@ void ChatServer::HeartBeatProc(CMessage* pMessage, UINT64 sessionid)
 	}
 
 
-	//Ã£¾ÒÀ¸¸é
+	//ì°¾ì•˜ìœ¼ë©´
 	CUser* pUser = itOn->second;
 	if (pUser->s_Sector != 1)
 	{
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"HeartBeat::Not Recv SectorMove Message ... / UniqID : %llu  / AccountNo : %llu ", sessionid, pUser->s_AccountNo);
 
-		//¼½ÅÍ ÀÌµ¿ º¸´Ù ¸ÕÀú ÆĞÅ¶¿Â °æ¿ì
+		//ì„¹í„° ì´ë™ ë³´ë‹¤ ë¨¼ì € íŒ¨í‚·ì˜¨ ê²½ìš°
 		Disconnect(sessionid);
 		return;
 	}
@@ -736,33 +736,33 @@ void ChatServer::RecvProc(UINT64 sessionID, CMessage* pMessage)
 
 void ChatServer::DeleteProc(UINT64 sessionID)
 {
-	//ÇØ´ç ID°¡ NonUserÀÎÁö UserÀÎÁö ¸ğ¸§.
+	//í•´ë‹¹ IDê°€ NonUserì¸ì§€ Userì¸ì§€ ëª¨ë¦„.
 	std::unordered_map<UINT64, DWORD>::iterator itNon;
 	std::unordered_map<UINT64, CUser*>::iterator itOn;
 
-	//Non À¯Àú ÀÚ·á ±¸Á¶¿¡¼­ ¸ÕÀú Ã£±â
+	//Non ìœ ì € ìë£Œ êµ¬ì¡°ì—ì„œ ë¨¼ì € ì°¾ê¸°
 	itNon = m_NonUserMap.find(sessionID);
 	if (itNon != m_NonUserMap.end())
 	{
-		//Ã£¾ÒÀ¸¸é Á¦°ÅÇÏ°í ³¡
+		//ì°¾ì•˜ìœ¼ë©´ ì œê±°í•˜ê³  ë
 		m_NonUserMap.erase(itNon);
 
 		return;
 	}
 
 
-	// ³íÀ¯Àú¿¡ ¾øÀ¸¸é À¯Àú¿¡¼­ Ã£±â
+	// ë…¼ìœ ì €ì— ì—†ìœ¼ë©´ ìœ ì €ì—ì„œ ì°¾ê¸°
 	itOn = m_UserMap.find(sessionID);
 	if (itOn == m_UserMap.end())
 		__debugbreak();
 
 	CUser* pUser = itOn->second;
 
-	//À¯Àú ÀÚ·á±¸Á¶¿¡¼­ Á¦°Å
+	//ìœ ì € ìë£Œêµ¬ì¡°ì—ì„œ ì œê±°
 	m_UserMap.erase(itOn);
 
 
-	//¼½ÅÍ¿¡¼­ Á¦°ÅÇÒ¶§ SectorMove ¸Ş¼¼Áö ¿À±âÀü¿¡ Á¦°Å°¡ µÇ´Â °æ¿ì SectorRemove¿¡¼­ ¿¡·¯³². ±×·¡¼­ ÀÌ¶§´Â SectorRemove È£Ãâ ¾ÈÇÔ.
+	//ì„¹í„°ì—ì„œ ì œê±°í• ë•Œ SectorMove ë©”ì„¸ì§€ ì˜¤ê¸°ì „ì— ì œê±°ê°€ ë˜ëŠ” ê²½ìš° SectorRemoveì—ì„œ ì—ëŸ¬ë‚¨. ê·¸ë˜ì„œ ì´ë•ŒëŠ” SectorRemove í˜¸ì¶œ ì•ˆí•¨.
 	if (pUser->s_Sector == 0)
 	{
 		m_pUserPool->Free(pUser);
@@ -778,9 +778,9 @@ void ChatServer::DeleteProc(UINT64 sessionID)
 
 void ChatServer::UpdateThread()
 {
-	DWORD OldTimeOutTick1; //3ÃÊ  Å¸ÀÓ¾Æ¿ô
-	DWORD OldTimeOutTick2; //40ÃÊ Å¸ÀÓ¾Æ¿ô
-	DWORD OldTimeOutTick;  //·çÇÁ ÀÌÀü ½Ã°£
+	DWORD OldTimeOutTick1; //3ì´ˆ  íƒ€ì„ì•„ì›ƒ
+	DWORD OldTimeOutTick2; //40ì´ˆ íƒ€ì„ì•„ì›ƒ
+	DWORD OldTimeOutTick;  //ë£¨í”„ ì´ì „ ì‹œê°„
 	DWORD curTick;
 	DWORD curLoopTick;
 	JOB*  job;
@@ -818,7 +818,7 @@ void ChatServer::UpdateThread()
 
 		while (m_pUpdateJobQ->GetUseSize() > 0)
 		{
-			//DeqÇÏ´Â ½º·¹µå°¡ 1°³¶ó¼­ size°¡ 0º¸´Ù Å©¸é Enq ½º·¹µå¿¡¼­ Å¥¿¡ ³ëµå¸¦ ³Ö¾ú´Âµ¥ ¾øÀ» ¼ö ¾øÀ½.
+			//Deqí•˜ëŠ” ìŠ¤ë ˆë“œê°€ 1ê°œë¼ì„œ sizeê°€ 0ë³´ë‹¤ í¬ë©´ Enq ìŠ¤ë ˆë“œì—ì„œ íì— ë…¸ë“œë¥¼ ë„£ì—ˆëŠ”ë° ì—†ì„ ìˆ˜ ì—†ìŒ.
 			if (!m_pUpdateJobQ->Dequeue(job))
 				__debugbreak();
 
@@ -843,7 +843,7 @@ void ChatServer::UpdateThread()
 
 			}
 
-			//Job Ç®¿¡ ¹İÈ¯
+			//Job í’€ì— ë°˜í™˜
 			m_pJobPool->Free(job);
 			m_UpdateTPS++;
 		}
@@ -924,7 +924,7 @@ void ChatServer::MonitorThread()
 		ReqMsgSum += m_ReqTPS;
 		ResMsgSum += m_ResTPS;
 
-		//TOTO : Start ½Ã°£ Ãâ·Â
+		//TOTO : Start ì‹œê°„ ì¶œë ¥
 		wprintf(L"Start Time : %04d / %02d / %02d, %02d:%02d:%02d\n",
 			local_time->tm_year + 1900,
 			local_time->tm_mon + 1,    
@@ -932,7 +932,7 @@ void ChatServer::MonitorThread()
 			local_time->tm_hour,
 			local_time->tm_min,
 			local_time->tm_sec);
-		wprintf(L"======================= TPS ¸ğ´ÏÅÍ¸µ ================================\n");
+		wprintf(L"======================= TPS ëª¨ë‹ˆí„°ë§ ================================\n");
 		wprintf(L"Accept                                        TPS    : (Avg %lld , %d) \n", AcptTPSSum / loopCnt, m_AcceptTPS);
 		wprintf(L"Update                                        TPS    : (Avg %lld, %d) \n", UpdateSum / loopCnt, m_UpdateTPS);
 		wprintf(L"SendIOComplete                                TPS    : (Avg %lld, %d) \n", SendIOSum / loopCnt, m_SendIOTPS);
@@ -941,7 +941,7 @@ void ChatServer::MonitorThread()
 		wprintf(L"ResponseMsg                                   TPS    : (Avg %lld, %d) \n\n", ResMsgSum / loopCnt, m_ResTPS);
 
 
-		wprintf(L"====================== Ä«¿îÆ® ¸ğ´ÏÅÍ¸µ ==============================\n");
+		wprintf(L"====================== ì¹´ìš´íŠ¸ ëª¨ë‹ˆí„°ë§ ==============================\n");
 		wprintf(L"UserMap / NonUserMap                   Count   : %lld / %lld \n", m_UserMap.size(), m_NonUserMap.size());
 		wprintf(L"SessionTable                           Count   : %d \n", m_CurSessionCnt);
 		wprintf(L"Accept  Total                          Count   : %lld \n", m_AcceptTotal);
@@ -950,7 +950,7 @@ void ChatServer::MonitorThread()
 		wprintf(L"=====================================================================\n");
 		wprintf(L"Update          Loop Time                       Time    : %d ms \n", m_UpdateLoopTime);
 
-		wprintf(L"====================== »ç¿ë·® ¸ğ´ÏÅÍ¸µ ==============================\n");
+		wprintf(L"====================== ì‚¬ìš©ëŸ‰ ëª¨ë‹ˆí„°ë§ ==============================\n");
 		wprintf(L"   UpdateJobQ           Avg    Size : %lld  / Size  : %d \n", MsgQSizeSum / loopCnt, m_pUpdateJobQ->GetUseSize());
 		wprintf(L" CMessagePool           Avg  UseCnt : %lld  / Count : %lld \n", CPoolSum / loopCnt, CMessage::m_pMessagePool->GetUseCnt());
 		wprintf(L"     UserPool                UseCnt : %d \n", m_pUserPool->GetUseCnt());
@@ -961,32 +961,32 @@ void ChatServer::MonitorThread()
 		wprintf(L"[ Process User     Memory Usage : %lf MByte ]  [ Process NonPaged Memory Usage : %lf KByte ]\n", m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024), m_pPDH->m_processNonPagedMemoryVal.doubleValue / 1024);
 		wprintf(L"[ TCP Retransmitted Avg   Count : %lf /sec  ]  [ TCP Segment Sent  Avg   Count : % lf / sec]\n", tcpretransmitsum / loopCnt, tcpsegmentsentsum / loopCnt);
 
-		// ¿¬°á µÇ¾úÀ» ¶§¸¸ ¸ğ´ÏÅÍ¸µ ¼­¹ö·Î µ¥ÀÌÅÍ º¸³»±â
-		if (m_pMonitorClient->ConnectAlive())
-		{
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU, (int)m_pPDH->ProcessTotal());
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATE_TPS, m_UpdateTPS);
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATEMSG_POOL, m_pJobPool->GetUseCnt());
-		}
-		else
-		{
-			if (m_pMonitorClient->ReConnect())
-			{
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU, (int)m_pPDH->ProcessTotal());
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATE_TPS, m_UpdateTPS);
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATEMSG_POOL, m_pJobPool->GetUseCnt());
-			}
-		}
+		//// ì—°ê²° ë˜ì—ˆì„ ë•Œë§Œ ëª¨ë‹ˆí„°ë§ ì„œë²„ë¡œ ë°ì´í„° ë³´ë‚´ê¸°
+		//if (m_pMonitorClient->ConnectAlive())
+		//{
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU, (int)m_pPDH->ProcessTotal());
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATE_TPS, m_UpdateTPS);
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATEMSG_POOL, m_pJobPool->GetUseCnt());
+		//}
+		//else
+		//{
+		//	if (m_pMonitorClient->ReConnect())
+		//	{
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU, (int)m_pPDH->ProcessTotal());
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATE_TPS, m_UpdateTPS);
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATEMSG_POOL, m_pJobPool->GetUseCnt());
+		//	}
+		//}
 
 
 		tcpretranslog = m_pPDH->m_TCPReTransmitVal.doubleValue;

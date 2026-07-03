@@ -1,13 +1,13 @@
-#pragma comment(lib, "winmm.lib")
+ï»¿#pragma comment(lib, "winmm.lib")
 #include <iostream>
 #include <windows.h>
 #include <atomic>
 #include <process.h>
 #include "Ring_Buffer.h"
 
-//ÁÖÀÇ»çÇ×ÇÔ.
+//ì£¼ì˜ì‚¬í•­í•¨.
 //
-// recv Ã¼Å©ÇÏ´Â ¹öÆÛ´Â ¸µ ¹öÆÛ º¸´Ù Ä¿¾ß 
+// recv ì²´í¬í•˜ëŠ” ë²„í¼ëŠ” ë§ ë²„í¼ ë³´ë‹¤ ì»¤ì•¼ 
 
 
 
@@ -16,7 +16,7 @@
 
 CRingBuffer::CRingBuffer()
 {
-	_size = DEFAULT_SIZE; //µðÆúÆ®·Î ¸µ ¹öÆÛ Å©±â 100¹ÙÀÌÆ®·Î ¼³Á¤
+	_size = DEFAULT_SIZE; //ë””í´íŠ¸ë¡œ ë§ ë²„í¼ í¬ê¸° 100ë°”ì´íŠ¸ë¡œ ì„¤ì •
 	_usingSize = 0;
 
 	_allocPos = (char*)malloc(_size);
@@ -41,11 +41,11 @@ CRingBuffer::~CRingBuffer()
 	free(_allocPos);
 }
 
-// ¸µ¹öÆÛ¿¡ º¹»çÇÒ µ¥ÀÌÅÍ Å©±â°¡ ¸µ¹öÆÛ¿¡ ³²Àº µ¥ÀÌÅÍ º¸´Ù Å¬ ¶§¿Í 
-// ¸¸¾à writePos¸¦ ¿Å°åÀ» ¶§ readPos¿Í °ãÄ¡¸é 0À» ¹ÝÈ¯ÇØ¼­ EnqueueÀÛ¾÷À» ¾ÈÇÒ °ÍÀÓ.
+// ë§ë²„í¼ì— ë³µì‚¬í•  ë°ì´í„° í¬ê¸°ê°€ ë§ë²„í¼ì— ë‚¨ì€ ë°ì´í„° ë³´ë‹¤ í´ ë•Œì™€ 
+// ë§Œì•½ writePosë¥¼ ì˜®ê²¼ì„ ë•Œ readPosì™€ ê²¹ì¹˜ë©´ 0ì„ ë°˜í™˜í•´ì„œ Enqueueìž‘ì—…ì„ ì•ˆí•  ê²ƒìž„.
 int CRingBuffer::Enqueue(const char* chpData, int iSize)
 {
-	//¸µ¹öÆÛ¿¡ º¹»çÇÒ µ¥ÀÌÅÍ Å©±â°¡ ³²Àº ¸µ¹öÆÛ Å©±âº¸´Ù Å¬ ¶§
+	//ë§ë²„í¼ì— ë³µì‚¬í•  ë°ì´í„° í¬ê¸°ê°€ ë‚¨ì€ ë§ë²„í¼ í¬ê¸°ë³´ë‹¤ í´ ë•Œ
 	if (iSize >= GetFreeSize())
 		return 0;
 
@@ -55,7 +55,7 @@ int CRingBuffer::Enqueue(const char* chpData, int iSize)
 
 	des = DirectEnqueueSize();
 
-	//½ÇÁ¦ Enqueue ÀÛ¾÷
+	//ì‹¤ì œ Enqueue ìž‘ì—…
 	if (iSize <= des)
 	{
 		memcpy_s(_writePos, iSize, chpData, iSize);
@@ -67,7 +67,7 @@ int CRingBuffer::Enqueue(const char* chpData, int iSize)
 	}
 
 
-	//³ÖÀ» Å©±â°¡ DESº¸´Ù Å©¸é ÇÑ¹ø ´õ ÀÛ¾÷ ÇØ¾ß ÇÔ
+	//ë„£ì„ í¬ê¸°ê°€ DESë³´ë‹¤ í¬ë©´ í•œë²ˆ ë” ìž‘ì—… í•´ì•¼ í•¨
 	else
 	{
 		leftenq = iSize - des;
@@ -83,7 +83,7 @@ int CRingBuffer::Enqueue(const char* chpData, int iSize)
 
 	return iSize;
 }
-// µðÅ¥ÀÛ¾÷ÇÏ°í ³ª¼­ readPosÀÇ ¿¹»óµÇ´Â À§Ä¡°¡ writePos°¡ °°À¸¸é ¾ÖÃÊ¿¡ ±×³É Dequeue ÀÛ¾÷ ¾ÈÇÒ °ÍÀÓ.
+// ë””íìž‘ì—…í•˜ê³  ë‚˜ì„œ readPosì˜ ì˜ˆìƒë˜ëŠ” ìœ„ì¹˜ê°€ writePosê°€ ê°™ìœ¼ë©´ ì• ì´ˆì— ê·¸ëƒ¥ Dequeue ìž‘ì—… ì•ˆí•  ê²ƒìž„.
 int CRingBuffer::Dequeue(char* chpData, int iSize)
 {
 	long long dds;
@@ -98,7 +98,7 @@ int CRingBuffer::Dequeue(char* chpData, int iSize)
 
 	dds = DirectDequeueSize();
 
-	//±×°Ô ¾Æ´Ï¸é ±×³É »©³¾ Å©±â¸¸Å­¸¸ ·çÇÁ µ¹¸é µÊ.
+	//ê·¸ê²Œ ì•„ë‹ˆë©´ ê·¸ëƒ¥ ë¹¼ë‚¼ í¬ê¸°ë§Œí¼ë§Œ ë£¨í”„ ëŒë©´ ë¨.
 	if (len <= dds)
 	{
 
@@ -111,7 +111,7 @@ int CRingBuffer::Dequeue(char* chpData, int iSize)
 
 	}
 
-	//È®Á¤µÈ »©³¾ Å©±â°¡ DirectDequeueSizeº¸´Ù Å©¸é Æ÷ÀÎÅÍ ÀÌµ¿ÇØ¼­ ·çÇÁ ÇÑ¹ø ´õ µ¹¾Æ¾ß ÇÔ.
+	//í™•ì •ëœ ë¹¼ë‚¼ í¬ê¸°ê°€ DirectDequeueSizeë³´ë‹¤ í¬ë©´ í¬ì¸í„° ì´ë™í•´ì„œ ë£¨í”„ í•œë²ˆ ë” ëŒì•„ì•¼ í•¨.
 	else
 	{
 		left = len - dds;
@@ -141,14 +141,14 @@ int CRingBuffer::Peek(char* chpData, int iSize)
 
 	dds = DirectDequeueSize();
 
-	//±×°Ô ¾Æ´Ï¸é ±×³É »©³¾ Å©±â¸¸Å­¸¸ ·çÇÁ µ¹¸é µÊ.
+	//ê·¸ê²Œ ì•„ë‹ˆë©´ ê·¸ëƒ¥ ë¹¼ë‚¼ í¬ê¸°ë§Œí¼ë§Œ ë£¨í”„ ëŒë©´ ë¨.
 	if (iSize <= dds)
 	{
 		memcpy_s(chpData, iSize, _readPos, iSize);
 		
 	}
 
-	//È®Á¤µÈ »©³¾ Å©±â°¡ DirectDequeueSizeº¸´Ù Å©¸é Æ÷ÀÎÅÍ ÀÌµ¿ÇØ¼­ ·çÇÁ ÇÑ¹ø ´õ µ¹¾Æ¾ß ÇÔ.
+	//í™•ì •ëœ ë¹¼ë‚¼ í¬ê¸°ê°€ DirectDequeueSizeë³´ë‹¤ í¬ë©´ í¬ì¸í„° ì´ë™í•´ì„œ ë£¨í”„ í•œë²ˆ ë” ëŒì•„ì•¼ í•¨.
 
 	else
 	{

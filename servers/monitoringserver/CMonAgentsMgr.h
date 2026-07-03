@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #define MONITOR_SESSION_KEY_MAX             32
 #define df_AGENTSMANAGER_NONAGENT_TIMEOUT    3000
 #define df_AGENTSMANAGER_AGENT_TIMEOUT       40000
@@ -34,13 +34,13 @@ private:
 			void  FrameThread();
 
 			///////////////////////////////////////////////////////////////////////////
-            // Å¸ÀÓ¾Æ¿ô ÇÔ¼ö
+            // íƒ€ì„ì•„ì›ƒ í•¨ìˆ˜
             ///////////////////////////////////////////////////////////////////////////
 			void  NonAgentTimeOut();
 			void  AgentTimeOut();
 
 private:
-	const CHAR*                         m_monitorSessionKey; // ¸ğ´ÏÅÍ¸µ Åø ·Î±×ÀÎ Å°
+	const CHAR*                         m_monitorSessionKey; // ëª¨ë‹ˆí„°ë§ íˆ´ ë¡œê·¸ì¸ í‚¤
 	INT                                 m_agentMaxCnt;
 	std::unordered_map<UINT64, CAgent*> m_agentMap;
 	std::unordered_map<UINT64, DWORD>   m_nonAgentMap;

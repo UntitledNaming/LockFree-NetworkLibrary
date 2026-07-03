@@ -1,4 +1,4 @@
-//#ifndef __GODDAMNBUG_ONLINE_PROTOCOL__
+ï»¿//#ifndef __GODDAMNBUG_ONLINE_PROTOCOL__
 //#define __GODDAMNBUG_ONLINE_PROTOCOL__
 #define LOGIN_SERVER_NO   0
 #define CHAT_SERVER_NO    1
@@ -19,14 +19,14 @@ enum en_PACKET_TYPE
 	en_PACKET_CS_CHAT_SERVER			= 0,
 
 	//------------------------------------------------------------
-	// Ã¤ÆÃ¼­¹ö ·Î±×ÀÎ ¿äÃ»
+	// ì±„íŒ…ì„œë²„ ë¡œê·¸ì¸ ìš”ì²­
 	//
 	//	{
 	//		WORD	Type
 	//
 	//		INT64	AccountNo
-	//		WCHAR	ID[20]				// null Æ÷ÇÔ
-	//		WCHAR	Nickname[20]		// null Æ÷ÇÔ
+	//		WCHAR	ID[20]				// null í¬í•¨
+	//		WCHAR	Nickname[20]		// null í¬í•¨
 	//		char	SessionKey[64];
 	//	}
 	//
@@ -34,12 +34,12 @@ enum en_PACKET_TYPE
 	en_PACKET_CS_CHAT_REQ_LOGIN,
 
 	//------------------------------------------------------------
-	// Ã¤ÆÃ¼­¹ö ·Î±×ÀÎ ÀÀ´ä
+	// ì±„íŒ…ì„œë²„ ë¡œê·¸ì¸ ì‘ë‹µ
 	//
 	//	{
 	//		WORD	Type
 	//
-	//		BYTE	Status				// 0:½ÇÆÐ	1:¼º°ø
+	//		BYTE	Status				// 0:ì‹¤íŒ¨	1:ì„±ê³µ
 	//		INT64	AccountNo
 	//	}
 	//
@@ -47,7 +47,7 @@ enum en_PACKET_TYPE
 	en_PACKET_CS_CHAT_RES_LOGIN,
 
 	//------------------------------------------------------------
-	// Ã¤ÆÃ¼­¹ö ¼½ÅÍ ÀÌµ¿ ¿äÃ»
+	// ì±„íŒ…ì„œë²„ ì„¹í„° ì´ë™ ìš”ì²­
 	//
 	//	{
 	//		WORD	Type
@@ -61,7 +61,7 @@ enum en_PACKET_TYPE
 	en_PACKET_CS_CHAT_REQ_SECTOR_MOVE,
 
 	//------------------------------------------------------------
-	// Ã¤ÆÃ¼­¹ö ¼½ÅÍ ÀÌµ¿ °á°ú
+	// ì±„íŒ…ì„œë²„ ì„¹í„° ì´ë™ ê²°ê³¼
 	//
 	//	{
 	//		WORD	Type
@@ -75,46 +75,46 @@ enum en_PACKET_TYPE
 	en_PACKET_CS_CHAT_RES_SECTOR_MOVE,
 
 	//------------------------------------------------------------
-	// Ã¤ÆÃ¼­¹ö Ã¤ÆÃº¸³»±â ¿äÃ»
+	// ì±„íŒ…ì„œë²„ ì±„íŒ…ë³´ë‚´ê¸° ìš”ì²­
 	//
 	//	{
 	//		WORD	Type
 	//
 	//		INT64	AccountNo
 	//		WORD	MessageLen
-	//		WCHAR	Message[MessageLen / 2]		// null ¹ÌÆ÷ÇÔ
+	//		WCHAR	Message[MessageLen / 2]		// null ë¯¸í¬í•¨
 	//	}
 	//
 	//------------------------------------------------------------
 	en_PACKET_CS_CHAT_REQ_MESSAGE,
 
 	//------------------------------------------------------------
-	// Ã¤ÆÃ¼­¹ö Ã¤ÆÃº¸³»±â ÀÀ´ä  (´Ù¸¥ Å¬¶ó°¡ º¸³½ Ã¤ÆÃµµ ÀÌ°É·Î ¹ÞÀ½)
+	// ì±„íŒ…ì„œë²„ ì±„íŒ…ë³´ë‚´ê¸° ì‘ë‹µ  (ë‹¤ë¥¸ í´ë¼ê°€ ë³´ë‚¸ ì±„íŒ…ë„ ì´ê±¸ë¡œ ë°›ìŒ)
 	//
 	//	{
 	//		WORD	Type
 	//
 	//		INT64	AccountNo
-	//		WCHAR	ID[20]						// null Æ÷ÇÔ
-	//		WCHAR	Nickname[20]				// null Æ÷ÇÔ
+	//		WCHAR	ID[20]						// null í¬í•¨
+	//		WCHAR	Nickname[20]				// null í¬í•¨
 	//		
 	//		WORD	MessageLen
-	//		WCHAR	Message[MessageLen / 2]		// null ¹ÌÆ÷ÇÔ
+	//		WCHAR	Message[MessageLen / 2]		// null ë¯¸í¬í•¨
 	//	}
 	//
 	//------------------------------------------------------------
 	en_PACKET_CS_CHAT_RES_MESSAGE,
 
 	//------------------------------------------------------------
-	// ÇÏÆ®ºñÆ®
+	// í•˜íŠ¸ë¹„íŠ¸
 	//
 	//	{
 	//		WORD		Type
 	//	}
 	//
 	//
-	// Å¬¶óÀÌ¾ðÆ®´Â ÀÌ¸¦ 30ÃÊ¸¶´Ù º¸³»ÁÜ.
-	// ¼­¹ö´Â 40ÃÊ ÀÌ»óµ¿¾È ¸Þ½ÃÁö ¼ö½ÅÀÌ ¾ø´Â Å¬¶óÀÌ¾ðÆ®¸¦ °­Á¦·Î ²÷¾îÁà¾ß ÇÔ.
+	// í´ë¼ì´ì–¸íŠ¸ëŠ” ì´ë¥¼ 30ì´ˆë§ˆë‹¤ ë³´ë‚´ì¤Œ.
+	// ì„œë²„ëŠ” 40ì´ˆ ì´ìƒë™ì•ˆ ë©”ì‹œì§€ ìˆ˜ì‹ ì´ ì—†ëŠ” í´ë¼ì´ì–¸íŠ¸ë¥¼ ê°•ì œë¡œ ëŠì–´ì¤˜ì•¼ í•¨.
 	//------------------------------------------------------------	
 	en_PACKET_CS_CHAT_REQ_HEARTBEAT,
 
@@ -129,7 +129,7 @@ enum en_PACKET_TYPE
 	en_PACKET_CS_LOGIN_SERVER				= 100,
 
 	//------------------------------------------------------------
-	// ·Î±×ÀÎ ¼­¹ö·Î Å¬¶óÀÌ¾ðÆ® ·Î±×ÀÎ ¿äÃ»
+	// ë¡œê·¸ì¸ ì„œë²„ë¡œ í´ë¼ì´ì–¸íŠ¸ ë¡œê·¸ì¸ ìš”ì²­
 	//
 	//	{
 	//		WORD	Type
@@ -142,18 +142,18 @@ enum en_PACKET_TYPE
 	en_PACKET_CS_LOGIN_REQ_LOGIN,
 
 	//------------------------------------------------------------
-	// ·Î±×ÀÎ ¼­¹ö¿¡¼­ Å¬¶óÀÌ¾ðÆ®·Î ·Î±×ÀÎ ÀÀ´ä
+	// ë¡œê·¸ì¸ ì„œë²„ì—ì„œ í´ë¼ì´ì–¸íŠ¸ë¡œ ë¡œê·¸ì¸ ì‘ë‹µ
 	//
 	//	{
 	//		WORD	Type
 	//
 	//		INT64	AccountNo
-	//		BYTE	Status				// 0 (¼¼¼Ç¿À·ù) / 1 (¼º°ø) ...  ÇÏ´Ü defines »ç¿ë
+	//		BYTE	Status				// 0 (ì„¸ì…˜ì˜¤ë¥˜) / 1 (ì„±ê³µ) ...  í•˜ë‹¨ defines ì‚¬ìš©
 	//
-	//		WCHAR	ID[20]				// »ç¿ëÀÚ ID		. null Æ÷ÇÔ
-	//		WCHAR	Nickname[20]		// »ç¿ëÀÚ ´Ð³×ÀÓ	. null Æ÷ÇÔ
+	//		WCHAR	ID[20]				// ì‚¬ìš©ìž ID		. null í¬í•¨
+	//		WCHAR	Nickname[20]		// ì‚¬ìš©ìž ë‹‰ë„¤ìž„	. null í¬í•¨
 	//
-	//		WCHAR	GameServerIP[16]	// Á¢¼Ó´ë»ó °ÔÀÓ,Ã¤ÆÃ ¼­¹ö Á¤º¸
+	//		WCHAR	GameServerIP[16]	// ì ‘ì†ëŒ€ìƒ ê²Œìž„,ì±„íŒ… ì„œë²„ ì •ë³´
 	//		USHORT	GameServerPort    
 	//		WCHAR	ChatServerIP[16]
 	//		USHORT	ChatServerPort
@@ -168,7 +168,7 @@ enum en_PACKET_TYPE
 
 	////////////////////////////////////////////////////////
 	//
-	//   Server & Server Protocol  / LAN Åë½ÅÀº ±âº»À¸·Î ÀÀ´äÀ» ¹ÞÁö ¾ÊÀ½.
+	//   Server & Server Protocol  / LAN í†µì‹ ì€ ê¸°ë³¸ìœ¼ë¡œ ì‘ë‹µì„ ë°›ì§€ ì•ŠìŒ.
 	//
 	////////////////////////////////////////////////////////
 	en_PACKET_SS_LAN						= 10000,
@@ -177,15 +177,15 @@ enum en_PACKET_TYPE
 	//------------------------------------------------------
 
 	//------------------------------------------------------------
-	// ´Ù¸¥ ¼­¹ö°¡ ·Î±×ÀÎ ¼­¹ö·Î ·Î±×ÀÎ.
-	// ÀÌ´Â ÀÀ´äÀÌ ¾øÀ¸¸ç, ±×³É ·Î±×ÀÎ µÊ.  
+	// ë‹¤ë¥¸ ì„œë²„ê°€ ë¡œê·¸ì¸ ì„œë²„ë¡œ ë¡œê·¸ì¸.
+	// ì´ëŠ” ì‘ë‹µì´ ì—†ìœ¼ë©°, ê·¸ëƒ¥ ë¡œê·¸ì¸ ë¨.  
 	//
 	//	{
 	//		WORD	Type
 	//
 	//		BYTE	ServerType			// dfSERVER_TYPE_GAME / dfSERVER_TYPE_CHAT
 	//
-	//		WCHAR	ServerName[32]		// ÇØ´ç ¼­¹öÀÇ ÀÌ¸§.  
+	//		WCHAR	ServerName[32]		// í•´ë‹¹ ì„œë²„ì˜ ì´ë¦„.  
 	//	}
 	//
 	//------------------------------------------------------------
@@ -194,7 +194,7 @@ enum en_PACKET_TYPE
 	
 	
 	//------------------------------------------------------------
-	// ·Î±×ÀÎ¼­¹ö¿¡¼­ °ÔÀÓ.Ã¤ÆÃ ¼­¹ö·Î »õ·Î¿î Å¬¶óÀÌ¾ðÆ® Á¢¼ÓÀ» ¾Ë¸².
+	// ë¡œê·¸ì¸ì„œë²„ì—ì„œ ê²Œìž„.ì±„íŒ… ì„œë²„ë¡œ ìƒˆë¡œìš´ í´ë¼ì´ì–¸íŠ¸ ì ‘ì†ì„ ì•Œë¦¼.
 	//
 	//	{
 	//		WORD	Type
@@ -204,14 +204,14 @@ enum en_PACKET_TYPE
 	//	}
 	//
 	//------------------------------------------------------------
-	// en_PACKET_SS_NEW_CLIENT_LOGIN,	// ½Å±Ô Á¢¼ÓÀÚÀÇ ¼¼¼ÇÅ° Àü´ÞÆÐÅ¶À» ¿äÃ»,ÀÀ´ä±¸Á¶·Î º¯°æ 2017.01.05
+	// en_PACKET_SS_NEW_CLIENT_LOGIN,	// ì‹ ê·œ ì ‘ì†ìžì˜ ì„¸ì…˜í‚¤ ì „ë‹¬íŒ¨í‚·ì„ ìš”ì²­,ì‘ë‹µêµ¬ì¡°ë¡œ ë³€ê²½ 2017.01.05
 
 
 	//------------------------------------------------------------
-	// ·Î±×ÀÎ¼­¹ö¿¡¼­ °ÔÀÓ.Ã¤ÆÃ ¼­¹ö·Î »õ·Î¿î Å¬¶óÀÌ¾ðÆ® Á¢¼ÓÀ» ¾Ë¸².
+	// ë¡œê·¸ì¸ì„œë²„ì—ì„œ ê²Œìž„.ì±„íŒ… ì„œë²„ë¡œ ìƒˆë¡œìš´ í´ë¼ì´ì–¸íŠ¸ ì ‘ì†ì„ ì•Œë¦¼.
 	//
-	// ¸¶Áö¸·ÀÇ Parameter ´Â ¼¼¼ÇÅ° °øÀ¯¿¡ ´ëÇÑ °íÀ¯°ª È®ÀÎÀ» À§ÇÑ ¾î¶² °ª. ÀÌ´Â ÀÀ´ä °á°ú¿¡¼­ ´Ù½Ã ¹Þ°Ô µÊ.
-	// Ã¤ÆÃ¼­¹ö¿Í °ÔÀÓ¼­¹ö´Â Parameter ¿¡ ´ëÇÑ Ã³¸®´Â ÇÊ¿ä ¾øÀ¸¸ç ±×´ë·Î Res ·Î µ¹·ÁÁà¾ß ÇÕ´Ï´Ù.
+	// ë§ˆì§€ë§‰ì˜ Parameter ëŠ” ì„¸ì…˜í‚¤ ê³µìœ ì— ëŒ€í•œ ê³ ìœ ê°’ í™•ì¸ì„ ìœ„í•œ ì–´ë–¤ ê°’. ì´ëŠ” ì‘ë‹µ ê²°ê³¼ì—ì„œ ë‹¤ì‹œ ë°›ê²Œ ë¨.
+	// ì±„íŒ…ì„œë²„ì™€ ê²Œìž„ì„œë²„ëŠ” Parameter ì— ëŒ€í•œ ì²˜ë¦¬ëŠ” í•„ìš” ì—†ìœ¼ë©° ê·¸ëŒ€ë¡œ Res ë¡œ ëŒë ¤ì¤˜ì•¼ í•©ë‹ˆë‹¤.
 	//
 	//	{
 	//		WORD	Type
@@ -225,17 +225,17 @@ enum en_PACKET_TYPE
 	en_PACKET_SS_REQ_NEW_CLIENT_LOGIN,
 
 	//------------------------------------------------------------
-	// °ÔÀÓ.Ã¤ÆÃ ¼­¹ö°¡ »õ·Î¿î Å¬¶óÀÌ¾ðÆ® Á¢¼ÓÆÐÅ¶ ¼ö½Å°á°ú¸¦ µ¹·ÁÁÜ.
-	// °ÔÀÓ¼­¹ö¿ë, Ã¤ÆÃ¼­¹ö¿ë ÆÐÅ¶ÀÇ ±¸ºÐÀº ¾øÀ¸¸ç, ·Î±×ÀÎ¼­¹ö¿¡ Å¸ ¼­¹ö°¡ Á¢¼Ó ½Ã CHAT,GAME ¼­¹ö¸¦ ±¸ºÐÇÏ¹Ç·Î 
-	// ÀÌ¸¦ »ç¿ëÇØ¼­ ¾Ë¾Æ¼­ ±¸ºÐ ÇÏµµ·Ï ÇÔ.
+	// ê²Œìž„.ì±„íŒ… ì„œë²„ê°€ ìƒˆë¡œìš´ í´ë¼ì´ì–¸íŠ¸ ì ‘ì†íŒ¨í‚· ìˆ˜ì‹ ê²°ê³¼ë¥¼ ëŒë ¤ì¤Œ.
+	// ê²Œìž„ì„œë²„ìš©, ì±„íŒ…ì„œë²„ìš© íŒ¨í‚·ì˜ êµ¬ë¶„ì€ ì—†ìœ¼ë©°, ë¡œê·¸ì¸ì„œë²„ì— íƒ€ ì„œë²„ê°€ ì ‘ì† ì‹œ CHAT,GAME ì„œë²„ë¥¼ êµ¬ë¶„í•˜ë¯€ë¡œ 
+	// ì´ë¥¼ ì‚¬ìš©í•´ì„œ ì•Œì•„ì„œ êµ¬ë¶„ í•˜ë„ë¡ í•¨.
 	//
-	// ÇÃ·¹ÀÌ¾îÀÇ ½ÇÁ¦ ·Î±×ÀÎ ¿Ï·á´Â ÀÌ ÆÐÅ¶À» Chat,Game ¾çÂÊ¿¡¼­ ´Ù ¹Þ¾ÒÀ» ½ÃÁ¡ÀÓ.
+	// í”Œë ˆì´ì–´ì˜ ì‹¤ì œ ë¡œê·¸ì¸ ì™„ë£ŒëŠ” ì´ íŒ¨í‚·ì„ Chat,Game ì–‘ìª½ì—ì„œ ë‹¤ ë°›ì•˜ì„ ì‹œì ìž„.
 	//
-	// ¸¶Áö¸· °ª Parameter ´Â ÀÌ¹ø ¼¼¼ÇÅ° °øÀ¯¿¡ ´ëÇØ ±¸ºÐÇÒ ¼ö ÀÖ´Â Æ¯Á¤ °ª
-	// ClientID ¸¦ ¾²´ø, °íÀ¯ Ä«¿îÆÃÀ» ¾²´ø »ó°ü ¾øÀ½.
+	// ë§ˆì§€ë§‰ ê°’ Parameter ëŠ” ì´ë²ˆ ì„¸ì…˜í‚¤ ê³µìœ ì— ëŒ€í•´ êµ¬ë¶„í•  ìˆ˜ ìžˆëŠ” íŠ¹ì • ê°’
+	// ClientID ë¥¼ ì“°ë˜, ê³ ìœ  ì¹´ìš´íŒ…ì„ ì“°ë˜ ìƒê´€ ì—†ìŒ.
 	//
-	// ·Î±×ÀÎ¼­¹ö¿¡ Á¢¼Ó°ú ÀçÁ¢¼ÓÀ» ¹Ýº¹ÇÏ´Â °æ¿ì ÀÌÀü¿¡ °øÀ¯ÀÀ´äÀÌ »õ·Î Á¢¼ÓÇÑ µÚÀÇ ÀÀ´äÀ¸·Î
-	// ¿ÀÇØÇÏ¿© ´Ù¸¥ ¼¼¼ÇÅ°¸¦ µé°í °¡´Â ¹®Á¦°¡ »ý±è.
+	// ë¡œê·¸ì¸ì„œë²„ì— ì ‘ì†ê³¼ ìž¬ì ‘ì†ì„ ë°˜ë³µí•˜ëŠ” ê²½ìš° ì´ì „ì— ê³µìœ ì‘ë‹µì´ ìƒˆë¡œ ì ‘ì†í•œ ë’¤ì˜ ì‘ë‹µìœ¼ë¡œ
+	// ì˜¤í•´í•˜ì—¬ ë‹¤ë¥¸ ì„¸ì…˜í‚¤ë¥¼ ë“¤ê³  ê°€ëŠ” ë¬¸ì œê°€ ìƒê¹€.
 	//
 	//	{
 	//		WORD	Type
@@ -256,7 +256,7 @@ enum en_PACKET_TYPE
 
 	////////////////////////////////////////////////////////
 	//
-	//   MonitorServer & MoniterTool Protocol / ÀÀ´äÀ» ¹ÞÁö ¾ÊÀ½.
+	//   MonitorServer & MoniterTool Protocol / ì‘ë‹µì„ ë°›ì§€ ì•ŠìŒ.
 	//
 	////////////////////////////////////////////////////////
 
@@ -268,33 +268,33 @@ enum en_PACKET_TYPE
 	// Server -> Monitor Protocol
 	//------------------------------------------------------
 	//------------------------------------------------------------
-	// LoginServer(0), GameServer(2) , ChatServer(1)  °¡ ¸ð´ÏÅÍ¸µ ¼­¹ö¿¡ ·Î±×ÀÎ ÇÔ
+	// LoginServer(0), GameServer(2) , ChatServer(1)  ê°€ ëª¨ë‹ˆí„°ë§ ì„œë²„ì— ë¡œê·¸ì¸ í•¨
 	//
 	// 
 	//	{
 	//		WORD	Type
 	//
-	//		int		ServerNo		//  °¢ ¼­¹ö¸¶´Ù °íÀ¯ ¹øÈ£¸¦ ºÎ¿©ÇÏ¿© »ç¿ë
+	//		int		ServerNo		//  ê° ì„œë²„ë§ˆë‹¤ ê³ ìœ  ë²ˆí˜¸ë¥¼ ë¶€ì—¬í•˜ì—¬ ì‚¬ìš©
 	//	}
 	//
 	//------------------------------------------------------------
 	en_PACKET_SS_MONITOR_LOGIN,
 
 	//------------------------------------------------------------
-	// ¼­¹ö°¡ ¸ð´ÏÅÍ¸µ¼­¹ö·Î µ¥ÀÌÅÍ Àü¼Û
-	// °¢ ¼­¹ö´Â ÀÚ½ÅÀÌ ¸ð´ÏÅÍ¸µÁßÀÎ ¼öÄ¡¸¦ 1ÃÊ¸¶´Ù ¸ð´ÏÅÍ¸µ ¼­¹ö·Î Àü¼Û.
+	// ì„œë²„ê°€ ëª¨ë‹ˆí„°ë§ì„œë²„ë¡œ ë°ì´í„° ì „ì†¡
+	// ê° ì„œë²„ëŠ” ìžì‹ ì´ ëª¨ë‹ˆí„°ë§ì¤‘ì¸ ìˆ˜ì¹˜ë¥¼ 1ì´ˆë§ˆë‹¤ ëª¨ë‹ˆí„°ë§ ì„œë²„ë¡œ ì „ì†¡.
 	//
-	// ¼­¹öÀÇ ´Ù¿î ¹× ±âÅ¸ ÀÌÀ¯·Î ¸ð´ÏÅÍ¸µ µ¥ÀÌÅÍ°¡ Àü´ÞµÇÁö ¸øÇÒ‹š¸¦ ´ëºñÇÏ¿© TimeStamp ¸¦ Àü´ÞÇÑ´Ù.
-	// ÀÌ´Â ¸ð´ÏÅÍ¸µ Å¬¶óÀÌ¾ðÆ®¿¡¼­ °è»ê,ºñ±³ »ç¿ëÇÑ´Ù.
+	// ì„œë²„ì˜ ë‹¤ìš´ ë° ê¸°íƒ€ ì´ìœ ë¡œ ëª¨ë‹ˆí„°ë§ ë°ì´í„°ê°€ ì „ë‹¬ë˜ì§€ ëª»í• ë–„ë¥¼ ëŒ€ë¹„í•˜ì—¬ TimeStamp ë¥¼ ì „ë‹¬í•œë‹¤.
+	// ì´ëŠ” ëª¨ë‹ˆí„°ë§ í´ë¼ì´ì–¸íŠ¸ì—ì„œ ê³„ì‚°,ë¹„êµ ì‚¬ìš©í•œë‹¤.
 	// 
 	//	{
 	//		WORD	Type
 	//
-	//		BYTE	DataType				// ¸ð´ÏÅÍ¸µ µ¥ÀÌÅÍ Type ÇÏ´Ü Define µÊ.
-	//		int		DataValue				// ÇØ´ç µ¥ÀÌÅÍ ¼öÄ¡.
-	//		int		TimeStamp				// ÇØ´ç µ¥ÀÌÅÍ¸¦ ¾òÀº ½Ã°£ TIMESTAMP  (time() ÇÔ¼ö)
-	//										// º»·¡ time ÇÔ¼ö´Â time_t Å¸ÀÔº¯¼öÀÌ³ª 64bit ·Î ³¶ºñ½º·¯¿ì´Ï
-	//										// int ·Î Ä³½ºÆÃÇÏ¿© Àü¼Û. ±×·¡¼­ 2038³â ±îÁö¸¸ »ç¿ë°¡´É
+	//		BYTE	DataType				// ëª¨ë‹ˆí„°ë§ ë°ì´í„° Type í•˜ë‹¨ Define ë¨.
+	//		int		DataValue				// í•´ë‹¹ ë°ì´í„° ìˆ˜ì¹˜.
+	//		int		TimeStamp				// í•´ë‹¹ ë°ì´í„°ë¥¼ ì–»ì€ ì‹œê°„ TIMESTAMP  (time() í•¨ìˆ˜)
+	//										// ë³¸ëž˜ time í•¨ìˆ˜ëŠ” time_t íƒ€ìž…ë³€ìˆ˜ì´ë‚˜ 64bit ë¡œ ë‚­ë¹„ìŠ¤ëŸ¬ìš°ë‹ˆ
+	//										// int ë¡œ ìºìŠ¤íŒ…í•˜ì—¬ ì „ì†¡. ê·¸ëž˜ì„œ 2038ë…„ ê¹Œì§€ë§Œ ì‚¬ìš©ê°€ëŠ¥
 	//	}
 	//
 	//------------------------------------------------------------
@@ -303,52 +303,52 @@ enum en_PACKET_TYPE
 
 	en_PACKET_CS_MONITOR = 25000,
 	//------------------------------------------------------
-	// Monitor -> Monitor Tool Protocol  (Client <-> Server ÇÁ·ÎÅäÄÝ)
+	// Monitor -> Monitor Tool Protocol  (Client <-> Server í”„ë¡œí† ì½œ)
 	//------------------------------------------------------
 	//------------------------------------------------------------
-	// ¸ð´ÏÅÍ¸µ Å¬¶óÀÌ¾ðÆ®(Åø) ÀÌ ¸ð´ÏÅÍ¸µ ¼­¹ö·Î ·Î±×ÀÎ ¿äÃ»
+	// ëª¨ë‹ˆí„°ë§ í´ë¼ì´ì–¸íŠ¸(íˆ´) ì´ ëª¨ë‹ˆí„°ë§ ì„œë²„ë¡œ ë¡œê·¸ì¸ ìš”ì²­
 	//
 	//	{
 	//		WORD	Type
 	//
-	//		char	LoginSessionKey[32]		// ·Î±×ÀÎ ÀÎÁõ Å°. (ÀÌ´Â ¸ð´ÏÅÍ¸µ ¼­¹ö¿¡ °íÁ¤°ªÀ¸·Î º¸À¯)
-	//										// °¢ ¸ð´ÏÅÍ¸µ ÅøÀº °°Àº Å°¸¦ °¡Áö°í µé¾î¿Í¾ß ÇÔ
+	//		char	LoginSessionKey[32]		// ë¡œê·¸ì¸ ì¸ì¦ í‚¤. (ì´ëŠ” ëª¨ë‹ˆí„°ë§ ì„œë²„ì— ê³ ì •ê°’ìœ¼ë¡œ ë³´ìœ )
+	//										// ê° ëª¨ë‹ˆí„°ë§ íˆ´ì€ ê°™ì€ í‚¤ë¥¼ ê°€ì§€ê³  ë“¤ì–´ì™€ì•¼ í•¨
 	//	}
 	//
 	//------------------------------------------------------------
 	en_PACKET_CS_MONITOR_TOOL_REQ_LOGIN,
 
 	//------------------------------------------------------------
-	// ¸ð´ÏÅÍ¸µ Å¬¶óÀÌ¾ðÆ®(Åø) ¸ð´ÏÅÍ¸µ ¼­¹ö·Î ·Î±×ÀÎ ÀÀ´ä
+	// ëª¨ë‹ˆí„°ë§ í´ë¼ì´ì–¸íŠ¸(íˆ´) ëª¨ë‹ˆí„°ë§ ì„œë²„ë¡œ ë¡œê·¸ì¸ ì‘ë‹µ
 	//
 	//	{
 	//		WORD	Type
 	//
-	//		BYTE	Status					// ·Î±×ÀÎ °á°ú 0 / 1 / 2 ... ÇÏ´Ü Define
+	//		BYTE	Status					// ë¡œê·¸ì¸ ê²°ê³¼ 0 / 1 / 2 ... í•˜ë‹¨ Define
 	//	}
 	//
 	//------------------------------------------------------------
 	en_PACKET_CS_MONITOR_TOOL_RES_LOGIN,
 
 	//------------------------------------------------------------
-	// ¸ð´ÏÅÍ¸µ ¼­¹ö°¡ ¸ð´ÏÅÍ¸µ Å¬¶óÀÌ¾ðÆ®(Åø) ¿¡°Ô ¸ð´ÏÅÍ¸µ µ¥ÀÌÅÍ Àü¼Û
+	// ëª¨ë‹ˆí„°ë§ ì„œë²„ê°€ ëª¨ë‹ˆí„°ë§ í´ë¼ì´ì–¸íŠ¸(íˆ´) ì—ê²Œ ëª¨ë‹ˆí„°ë§ ë°ì´í„° ì „ì†¡
 	// 
-	// ÅëÇÕ ¸ð´ÏÅÍ¸µ ¹æ½ÄÀ» »ç¿ë ÁßÀÌ¹Ç·Î, ¸ð´ÏÅÍ¸µ ¼­¹ö´Â ¸ðµç ¸ð´ÏÅÍ¸µ Å¬¶óÀÌ¾ðÆ®¿¡°Ô
-	// ¼öÁýµÇ´Â ¸ðµç µ¥ÀÌÅÍ¸¦ ¹Ù·Î Àü¼Û½ÃÄÑ ÁØ´Ù.
+	// í†µí•© ëª¨ë‹ˆí„°ë§ ë°©ì‹ì„ ì‚¬ìš© ì¤‘ì´ë¯€ë¡œ, ëª¨ë‹ˆí„°ë§ ì„œë²„ëŠ” ëª¨ë“  ëª¨ë‹ˆí„°ë§ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ
+	// ìˆ˜ì§‘ë˜ëŠ” ëª¨ë“  ë°ì´í„°ë¥¼ ë°”ë¡œ ì „ì†¡ì‹œì¼œ ì¤€ë‹¤.
 	// 
 	//
-	// µ¥ÀÌÅÍ¸¦ Àý¾àÇÏ±â À§ÇØ¼­´Â ÃÊ´ÜÀ§·Î ¸ðµç µ¥ÀÌÅÍ¸¦ ¹­¾î¼­ 30~40°³ÀÇ ¸ð´ÏÅÍ¸µ µ¥ÀÌÅÍ¸¦ ÇÏ³ªÀÇ ÆÐÅ¶À¸·Î ¸¸µå´Â°Ô
-	// ÁÁÀ¸³ª  ¿©·¯°¡Áö »ý°¢ÇÒ ¹®Á¦°¡ ¸¹À¸¹Ç·Î ±×³É °¢°¢ÀÇ ¸ð´ÏÅÍ¸µ µ¥ÀÌÅÍ¸¦ °³º°ÀûÀ¸·Î Àü¼ÛÃ³¸® ÇÑ´Ù.
+	// ë°ì´í„°ë¥¼ ì ˆì•½í•˜ê¸° ìœ„í•´ì„œëŠ” ì´ˆë‹¨ìœ„ë¡œ ëª¨ë“  ë°ì´í„°ë¥¼ ë¬¶ì–´ì„œ 30~40ê°œì˜ ëª¨ë‹ˆí„°ë§ ë°ì´í„°ë¥¼ í•˜ë‚˜ì˜ íŒ¨í‚·ìœ¼ë¡œ ë§Œë“œëŠ”ê²Œ
+	// ì¢‹ìœ¼ë‚˜  ì—¬ëŸ¬ê°€ì§€ ìƒê°í•  ë¬¸ì œê°€ ë§Žìœ¼ë¯€ë¡œ ê·¸ëƒ¥ ê°ê°ì˜ ëª¨ë‹ˆí„°ë§ ë°ì´í„°ë¥¼ ê°œë³„ì ìœ¼ë¡œ ì „ì†¡ì²˜ë¦¬ í•œë‹¤.
 	//
 	//	{
 	//		WORD	Type
 	//		
-	//		BYTE	ServerNo				// ¼­¹ö No
-	//		BYTE	DataType				// ¸ð´ÏÅÍ¸µ µ¥ÀÌÅÍ Type ÇÏ´Ü Define µÊ.
-	//		int		DataValue				// ÇØ´ç µ¥ÀÌÅÍ ¼öÄ¡.
-	//		int		TimeStamp				// ÇØ´ç µ¥ÀÌÅÍ¸¦ ¾òÀº ½Ã°£ TIMESTAMP  (time() ÇÔ¼ö)
-	//										// º»·¡ time ÇÔ¼ö´Â time_t Å¸ÀÔº¯¼öÀÌ³ª 64bit ·Î ³¶ºñ½º·¯¿ì´Ï
-	//										// int ·Î Ä³½ºÆÃÇÏ¿© Àü¼Û. ±×·¡¼­ 2038³â ±îÁö¸¸ »ç¿ë°¡´É
+	//		BYTE	ServerNo				// ì„œë²„ No
+	//		BYTE	DataType				// ëª¨ë‹ˆí„°ë§ ë°ì´í„° Type í•˜ë‹¨ Define ë¨.
+	//		int		DataValue				// í•´ë‹¹ ë°ì´í„° ìˆ˜ì¹˜.
+	//		int		TimeStamp				// í•´ë‹¹ ë°ì´í„°ë¥¼ ì–»ì€ ì‹œê°„ TIMESTAMP  (time() í•¨ìˆ˜)
+	//										// ë³¸ëž˜ time í•¨ìˆ˜ëŠ” time_t íƒ€ìž…ë³€ìˆ˜ì´ë‚˜ 64bit ë¡œ ë‚­ë¹„ìŠ¤ëŸ¬ìš°ë‹ˆ
+	//										// int ë¡œ ìºìŠ¤íŒ…í•˜ì—¬ ì „ì†¡. ê·¸ëž˜ì„œ 2038ë…„ ê¹Œì§€ë§Œ ì‚¬ìš©ê°€ëŠ¥
 	//	}
 	//
 	//------------------------------------------------------------
@@ -367,7 +367,7 @@ enum en_PACKET_TYPE
 	en_PACKET_CS_GAME_SERVER = 1000,
 
 	//------------------------------------------------------------
-	// ·Î±×ÀÎ ¿äÃ»
+	// ë¡œê·¸ì¸ ìš”ì²­
 	//
 	//	{
 	//		WORD	Type
@@ -382,26 +382,26 @@ enum en_PACKET_TYPE
 	en_PACKET_CS_GAME_REQ_LOGIN,
 
 	//------------------------------------------------------------
-	// ·Î±×ÀÎ ÀÀ´ä
+	// ë¡œê·¸ì¸ ì‘ë‹µ
 	//
 	//	{
 	//		WORD	Type
 	//
-	//		BYTE	Status (0: ½ÇÆÐ / 1: ¼º°ø)
+	//		BYTE	Status (0: ì‹¤íŒ¨ / 1: ì„±ê³µ)
 	//		INT64	AccountNo
 	//	}
 	//
-	//	Áö±Ý ´õ¹Ì´Â ¹«Á¶°Ç ¼º°øÀ¸·Î ÆÇ´ÜÇÏ°í ÀÖÀ½
-	//	Status °á°ú¸¦ ¹«½ÃÇÑ´Ù´Â ÀÌ¾ß±â
+	//	ì§€ê¸ˆ ë”ë¯¸ëŠ” ë¬´ì¡°ê±´ ì„±ê³µìœ¼ë¡œ íŒë‹¨í•˜ê³  ìžˆìŒ
+	//	Status ê²°ê³¼ë¥¼ ë¬´ì‹œí•œë‹¤ëŠ” ì´ì•¼ê¸°
 	//
-	//  en_PACKET_CS_GAME_RES_LOGIN define °ª »ç¿ë.
+	//  en_PACKET_CS_GAME_RES_LOGIN define ê°’ ì‚¬ìš©.
 	//------------------------------------------------------------
 	en_PACKET_CS_GAME_RES_LOGIN,
 
 
 
 	//------------------------------------------------------------
-	// Å×½ºÆ®¿ë ¿¡ÄÚ ¿äÃ»
+	// í…ŒìŠ¤íŠ¸ìš© ì—ì½” ìš”ì²­
 	//
 	//	{
 	//		WORD		Type
@@ -414,7 +414,7 @@ enum en_PACKET_TYPE
 	en_PACKET_CS_GAME_REQ_ECHO = 5000,
 
 	//------------------------------------------------------------
-	// Å×½ºÆ®¿ë ¿¡ÄÚ ÀÀ´ä (REQ ¸¦ ±×´ë·Î µ¹·ÁÁÜ)
+	// í…ŒìŠ¤íŠ¸ìš© ì—ì½” ì‘ë‹µ (REQ ë¥¼ ê·¸ëŒ€ë¡œ ëŒë ¤ì¤Œ)
 	//
 	//	{
 	//		WORD		Type
@@ -427,37 +427,37 @@ enum en_PACKET_TYPE
 	en_PACKET_CS_GAME_RES_ECHO,
 
 	//------------------------------------------------------------
-	// ÇÏÆ®ºñÆ®
+	// í•˜íŠ¸ë¹„íŠ¸
 	//
 	//	{
 	//		WORD		Type
 	//	}
 	//
 	//
-	// Å¬¶óÀÌ¾ðÆ®´Â ÀÌ¸¦ 30ÃÊ¸¶´Ù º¸³»ÁÜ.
-	// ¼­¹ö´Â 40ÃÊ ÀÌ»óµ¿¾È ¸Þ½ÃÁö ¼ö½ÅÀÌ ¾ø´Â Å¬¶óÀÌ¾ðÆ®¸¦ °­Á¦·Î ²÷¾îÁà¾ß ÇÔ.
+	// í´ë¼ì´ì–¸íŠ¸ëŠ” ì´ë¥¼ 30ì´ˆë§ˆë‹¤ ë³´ë‚´ì¤Œ.
+	// ì„œë²„ëŠ” 40ì´ˆ ì´ìƒë™ì•ˆ ë©”ì‹œì§€ ìˆ˜ì‹ ì´ ì—†ëŠ” í´ë¼ì´ì–¸íŠ¸ë¥¼ ê°•ì œë¡œ ëŠì–´ì¤˜ì•¼ í•¨.
 	//------------------------------------------------------------	
 	en_PACKET_CS_GAME_REQ_HEARTBEAT,
 };
 
 enum en_PACKET_CS_LOGIN_RES_LOGIN 
 {
-	dfLOGIN_STATUS_NONE				= -1,		// ¹ÌÀÎÁõ»óÅÂ
-	dfLOGIN_STATUS_FAIL				= 0,		// ¼¼¼Ç¿À·ù
-	dfLOGIN_STATUS_OK				= 1,		// ¼º°ø
-	dfLOGIN_STATUS_GAME				= 2,		// °ÔÀÓÁß
-	dfLOGIN_STATUS_ACCOUNT_MISS		= 3,		// account Å×ÀÌºí¿¡ AccountNo ¾øÀ½
-	dfLOGIN_STATUS_SESSION_MISS		= 4,		// Session Å×ÀÌºí¿¡ AccountNo ¾øÀ½
-	dfLOGIN_STATUS_STATUS_MISS		= 5,		// Status Å×ÀÌºí¿¡ AccountNo ¾øÀ½
-	dfLOGIN_STATUS_NOSERVER			= 6,		// ¼­ºñ½ºÁßÀÎ ¼­¹ö°¡ ¾øÀ½.
+	dfLOGIN_STATUS_NONE				= -1,		// ë¯¸ì¸ì¦ìƒíƒœ
+	dfLOGIN_STATUS_FAIL				= 0,		// ì„¸ì…˜ì˜¤ë¥˜
+	dfLOGIN_STATUS_OK				= 1,		// ì„±ê³µ
+	dfLOGIN_STATUS_GAME				= 2,		// ê²Œìž„ì¤‘
+	dfLOGIN_STATUS_ACCOUNT_MISS		= 3,		// account í…Œì´ë¸”ì— AccountNo ì—†ìŒ
+	dfLOGIN_STATUS_SESSION_MISS		= 4,		// Session í…Œì´ë¸”ì— AccountNo ì—†ìŒ
+	dfLOGIN_STATUS_STATUS_MISS		= 5,		// Status í…Œì´ë¸”ì— AccountNo ì—†ìŒ
+	dfLOGIN_STATUS_NOSERVER			= 6,		// ì„œë¹„ìŠ¤ì¤‘ì¸ ì„œë²„ê°€ ì—†ìŒ.
 };
 
 enum en_PACKET_CS_GAME_RES_LOGIN 
 {
-	dfGAME_LOGIN_FAIL				= 0,		// ¼¼¼ÇÅ° ¿À·ù ¶Ç´Â Account Å×ÀÌºí»óÀÇ ¿À·ù
-	dfGAME_LOGIN_OK					= 1,		// ¼º°ø
-	dfGAME_LOGIN_NOCHARACTER		= 2,		// ¼º°ø / Ä³¸¯ÅÍ ¾øÀ½ > Ä³¸¯ÅÍ ¼±ÅÃÈ­¸éÀ¸·Î ÀüÈ¯. 
-	dfGAME_LOGIN_VERSION_MISS		= 3,		// ¼­¹ö,Å¬¶ó ¹öÀü ´Ù¸§
+	dfGAME_LOGIN_FAIL				= 0,		// ì„¸ì…˜í‚¤ ì˜¤ë¥˜ ë˜ëŠ” Account í…Œì´ë¸”ìƒì˜ ì˜¤ë¥˜
+	dfGAME_LOGIN_OK					= 1,		// ì„±ê³µ
+	dfGAME_LOGIN_NOCHARACTER		= 2,		// ì„±ê³µ / ìºë¦­í„° ì—†ìŒ > ìºë¦­í„° ì„ íƒí™”ë©´ìœ¼ë¡œ ì „í™˜. 
+	dfGAME_LOGIN_VERSION_MISS		= 3,		// ì„œë²„,í´ë¼ ë²„ì „ ë‹¤ë¦„
 };
 
 enum en_PACKET_SS_LOGINSERVER_LOGIN
@@ -482,58 +482,58 @@ enum en_PACKET_CS_MONITOR_TOOL_SERVER_CONTROL
 	dfMONITOR_SERVER_TYPE_CHAT		= 3,
 	dfMONITOR_SERVER_TYPE_AGENT		= 4,
 
-	dfMONITOR_SERVER_CONTROL_SHUTDOWN			= 1,		// ¼­¹ö Á¤»óÁ¾·á (°ÔÀÓ¼­¹ö Àü¿ë)
-	dfMONITOR_SERVER_CONTROL_TERMINATE			= 2,		// ¼­¹ö ÇÁ·Î¼¼½º °­Á¦Á¾·á
-	dfMONITOR_SERVER_CONTROL_RUN				= 3,		// ¼­¹ö ÇÁ·Î¼¼½º »ý¼º & ½ÇÇà
+	dfMONITOR_SERVER_CONTROL_SHUTDOWN			= 1,		// ì„œë²„ ì •ìƒì¢…ë£Œ (ê²Œìž„ì„œë²„ ì „ìš©)
+	dfMONITOR_SERVER_CONTROL_TERMINATE			= 2,		// ì„œë²„ í”„ë¡œì„¸ìŠ¤ ê°•ì œì¢…ë£Œ
+	dfMONITOR_SERVER_CONTROL_RUN				= 3,		// ì„œë²„ í”„ë¡œì„¸ìŠ¤ ìƒì„± & ì‹¤í–‰
 };
 
 enum en_PACKET_SS_MONITOR_DATA_UPDATE
 {
-	dfMONITOR_DATA_TYPE_LOGIN_SERVER_RUN = 1,		// ·Î±×ÀÎ¼­¹ö ½ÇÇà¿©ºÎ ON / OFF
-	dfMONITOR_DATA_TYPE_LOGIN_SERVER_CPU = 2,		// ·Î±×ÀÎ¼­¹ö CPU »ç¿ë·ü
-	dfMONITOR_DATA_TYPE_LOGIN_SERVER_MEM = 3,		// ·Î±×ÀÎ¼­¹ö ¸Þ¸ð¸® »ç¿ë MByte
-	dfMONITOR_DATA_TYPE_LOGIN_SESSION = 4,		// ·Î±×ÀÎ¼­¹ö ¼¼¼Ç ¼ö (ÄÁ³Ø¼Ç ¼ö)
-	dfMONITOR_DATA_TYPE_LOGIN_AUTH_TPS = 5,		// ·Î±×ÀÎ¼­¹ö ÀÎÁõ Ã³¸® ÃÊ´ç È½¼ö
-	dfMONITOR_DATA_TYPE_LOGIN_PACKET_POOL = 6,		// ·Î±×ÀÎ¼­¹ö ÆÐÅ¶Ç® »ç¿ë·®
+	dfMONITOR_DATA_TYPE_LOGIN_SERVER_RUN = 1,		// ë¡œê·¸ì¸ì„œë²„ ì‹¤í–‰ì—¬ë¶€ ON / OFF
+	dfMONITOR_DATA_TYPE_LOGIN_SERVER_CPU = 2,		// ë¡œê·¸ì¸ì„œë²„ CPU ì‚¬ìš©ë¥ 
+	dfMONITOR_DATA_TYPE_LOGIN_SERVER_MEM = 3,		// ë¡œê·¸ì¸ì„œë²„ ë©”ëª¨ë¦¬ ì‚¬ìš© MByte
+	dfMONITOR_DATA_TYPE_LOGIN_SESSION = 4,		// ë¡œê·¸ì¸ì„œë²„ ì„¸ì…˜ ìˆ˜ (ì»¨ë„¥ì…˜ ìˆ˜)
+	dfMONITOR_DATA_TYPE_LOGIN_AUTH_TPS = 5,		// ë¡œê·¸ì¸ì„œë²„ ì¸ì¦ ì²˜ë¦¬ ì´ˆë‹¹ íšŸìˆ˜
+	dfMONITOR_DATA_TYPE_LOGIN_PACKET_POOL = 6,		// ë¡œê·¸ì¸ì„œë²„ íŒ¨í‚·í’€ ì‚¬ìš©ëŸ‰
 
 
-	dfMONITOR_DATA_TYPE_GAME_SERVER_RUN = 10,		// GameServer ½ÇÇà ¿©ºÎ ON / OFF
-	dfMONITOR_DATA_TYPE_GAME_SERVER_CPU = 11,		// GameServer CPU »ç¿ë·ü
-	dfMONITOR_DATA_TYPE_GAME_SERVER_MEM = 12,		// GameServer ¸Þ¸ð¸® »ç¿ë MByte
-	dfMONITOR_DATA_TYPE_GAME_SESSION = 13,		// °ÔÀÓ¼­¹ö ¼¼¼Ç ¼ö (ÄÁ³Ø¼Ç ¼ö)
-	dfMONITOR_DATA_TYPE_GAME_AUTH_PLAYER = 14,		// °ÔÀÓ¼­¹ö AUTH MODE ÇÃ·¹ÀÌ¾î ¼ö
-	dfMONITOR_DATA_TYPE_GAME_GAME_PLAYER = 15,		// °ÔÀÓ¼­¹ö GAME MODE ÇÃ·¹ÀÌ¾î ¼ö
-	dfMONITOR_DATA_TYPE_GAME_ACCEPT_TPS = 16,		// °ÔÀÓ¼­¹ö Accept Ã³¸® ÃÊ´ç È½¼ö
-	dfMONITOR_DATA_TYPE_GAME_PACKET_RECV_TPS = 17,		// °ÔÀÓ¼­¹ö ÆÐÅ¶Ã³¸® ÃÊ´ç È½¼ö
-	dfMONITOR_DATA_TYPE_GAME_PACKET_SEND_TPS = 18,		// °ÔÀÓ¼­¹ö ÆÐÅ¶ º¸³»±â ÃÊ´ç ¿Ï·á È½¼ö
-	dfMONITOR_DATA_TYPE_GAME_DB_WRITE_TPS = 19,		// °ÔÀÓ¼­¹ö DB ÀúÀå ¸Þ½ÃÁö ÃÊ´ç Ã³¸® È½¼ö
-	dfMONITOR_DATA_TYPE_GAME_DB_WRITE_MSG = 20,		// °ÔÀÓ¼­¹ö DB ÀúÀå ¸Þ½ÃÁö Å¥ °³¼ö (³²Àº ¼ö)
-	dfMONITOR_DATA_TYPE_GAME_AUTH_THREAD_FPS = 21,		// °ÔÀÓ¼­¹ö AUTH ½º·¹µå ÃÊ´ç ÇÁ·¹ÀÓ ¼ö (·çÇÁ ¼ö)
-	dfMONITOR_DATA_TYPE_GAME_GAME_THREAD_FPS = 22,		// °ÔÀÓ¼­¹ö GAME ½º·¹µå ÃÊ´ç ÇÁ·¹ÀÓ ¼ö (·çÇÁ ¼ö)
-	dfMONITOR_DATA_TYPE_GAME_PACKET_POOL = 23,		// °ÔÀÓ¼­¹ö ÆÐÅ¶Ç® »ç¿ë·®
+	dfMONITOR_DATA_TYPE_GAME_SERVER_RUN = 10,		// GameServer ì‹¤í–‰ ì—¬ë¶€ ON / OFF
+	dfMONITOR_DATA_TYPE_GAME_SERVER_CPU = 11,		// GameServer CPU ì‚¬ìš©ë¥ 
+	dfMONITOR_DATA_TYPE_GAME_SERVER_MEM = 12,		// GameServer ë©”ëª¨ë¦¬ ì‚¬ìš© MByte
+	dfMONITOR_DATA_TYPE_GAME_SESSION = 13,		// ê²Œìž„ì„œë²„ ì„¸ì…˜ ìˆ˜ (ì»¨ë„¥ì…˜ ìˆ˜)
+	dfMONITOR_DATA_TYPE_GAME_AUTH_PLAYER = 14,		// ê²Œìž„ì„œë²„ AUTH MODE í”Œë ˆì´ì–´ ìˆ˜
+	dfMONITOR_DATA_TYPE_GAME_GAME_PLAYER = 15,		// ê²Œìž„ì„œë²„ GAME MODE í”Œë ˆì´ì–´ ìˆ˜
+	dfMONITOR_DATA_TYPE_GAME_ACCEPT_TPS = 16,		// ê²Œìž„ì„œë²„ Accept ì²˜ë¦¬ ì´ˆë‹¹ íšŸìˆ˜
+	dfMONITOR_DATA_TYPE_GAME_PACKET_RECV_TPS = 17,		// ê²Œìž„ì„œë²„ íŒ¨í‚·ì²˜ë¦¬ ì´ˆë‹¹ íšŸìˆ˜
+	dfMONITOR_DATA_TYPE_GAME_PACKET_SEND_TPS = 18,		// ê²Œìž„ì„œë²„ íŒ¨í‚· ë³´ë‚´ê¸° ì´ˆë‹¹ ì™„ë£Œ íšŸìˆ˜
+	dfMONITOR_DATA_TYPE_GAME_DB_WRITE_TPS = 19,		// ê²Œìž„ì„œë²„ DB ì €ìž¥ ë©”ì‹œì§€ ì´ˆë‹¹ ì²˜ë¦¬ íšŸìˆ˜
+	dfMONITOR_DATA_TYPE_GAME_DB_WRITE_MSG = 20,		// ê²Œìž„ì„œë²„ DB ì €ìž¥ ë©”ì‹œì§€ í ê°œìˆ˜ (ë‚¨ì€ ìˆ˜)
+	dfMONITOR_DATA_TYPE_GAME_AUTH_THREAD_FPS = 21,		// ê²Œìž„ì„œë²„ AUTH ìŠ¤ë ˆë“œ ì´ˆë‹¹ í”„ë ˆìž„ ìˆ˜ (ë£¨í”„ ìˆ˜)
+	dfMONITOR_DATA_TYPE_GAME_GAME_THREAD_FPS = 22,		// ê²Œìž„ì„œë²„ GAME ìŠ¤ë ˆë“œ ì´ˆë‹¹ í”„ë ˆìž„ ìˆ˜ (ë£¨í”„ ìˆ˜)
+	dfMONITOR_DATA_TYPE_GAME_PACKET_POOL = 23,		// ê²Œìž„ì„œë²„ íŒ¨í‚·í’€ ì‚¬ìš©ëŸ‰
 
-	dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN = 30,		// Ã¤ÆÃ¼­¹ö ChatServer ½ÇÇà ¿©ºÎ ON / OFF
-	dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU = 31,		// Ã¤ÆÃ¼­¹ö ChatServer CPU »ç¿ë·ü
-	dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM = 32,		// Ã¤ÆÃ¼­¹ö ChatServer ¸Þ¸ð¸® »ç¿ë MByte
-	dfMONITOR_DATA_TYPE_CHAT_SESSION = 33,		// Ã¤ÆÃ¼­¹ö ¼¼¼Ç ¼ö (ÄÁ³Ø¼Ç ¼ö)
-	dfMONITOR_DATA_TYPE_CHAT_PLAYER = 34,		// Ã¤ÆÃ¼­¹ö ÀÎÁõ¼º°ø »ç¿ëÀÚ ¼ö (½ÇÁ¦ Á¢¼ÓÀÚ)
-	dfMONITOR_DATA_TYPE_CHAT_UPDATE_TPS = 35,		// Ã¤ÆÃ¼­¹ö UPDATE ½º·¹µå ÃÊ´ç ÃÊ¸® È½¼ö
-	dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL = 36,		// Ã¤ÆÃ¼­¹ö ÆÐÅ¶Ç® »ç¿ë·®
-	dfMONITOR_DATA_TYPE_CHAT_UPDATEMSG_POOL = 37,		// Ã¤ÆÃ¼­¹ö UPDATE MSG Ç® »ç¿ë·®
+	dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN = 30,		// ì±„íŒ…ì„œë²„ ChatServer ì‹¤í–‰ ì—¬ë¶€ ON / OFF
+	dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU = 31,		// ì±„íŒ…ì„œë²„ ChatServer CPU ì‚¬ìš©ë¥ 
+	dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM = 32,		// ì±„íŒ…ì„œë²„ ChatServer ë©”ëª¨ë¦¬ ì‚¬ìš© MByte
+	dfMONITOR_DATA_TYPE_CHAT_SESSION = 33,		// ì±„íŒ…ì„œë²„ ì„¸ì…˜ ìˆ˜ (ì»¨ë„¥ì…˜ ìˆ˜)
+	dfMONITOR_DATA_TYPE_CHAT_PLAYER = 34,		// ì±„íŒ…ì„œë²„ ì¸ì¦ì„±ê³µ ì‚¬ìš©ìž ìˆ˜ (ì‹¤ì œ ì ‘ì†ìž)
+	dfMONITOR_DATA_TYPE_CHAT_UPDATE_TPS = 35,		// ì±„íŒ…ì„œë²„ UPDATE ìŠ¤ë ˆë“œ ì´ˆë‹¹ ì´ˆë¦¬ íšŸìˆ˜
+	dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL = 36,		// ì±„íŒ…ì„œë²„ íŒ¨í‚·í’€ ì‚¬ìš©ëŸ‰
+	dfMONITOR_DATA_TYPE_CHAT_UPDATEMSG_POOL = 37,		// ì±„íŒ…ì„œë²„ UPDATE MSG í’€ ì‚¬ìš©ëŸ‰
 
 
-	dfMONITOR_DATA_TYPE_MONITOR_CPU_TOTAL = 40,		// ¼­¹öÄÄÇ»ÅÍ CPU ÀüÃ¼ »ç¿ë·ü
-	dfMONITOR_DATA_TYPE_MONITOR_NONPAGED_MEMORY = 41,		// ¼­¹öÄÄÇ»ÅÍ ³íÆäÀÌÁö ¸Þ¸ð¸® MByte
-	dfMONITOR_DATA_TYPE_MONITOR_NETWORK_RECV = 42,		// ¼­¹öÄÄÇ»ÅÍ ³×Æ®¿öÅ© ¼ö½Å·® KByte
-	dfMONITOR_DATA_TYPE_MONITOR_NETWORK_SEND = 43,		// ¼­¹öÄÄÇ»ÅÍ ³×Æ®¿öÅ© ¼Û½Å·® KByte
-	dfMONITOR_DATA_TYPE_MONITOR_AVAILABLE_MEMORY = 44,		// ¼­¹öÄÄÇ»ÅÍ »ç¿ë°¡´É ¸Þ¸ð¸®
+	dfMONITOR_DATA_TYPE_MONITOR_CPU_TOTAL = 40,		// ì„œë²„ì»´í“¨í„° CPU ì „ì²´ ì‚¬ìš©ë¥ 
+	dfMONITOR_DATA_TYPE_MONITOR_NONPAGED_MEMORY = 41,		// ì„œë²„ì»´í“¨í„° ë…¼íŽ˜ì´ì§€ ë©”ëª¨ë¦¬ MByte
+	dfMONITOR_DATA_TYPE_MONITOR_NETWORK_RECV = 42,		// ì„œë²„ì»´í“¨í„° ë„¤íŠ¸ì›Œí¬ ìˆ˜ì‹ ëŸ‰ KByte
+	dfMONITOR_DATA_TYPE_MONITOR_NETWORK_SEND = 43,		// ì„œë²„ì»´í“¨í„° ë„¤íŠ¸ì›Œí¬ ì†¡ì‹ ëŸ‰ KByte
+	dfMONITOR_DATA_TYPE_MONITOR_AVAILABLE_MEMORY = 44,		// ì„œë²„ì»´í“¨í„° ì‚¬ìš©ê°€ëŠ¥ ë©”ëª¨ë¦¬
 };
 
 enum en_PACKET_CS_MONITOR_TOOL_RES_LOGIN
 {
-	dfMONITOR_TOOL_LOGIN_OK = 1,		            // ·Î±×ÀÎ ¼º°ø
-	dfMONITOR_TOOL_LOGIN_ERR_NOSERVER = 2,		    // ¼­¹öÀÌ¸§ ¿À·ù (¸ÅÄª¹Ì½º)
-	dfMONITOR_TOOL_LOGIN_ERR_SESSIONKEY = 3,		// ·Î±×ÀÎ ¼¼¼ÇÅ° ¿À·ù
+	dfMONITOR_TOOL_LOGIN_OK = 1,		            // ë¡œê·¸ì¸ ì„±ê³µ
+	dfMONITOR_TOOL_LOGIN_ERR_NOSERVER = 2,		    // ì„œë²„ì´ë¦„ ì˜¤ë¥˜ (ë§¤ì¹­ë¯¸ìŠ¤)
+	dfMONITOR_TOOL_LOGIN_ERR_SESSIONKEY = 3,		// ë¡œê·¸ì¸ ì„¸ì…˜í‚¤ ì˜¤ë¥˜
 };
 
 //#endif

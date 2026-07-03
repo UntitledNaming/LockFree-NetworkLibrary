@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <windows.h>
 #include <iostream>
 #include <unordered_map>
@@ -26,7 +26,7 @@ protected:
 	struct Bucket
 	{
 		Node* s_Top;
-		UINT  s_Cnt;                                //¹öÅ¶ÀÌ µé°í ÀÖ´Â ³ëµå °¹¼ö
+		UINT  s_Cnt;                                //ë²„í‚·ì´ ë“¤ê³  ìˆëŠ” ë…¸ë“œ ê°¯ìˆ˜
 	};
 
 	struct SubPool
@@ -36,8 +36,8 @@ protected:
 	};
 
 public:
-	LFStack<Bucket*>*    g_pBucketPool;                // °ø¿ë ¹öÅ¶ Ç® ¶ôÇÁ¸® ½ºÅÃÀ¸·Î ±¸Çö
-	CMemoryPool<Bucket>* g_pCaseBucketPool;            // ¹öÅ¶ ²®µ¥±â °¡Á®¿À´Â Ç®
+	LFStack<Bucket*>*    g_pBucketPool;                // ê³µìš© ë²„í‚· í’€ ë½í”„ë¦¬ ìŠ¤íƒìœ¼ë¡œ êµ¬í˜„
+	CMemoryPool<Bucket>* g_pCaseBucketPool;            // ë²„í‚· ê»ë°ê¸° ê°€ì ¸ì˜¤ëŠ” í’€
 
 protected:
 	bool          m_bPlacementNew;
@@ -48,7 +48,7 @@ protected:
 	DWORD         m_iTlsIndex;
 
 	LONG          m_SubPoolIndex;
-	SubPool       m_SubPoolArray[SUBPOOL_MAX];                //°¢ ¼­ºêÇ® Æ÷ÀÎÅÍ °ü¸® ÀÚ·á±¸Á¶
+	SubPool       m_SubPoolArray[SUBPOOL_MAX];                //ê° ì„œë¸Œí’€ í¬ì¸í„° ê´€ë¦¬ ìë£Œêµ¬ì¡°
 
 public:
 	CMPoolTLS(int iBucketNum = 0, bool bPlacementNew = false) : g_pBucketPool(nullptr), g_pCaseBucketPool(nullptr), m_SubPoolIndex(-1), m_bPlacementNew(bPlacementNew), 
@@ -64,15 +64,15 @@ public:
 			return;
 		}
 
-		//¸â¹ö º¯¼ö ÃÊ±âÈ­
+		//ë©¤ë²„ ë³€ìˆ˜ ì´ˆê¸°í™”
 		m_iBKTCapacity = 0;
 		m_iUseCnt = 0;
 
 
-		//¸Ş¸ğ¸® Ç® ID ¼³Á¤. (¸â¹öÀÇ ÁÖ¼Ò°ªÀº °íÀ¯ÇÔ)
+		//ë©”ëª¨ë¦¬ í’€ ID ì„¤ì •. (ë©¤ë²„ì˜ ì£¼ì†Œê°’ì€ ê³ ìœ í•¨)
 		m_iOriginID = (UINT64)&m_iUseCnt;
 
-		//°ø¿ë ¹öÅ¶ ¶ôÇÁ¸® ½ºÅÃ ÃÊ±âÈ­
+		//ê³µìš© ë²„í‚· ë½í”„ë¦¬ ìŠ¤íƒ ì´ˆê¸°í™”
 		g_pBucketPool = new LFStack<Bucket*>;
 		g_pBucketPool->Clear();
 
@@ -87,12 +87,12 @@ public:
 	}
 	~CMPoolTLS()
 	{
-		// ¼­ºê Ç®ÀÇ ³ëµå ¹İ³³
+		// ì„œë¸Œ í’€ì˜ ë…¸ë“œ ë°˜ë‚©
 		for (int i = 0; i < m_SubPoolIndex; i++)
 		{
 			if (m_SubPoolArray[i].s_ptr->m_iAlloc->s_Top != nullptr)
 			{
-				// ÇÒ´ç ¹öÅ¶¿¡ ÀÖ´Â ³ëµå ¹İ³³
+				// í• ë‹¹ ë²„í‚·ì— ìˆëŠ” ë…¸ë“œ ë°˜ë‚©
 				while (1)
 				{
 					Node* next = m_SubPoolArray[i].s_ptr->m_iAlloc->s_Top->s_pNext;
@@ -111,7 +111,7 @@ public:
 
 			if (m_SubPoolArray[i].s_ptr->m_iRet->s_Top != nullptr)
 			{
-				// ¹İÈ¯ ¹öÅ¶¿¡ ÀÖ´Â ³ëµå ¹İ³³
+				// ë°˜í™˜ ë²„í‚·ì— ìˆëŠ” ë…¸ë“œ ë°˜ë‚©
 				while (1)
 				{
 					Node* next = m_SubPoolArray[i].s_ptr->m_iRet->s_Top->s_pNext;
@@ -128,22 +128,22 @@ public:
 
 			}
 
-			// ÇÒ´ç ¹öÅ¶ ²®µ¥±â ¹İ³³
+			// í• ë‹¹ ë²„í‚· ê»ë°ê¸° ë°˜ë‚©
 			g_pCaseBucketPool->Free(m_SubPoolArray[i].s_ptr->m_iAlloc);
 
-			// ¹İÈ¯ ¹öÅ¶ ²®µ¥±â ¹İ³³
+			// ë°˜í™˜ ë²„í‚· ê»ë°ê¸° ë°˜ë‚©
 			g_pCaseBucketPool->Free(m_SubPoolArray[i].s_ptr->m_iRet);
 		}
 
-		// ¸ŞÀÎ Ç®ÀÇ ³ëµå ¹İ³³
+		// ë©”ì¸ í’€ì˜ ë…¸ë“œ ë°˜ë‚©
 		while (1)
 		{
-			// ¸ŞÀÎ Ç®¿¡¼­ ¹öÅ¶ ÇÏ³ª »Ì±â
+			// ë©”ì¸ í’€ì—ì„œ ë²„í‚· í•˜ë‚˜ ë½‘ê¸°
 			Bucket* pBucket = nullptr;
 			if (!g_pBucketPool->Pop(pBucket))
 				break;
 
-			// ¹öÅ¶ ÇÏ³ª¿¡¼­ ³ëµå »Ì¾Æ¼­ ¹İ³³
+			// ë²„í‚· í•˜ë‚˜ì—ì„œ ë…¸ë“œ ë½‘ì•„ì„œ ë°˜ë‚©
 			while (1)
 			{
 				Node* next = pBucket->s_Top->s_pNext;
@@ -158,7 +158,7 @@ public:
 					break;
 			}
 
-			// ¹öÅ¶ ²®µ¥±â ¹İÈ¯
+			// ë²„í‚· ê»ë°ê¸° ë°˜í™˜
 			g_pCaseBucketPool->Free(pBucket);
 		}
 
@@ -176,15 +176,15 @@ public:
 		pBucket->s_Top = nullptr;
 		pBucket->s_Cnt = BUCKET_SIZE;
 
-		//¹öÅ¶¿¡ ³ëµå ÇÒ´ç
+		//ë²„í‚·ì— ë…¸ë“œ í• ë‹¹
 		for (int i = 0; i < BUCKET_SIZE; i++)
 		{
-			//³ëµå »ı¼º ¹× ÃÊ±âÈ­
+			//ë…¸ë“œ ìƒì„± ë° ì´ˆê¸°í™”
 			Node* newNode = (Node*)malloc(sizeof(Node));
 			newNode->s_poolid = m_iOriginID;
 			newNode->s_pNext = nullptr;
 
-			//°´Ã¼ »ı¼ºÀÚ È£Ãâ
+			//ê°ì²´ ìƒì„±ì í˜¸ì¶œ
 			if(m_bPlacementNew == false)
 				new(&newNode->s_data) U;
 
@@ -199,10 +199,10 @@ public:
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-    // ÇöÀç È®º¸ µÈ ºí·° °³¼ö¸¦ ¾ò´Â´Ù. (¸Ş¸ğ¸®Ç® ³»ºÎÀÇ ÀüÃ¼ °³¼ö)
+    // í˜„ì¬ í™•ë³´ ëœ ë¸”ëŸ­ ê°œìˆ˜ë¥¼ ì–»ëŠ”ë‹¤. (ë©”ëª¨ë¦¬í’€ ë‚´ë¶€ì˜ ì „ì²´ ê°œìˆ˜)
     //
-    // Parameters: ¾øÀ½.
-    // Return: (int) ¸Ş¸ğ¸® Ç® ³»ºÎ ÀüÃ¼ °³¼ö
+    // Parameters: ì—†ìŒ.
+    // Return: (int) ë©”ëª¨ë¦¬ í’€ ë‚´ë¶€ ì „ì²´ ê°œìˆ˜
     //////////////////////////////////////////////////////////////////////////
 	inline int GetCapacityCnt()
 	{
@@ -211,7 +211,7 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	//
-	//  °¢ ¼­ºê Ç®ÀÇ UseCnt ÇÕ»ê.
+	//  ê° ì„œë¸Œ í’€ì˜ UseCnt í•©ì‚°.
 	//
 	//////////////////////////////////////////////////////////////////////////
 	inline UINT64 GetUseCnt()
@@ -221,10 +221,10 @@ public:
 
 
 	//////////////////////////////////////////////////////////////////////////
-	// ºí·° ÇÏ³ª¸¦ ÇÒ´ç¹Ş´Â´Ù.  
+	// ë¸”ëŸ­ í•˜ë‚˜ë¥¼ í• ë‹¹ë°›ëŠ”ë‹¤.  
 	//
-	// Parameters: ¾øÀ½.
-	// Return: (DATA *) µ¥ÀÌÅ¸ ºí·° Æ÷ÀÎÅÍ.
+	// Parameters: ì—†ìŒ.
+	// Return: (DATA *) ë°ì´íƒ€ ë¸”ëŸ­ í¬ì¸í„°.
 	//////////////////////////////////////////////////////////////////////////
 	U* Alloc()
 	{
@@ -253,9 +253,9 @@ public:
 
 
 	//////////////////////////////////////////////////////////////////////////
-	// »ç¿ëÁßÀÌ´ø ºí·°À» ÇØÁ¦ÇÑ´Ù.
+	// ì‚¬ìš©ì¤‘ì´ë˜ ë¸”ëŸ­ì„ í•´ì œí•œë‹¤.
 	//
-	// Parameters: (DATA *) ºí·° Æ÷ÀÎÅÍ.
+	// Parameters: (DATA *) ë¸”ëŸ­ í¬ì¸í„°.
 	// Return: (BOOL) TRUE, FALSE.
 	//////////////////////////////////////////////////////////////////////////
 	bool Free(U* pData)
@@ -266,7 +266,7 @@ public:
 		ret = (CSubPool*)TlsGetValue(m_iTlsIndex);
 		if (ret == nullptr)
 		{
-			//´Ù¸¥ ½º·¹µå¿¡¼­ AllocÇÑ°Ô ³» ½º·¹µå¿¡¼­ ¸ÕÀú Free È£Ãâ µÉ ¼ö ÀÖÀ½.
+			//ë‹¤ë¥¸ ìŠ¤ë ˆë“œì—ì„œ Allocí•œê²Œ ë‚´ ìŠ¤ë ˆë“œì—ì„œ ë¨¼ì € Free í˜¸ì¶œ ë  ìˆ˜ ìˆìŒ.
 			ret = new CSubPool(this);
 
 			retindex = InterlockedIncrement(&m_SubPoolIndex);
@@ -292,8 +292,8 @@ public:
 		using Node = CMPoolTLS<U>::Node;
 
 	public:
-		Bucket*    m_iAlloc;    //ÇÒ´ç ¹öÅ¶ Æ÷ÀÎÅÍ º¯¼ö
-		Bucket*    m_iRet;      //¹İÈ¯¿ë ¹öÅ¶ Æ÷ÀÎÅÍ º¯¼ö
+		Bucket*    m_iAlloc;    //í• ë‹¹ ë²„í‚· í¬ì¸í„° ë³€ìˆ˜
+		Bucket*    m_iRet;      //ë°˜í™˜ìš© ë²„í‚· í¬ì¸í„° ë³€ìˆ˜
 		CMPoolTLS* m_parent;
 		INT        m_AllocCnt;
 		INT        m_FreeCnt;
@@ -301,15 +301,15 @@ public:
 	public:
 		CSubPool(CMPoolTLS* parent) : m_parent(parent)
 		{
-			//¹öÅ¶ ÇÒ´ç ÇÏ±â
+			//ë²„í‚· í• ë‹¹ í•˜ê¸°
 			if (!m_parent->g_pBucketPool->Pop(m_iAlloc))
 			{
-				// °ø¿ë ¹öÅ¶ ¶ôÇÁ¸® ½ºÅÃ¿¡ ¹öÅ¶* ¿ø¼Ò°¡ ¾ø´Â °æ¿ì
-				// ¹öÅ¶À» ¹Ù·Î »ı¼ºÇØ¼­ ¼³Á¤ÇØ¹ö¸®±â
+				// ê³µìš© ë²„í‚· ë½í”„ë¦¬ ìŠ¤íƒì— ë²„í‚·* ì›ì†Œê°€ ì—†ëŠ” ê²½ìš°
+				// ë²„í‚·ì„ ë°”ë¡œ ìƒì„±í•´ì„œ ì„¤ì •í•´ë²„ë¦¬ê¸°
 				m_iAlloc = m_parent->BucketAlloc();
 			}
 
-			//SubPoolÀº MemoryPoolTLS »ı¼ºÀÚ È£Ãâ ÈÄ¿¡ »ı¼ºµÇ±â ¶§¹®¿¡ ¼ø¼­ °ÆÁ¤ ¾ÈÇØµµ µÊ.
+			//SubPoolì€ MemoryPoolTLS ìƒì„±ì í˜¸ì¶œ í›„ì— ìƒì„±ë˜ê¸° ë•Œë¬¸ì— ìˆœì„œ ê±±ì • ì•ˆí•´ë„ ë¨.
 			m_iRet = m_parent->g_pCaseBucketPool->Alloc();
 			m_iRet->s_Cnt = 0;
 			m_iRet->s_Top = nullptr;
@@ -330,7 +330,7 @@ public:
 
 				m_parent->g_pCaseBucketPool->Free(m_iAlloc);
 
-				//¹öÅ¶¿¡ ÀÖ´Â ³ëµå ´Ù ²¨³½ °æ¿ì °ø¿ë ¹öÅ¶ ¶ôÇÁ¸® ½ºÅÃ¿¡¼­ PopÇØ¼­ °¡Á®¿À±â
+				//ë²„í‚·ì— ìˆëŠ” ë…¸ë“œ ë‹¤ êº¼ë‚¸ ê²½ìš° ê³µìš© ë²„í‚· ë½í”„ë¦¬ ìŠ¤íƒì—ì„œ Popí•´ì„œ ê°€ì ¸ì˜¤ê¸°
 				if (!m_parent->g_pBucketPool->Pop(m_iAlloc))
 				{
 					m_iAlloc = m_parent->BucketAlloc();
@@ -340,15 +340,15 @@ public:
 
 			m_iAlloc->s_Cnt--;
 
-			//ÇöÀç ¹öÅ¶ÀÇ top ÀÓ½Ã ÀúÀå
+			//í˜„ì¬ ë²„í‚·ì˜ top ì„ì‹œ ì €ì¥
 			temp = m_iAlloc->s_Top;
 
-			//top º¯°æ
+			//top ë³€ê²½
 			m_iAlloc->s_Top = temp->s_pNext;
 
 			m_AllocCnt++;
 
-			//placement == true¸é »ı¼ºÀÚ È£Ãâ
+			//placement == trueë©´ ìƒì„±ì í˜¸ì¶œ
 			if(m_parent->m_bPlacementNew == true)
 				new(&temp->s_data) U;
 
@@ -357,37 +357,37 @@ public:
 
 		bool Free(U* pData)
 		{
-			//¹İÈ¯¹ŞÀº °´Ã¼ ÁÖ¼Ò¸¦ ÅëÇØ ½ÇÁ¦ ¸Ş¸ğ¸® Ç® ³ëµå ÁÖ¼Ò ±¸ÇÏ±â
+			//ë°˜í™˜ë°›ì€ ê°ì²´ ì£¼ì†Œë¥¼ í†µí•´ ì‹¤ì œ ë©”ëª¨ë¦¬ í’€ ë…¸ë“œ ì£¼ì†Œ êµ¬í•˜ê¸°
 			Node* newNode = (Node*)pData;
 
-			//´Ù¸¥ ¸Ş¸ğ¸®Ç®ÀÇ ³ëµå¸¦ ¹İÈ¯ÇßÀ» ¶§ ±×³É false returnÇÏ±â
+			//ë‹¤ë¥¸ ë©”ëª¨ë¦¬í’€ì˜ ë…¸ë“œë¥¼ ë°˜í™˜í–ˆì„ ë•Œ ê·¸ëƒ¥ false returní•˜ê¸°
 			if (newNode->s_poolid != m_parent->m_iOriginID)
 				return false;
 
-			//bPlacementNew Ã¼Å©ÇØ¼­ true ¸é ¼Ò¸êÀÚ È£ÃâÇØÁÖ±â
+			//bPlacementNew ì²´í¬í•´ì„œ true ë©´ ì†Œë©¸ì í˜¸ì¶œí•´ì£¼ê¸°
 			if (m_parent->m_bPlacementNew == true)
 				pData->~U();
 			
 
-			//±âÁ¸ ¹öÅ¶¿¡ ³Ö°í Á¦ÇÑ·® ³Ñ¾úÀ¸¸é ¹İÈ¯¿ë ¹öÅ¶¿¡ ³Ö±â
+			//ê¸°ì¡´ ë²„í‚·ì— ë„£ê³  ì œí•œëŸ‰ ë„˜ì—ˆìœ¼ë©´ ë°˜í™˜ìš© ë²„í‚·ì— ë„£ê¸°
 
-			//±âÁ¸ ¹öÅ¶ »ç¿ë·® Ã¼Å©
+			//ê¸°ì¡´ ë²„í‚· ì‚¬ìš©ëŸ‰ ì²´í¬
 			if (m_iAlloc->s_Cnt == BUCKET_SIZE)
 			{
-				//¹öÅ¶¿¡ °¹¼ö ´Ù Ã¡À¸¸é ¹İÈ¯ ¹öÅ¶¿¡ ³Ö±â
+				//ë²„í‚·ì— ê°¯ìˆ˜ ë‹¤ ì°¼ìœ¼ë©´ ë°˜í™˜ ë²„í‚·ì— ë„£ê¸°
 
-				//¹İÈ¯ ¹öÅ¶¿¡ ³ÖÀ» ¶§ ¸¸¾à¿¡ ¹öÅ¶ ´Ù Ã¡À¸¸é ¶ôÇÁ¸® ½ºÅÃ¿¡ ¹öÅ¶ Æ÷ÀÎÅÍ ³Ö¾îÁÖ±â
+				//ë°˜í™˜ ë²„í‚·ì— ë„£ì„ ë•Œ ë§Œì•½ì— ë²„í‚· ë‹¤ ì°¼ìœ¼ë©´ ë½í”„ë¦¬ ìŠ¤íƒì— ë²„í‚· í¬ì¸í„° ë„£ì–´ì£¼ê¸°
 				if (m_iRet->s_Cnt == BUCKET_SIZE)
 				{
 					m_parent->g_pBucketPool->Push(m_iRet);
 
-					//»õ·Î¿î ¹öÅ¶ ²®µ¥±â °¡Á®¿À±â
+					//ìƒˆë¡œìš´ ë²„í‚· ê»ë°ê¸° ê°€ì ¸ì˜¤ê¸°
 					m_iRet = m_parent->g_pCaseBucketPool->Alloc();
 					m_iRet->s_Cnt = 0;
 					m_iRet->s_Top = nullptr;
 				}
 
-				//±âÁ¸ ¹İÈ¯ ¹öÅ¶¿¡ ³ëµå ³Ö°í ³¡
+				//ê¸°ì¡´ ë°˜í™˜ ë²„í‚·ì— ë…¸ë“œ ë„£ê³  ë
 				m_iRet->s_Cnt++;
 				newNode->s_pNext = m_iRet->s_Top;
 				m_iRet->s_Top = newNode;
@@ -398,7 +398,7 @@ public:
 
 
 
-			//±âÁ¸ ¹öÅ¶ ¾È Ã¡À¸¸é head, cnt °»½Å
+			//ê¸°ì¡´ ë²„í‚· ì•ˆ ì°¼ìœ¼ë©´ head, cnt ê°±ì‹ 
 			newNode->s_pNext = m_iAlloc->s_Top;
 
 			m_iAlloc->s_Top = newNode;

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class IUser
 {
@@ -6,6 +6,6 @@ public:
 	virtual ~IUser() = default;  
 
 public:
-	UINT64 m_uniqID;             // °ÔÀÓ ¶óÀÌºê·¯¸®°¡ Àü´ŞÇÏ´Â ¼¼¼Çkey
+	UINT64 m_uniqID;             // ê²Œì„ ë¼ì´ë¸ŒëŸ¬ë¦¬ê°€ ì „ë‹¬í•˜ëŠ” ì„¸ì…˜key
 
 };

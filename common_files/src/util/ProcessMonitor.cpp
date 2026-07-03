@@ -1,4 +1,4 @@
-#include <windows.h>
+ï»¿#include <windows.h>
 #include <stdio.h>
 #include <Pdh.h>
 #include <pdhmsg.h>
@@ -14,7 +14,7 @@ ProcessMonitor::ProcessMonitor(int threadCnt, const UINT* pthreadIDArray)
 	PDH_STATUS status;
 	WCHAR countPath[MAX_PATH];
 
-	// ÇÁ·Î¼¼½º ÀÌ¸§ ¾ò±â
+	// í”„ë¡œì„¸ìŠ¤ ì´ë¦„ ì–»ê¸°
 	std::wstring processName;
 	if (!GetProcessName(processName))
 		__debugbreak();
@@ -25,7 +25,7 @@ ProcessMonitor::ProcessMonitor(int threadCnt, const UINT* pthreadIDArray)
 	m_pProcessCSCnter = nullptr;
 	m_pProcessCSVal = nullptr;
 
-	//Äõ¸® ÇÚµé »ı¼º
+	//ì¿¼ë¦¬ í•¸ë“¤ ìƒì„±
     PdhOpenQuery(NULL, NULL, &m_processUserMemoryQry);
     PdhOpenQuery(NULL, NULL, &m_processNonPagedrMemoryQry);
     PdhOpenQuery(NULL, NULL, &m_AvailableMemoryQry);
@@ -37,7 +37,7 @@ ProcessMonitor::ProcessMonitor(int threadCnt, const UINT* pthreadIDArray)
 	PdhOpenQuery(NULL, NULL, &m_EtherNetRecvQry1);
 	PdhOpenQuery(NULL, NULL, &m_EtherNetRecvQry2);
 
-	//Ä«¿îÅÍ »ı¼º
+	//ì¹´ìš´í„° ìƒì„±
 	swprintf(countPath, MAX_PATH, L"\\Process(%s)\\Private Bytes", processName.c_str());
 	PdhAddCounter(m_processUserMemoryQry, countPath, NULL, &m_processUserMemoryCnter);
 	memset(countPath, 0, MAX_PATH);
@@ -56,7 +56,7 @@ ProcessMonitor::ProcessMonitor(int threadCnt, const UINT* pthreadIDArray)
 
 
 
-	// »ı¼ºÀÚ¿¡ ÀÎÀÚ Á¦´ë·Î ÁÖ¾îÁø °æ¿ì ½º·¹µåº° cs ¾ò´Â ÀÛ¾÷ Ã³¸®
+	// ìƒì„±ìì— ì¸ì ì œëŒ€ë¡œ ì£¼ì–´ì§„ ê²½ìš° ìŠ¤ë ˆë“œë³„ cs ì–»ëŠ” ì‘ì—… ì²˜ë¦¬
 	if (pthreadIDArray != nullptr && threadCnt != 0)
 	{
 		std::wstring namebuf;
@@ -107,7 +107,7 @@ void ProcessMonitor::UpdateCounter()
 {
 	m_processCS = 0;
 
-	//µ¥ÀÌÅÍ °»½Å
+	//ë°ì´í„° ê°±ì‹ 
 	PdhCollectQueryData(m_processUserMemoryQry);
 	PdhCollectQueryData(m_processNonPagedrMemoryQry);
 	PdhCollectQueryData(m_AvailableMemoryQry);
@@ -124,7 +124,7 @@ void ProcessMonitor::UpdateCounter()
 		PdhCollectQueryData(m_pProcessCSQry[i]);
 	}
 
-	//°»½Å µ¥ÀÌÅÍ ¾ò±â
+	//ê°±ì‹  ë°ì´í„° ì–»ê¸°
 	PdhGetFormattedCounterValue(m_processUserMemoryCnter, PDH_FMT_DOUBLE, NULL, &m_processUserMemoryVal);
 
 	PdhGetFormattedCounterValue(m_processNonPagedMemoryCnter, PDH_FMT_DOUBLE, NULL, &m_processNonPagedMemoryVal);
@@ -154,12 +154,12 @@ void ProcessMonitor::UpdateCounter()
 
 
 
-	//CPU»ç¿ë·® °»½Å
+	//CPUì‚¬ìš©ëŸ‰ ê°±ì‹ 
 	UpdateCpuTime();
 }
 
 
-// ÇÁ·Î¼¼½º ÀÌ¸§ ÃßÃâ
+// í”„ë¡œì„¸ìŠ¤ ì´ë¦„ ì¶”ì¶œ
 bool ProcessMonitor::GetProcessName(std::wstring& outName)
 {
 	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -210,7 +210,7 @@ bool ProcessMonitor::FindThreadInstanceNameByTID(const std::wstring& procName, D
 	status = PdhEnumObjectItemsW(NULL, NULL, L"Thread", NULL, &nameBufSize, NULL, &counterBufSize, PERF_DETAIL_NOVICE, 0);
 	if (status != PDH_MORE_DATA)
 	{
-		wprintf(L"Ã¹ PdhEnumObjectItemsW ½ÇÆĞ: 0x%08x\n", status);
+		wprintf(L"ì²« PdhEnumObjectItemsW ì‹¤íŒ¨: 0x%08x\n", status);
 		return false;
 	}
 
@@ -219,7 +219,7 @@ bool ProcessMonitor::FindThreadInstanceNameByTID(const std::wstring& procName, D
 	status = PdhEnumObjectItemsW(NULL, NULL, L"Thread", counterBuffer.data(), &nameBufSize, instanceBuffer.data(), &counterBufSize, PERF_DETAIL_NOVICE, 0);
 	if (status == ERROR_SUCCESS)
 	{
-		// ¼º°øÀûÀ¸·Î nameBuf Ã¤¿ò
+		// ì„±ê³µì ìœ¼ë¡œ nameBuf ì±„ì›€
 	}
 	else if (status == PDH_MORE_DATA)
 	{
@@ -227,19 +227,19 @@ bool ProcessMonitor::FindThreadInstanceNameByTID(const std::wstring& procName, D
 	}
 	else
 	{
-		wprintf(L"2Â÷ PdhEnumObjectItemsW ½ÇÆĞ: 0x%08X\n", status);
+		wprintf(L"2ì°¨ PdhEnumObjectItemsW ì‹¤íŒ¨: 0x%08X\n", status);
 		return false;
 	}
 
 	wchar_t* p = instanceBuffer.data();
 
-	// nameBuffer¿¡ ÀúÀåµÈ ¸ğµç ÀÎ½ºÅÏ½º ÀÌ¸§µé Å½»öÇÏ±â
+	// nameBufferì— ì €ì¥ëœ ëª¨ë“  ì¸ìŠ¤í„´ìŠ¤ ì´ë¦„ë“¤ íƒìƒ‰í•˜ê¸°
 	while (*p)
 	{
-		// nameBuffer¿¡ ÀúÀåµÈ ÀÎ½ºÅÏ½º ÀÌ¸§ 1°³¾¿ º¹»ç
+		// nameBufferì— ì €ì¥ëœ ì¸ìŠ¤í„´ìŠ¤ ì´ë¦„ 1ê°œì”© ë³µì‚¬
 		std::wstring instance = p;
 
-		// ÀÎ½ºÅÏ½º ÀÌ¸§ÀÌ "procName/"·Î ½ÃÀÛÇÏÁö ¾ÊÀ¸¸é ¹«½Ã
+		// ì¸ìŠ¤í„´ìŠ¤ ì´ë¦„ì´ "procName/"ë¡œ ì‹œì‘í•˜ì§€ ì•Šìœ¼ë©´ ë¬´ì‹œ
 		if (!procName.empty())
 		{
 			if (instance.find(procName + L"/") != 0)
@@ -249,7 +249,7 @@ bool ProcessMonitor::FindThreadInstanceNameByTID(const std::wstring& procName, D
 			}
 		}
 
-		// Thread ÀÎ½ºÅÏ½º´Â "ÇÁ·Î¼¼½º¸í/¹øÈ£" Çü½Ä
+		// Thread ì¸ìŠ¤í„´ìŠ¤ëŠ” "í”„ë¡œì„¸ìŠ¤ëª…/ë²ˆí˜¸" í˜•ì‹
 		std::wstring counterPath = L"\\Thread(" + instance + L")\\ID Thread";
 
 		PDH_HQUERY query;

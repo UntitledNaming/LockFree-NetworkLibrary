@@ -1,25 +1,25 @@
-Ã¤ÆÃ¼­¹ö ¸ğ´ÏÅÍ¸µ Á¤º¸.
+ï»¿ì±„íŒ…ì„œë²„ ëª¨ë‹ˆí„°ë§ ì •ë³´.
 
-SessionNum : 	- NetServer ÀÇ ¼¼¼Ç¼ö (0)
-PacketPool : 	- Packet Ç® ÇÒ´ç·®      (0)
+SessionNum : 	- NetServer ì˜ ì„¸ì…˜ìˆ˜ (0)
+PacketPool : 	- Packet í’€ í• ë‹¹ëŸ‰      (0)
 
-UpdateMessage_Pool :	- UpdateThread ¿ë ±¸Á¶Ã¼(job) ÇÒ´ç·® (x)
-UpdateMessage_Queue : 	- UpdateThread Å¥ ³²Àº °³¼ö (0)
+UpdateMessage_Pool :	- UpdateThread ìš© êµ¬ì¡°ì²´(job) í• ë‹¹ëŸ‰ (x)
+UpdateMessage_Queue : 	- UpdateThread í ë‚¨ì€ ê°œìˆ˜ (0)
 
-PlayerData_Pool :	- Player ±¸Á¶Ã¼ ÇÒ´ç·® (0)
-Player Count : 		- Contents ÆÄÆ® Player °³¼ö (0)
+PlayerData_Pool :	- Player êµ¬ì¡°ì²´ í• ë‹¹ëŸ‰ (0)
+Player Count : 		- Contents íŒŒíŠ¸ Player ê°œìˆ˜ (0)
 
-Accept Total :		- Accept ÀüÃ¼ Ä«¿îÆ® (accept ¸®ÅÏ½Ã +1) (0)
-Accept TPS :		- Accept Ã³¸® È½¼ö (0)
-Update TPS :		- Update Ã³¸® ÃÊ´ç È½¼ö (0)
-
-
-
-RecvMessageTPS :	- ÃÊ´ç ¹ŞÀº ¸Ş½ÃÁö ¼ö (0)
-SendMessageTPS :	- ÃÊ´ç º¸³½ ¸Ş½ÃÁö ¼ö (0)
+Accept Total :		- Accept ì „ì²´ ì¹´ìš´íŠ¸ (accept ë¦¬í„´ì‹œ +1) (0)
+Accept TPS :		- Accept ì²˜ë¦¬ íšŸìˆ˜ (0)
+Update TPS :		- Update ì²˜ë¦¬ ì´ˆë‹¹ íšŸìˆ˜ (0)
 
 
 
-LoginSessionKey : 	- ¾ÆÁ÷ ¹Ì»ç¿ë
-SessionMiss : 		- ¹Ì»ç¿ë
-SessionNotFound : 	- ¹Ì»ç¿ë
+RecvMessageTPS :	- ì´ˆë‹¹ ë°›ì€ ë©”ì‹œì§€ ìˆ˜ (0)
+SendMessageTPS :	- ì´ˆë‹¹ ë³´ë‚¸ ë©”ì‹œì§€ ìˆ˜ (0)
+
+
+
+LoginSessionKey : 	- ì•„ì§ ë¯¸ì‚¬ìš©
+SessionMiss : 		- ë¯¸ì‚¬ìš©
+SessionNotFound : 	- ë¯¸ì‚¬ìš©
