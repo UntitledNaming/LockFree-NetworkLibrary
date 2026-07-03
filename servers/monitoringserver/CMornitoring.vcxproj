@@ -72,7 +72,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Program Files\MySQL\MySQL Server 8.0\include;$(SolutionDir)..\..\common_files\include\buffer;$(SolutionDir)..\..\clients\include;$(SolutionDir)..\..\common_files\include\list;$(SolutionDir)..\..\network_library\include;$(SolutionDir)..\..\protocol\include;$(SolutionDir)..\..\common_files\include\lockfree;$(SolutionDir)..\..\common_files\include\memorypool;$(SolutionDir)..\..\common_files\include\util;$(SolutionDir)..\..\common_files\include\dbtls;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\ThirdParty\mysql\include;$(SolutionDir)..\..\common_files\include\buffer;$(SolutionDir)..\..\clients\include;$(SolutionDir)..\..\common_files\include\list;$(SolutionDir)..\..\network_library\include;$(SolutionDir)..\..\protocol\include;$(SolutionDir)..\..\common_files\include\lockfree;$(SolutionDir)..\..\common_files\include\memorypool;$(SolutionDir)..\..\common_files\include\util;$(SolutionDir)..\..\common_files\include\dbtls;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <ExternalIncludePath>$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
@@ -138,7 +138,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Program Files\MySQL\MySQL Server 8.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\ThirdParty\mysql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

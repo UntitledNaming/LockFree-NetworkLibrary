@@ -164,9 +164,9 @@ void ChatServer::Mem_Init(INT userMAX, WCHAR* bindip, WCHAR* serverip, INT serve
 		}
 	}
 
-	// 모니터링 서버에 연결
-	if (!m_pMonitorClient->Connect(serverip, serverport))
-		__debugbreak();
+	//// 모니터링 서버에 연결
+	//if (!m_pMonitorClient->Connect(serverip, serverport))
+	//	__debugbreak();
 
 
 	Thread_Create();
@@ -961,7 +961,7 @@ void ChatServer::MonitorThread()
 		wprintf(L"[ Process User     Memory Usage : %lf MByte ]  [ Process NonPaged Memory Usage : %lf KByte ]\n", m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024), m_pPDH->m_processNonPagedMemoryVal.doubleValue / 1024);
 		wprintf(L"[ TCP Retransmitted Avg   Count : %lf /sec  ]  [ TCP Segment Sent  Avg   Count : % lf / sec]\n", tcpretransmitsum / loopCnt, tcpsegmentsentsum / loopCnt);
 
-		// 연결 되었을 때만 모니터링 서버로 데이터 보내기
+		//// 연결 되었을 때만 모니터링 서버로 데이터 보내기
 		//if (m_pMonitorClient->ConnectAlive())
 		//{
 		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
@@ -969,7 +969,7 @@ void ChatServer::MonitorThread()
 		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
 		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
 		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
-		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, CMessage::pMessagePool->GetUseCnt());
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, CMessage::m_pMessagePool->GetUseCnt());
 		//}
 		//else
 		//{
@@ -980,7 +980,7 @@ void ChatServer::MonitorThread()
 		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
 		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
 		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
-		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, CMessage::pMessagePool->GetUseCnt());
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, CMessage::m_pMessagePool->GetUseCnt());
 		//	}
 		//}
 

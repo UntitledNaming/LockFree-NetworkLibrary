@@ -115,7 +115,6 @@ BOOL ChatServer::RunServer()
 	CLogClass::GetInstance()->Init(Loglevel);
 	CMessage::Init(sizeof(LANHEADER), sizeof(NETHEADER));
 
-	// todo :  mem_inint에서 모니터링 서버 연결까지 하기
 	Mem_Init(Usermax, UpdateFrame, const_cast<WCHAR*>(monitorstr.c_str()), monitorport);
 
 	if (!Start((WCHAR*)bindstr.c_str(), port, createthread, runningthread, maxSessions, SendFrame, Sendflag, PACKET_CODE, PACKET_KEY, (bool)Nagle))
@@ -164,8 +163,8 @@ void ChatServer::Mem_Init(INT userMAX, INT updateFrame, WCHAR* monitorserverip, 
 	m_ResChatMsgTPS = 0;
 	m_MonitorFlag = false;
 
-	if (!m_pMonitorClient->Connect(monitorserverip, monitorserverport))
-		__debugbreak();
+	//if (!m_pMonitorClient->Connect(monitorserverip, monitorserverport))
+	//	__debugbreak();
 
 	Thread_Create();
 
@@ -968,32 +967,32 @@ void ChatServer::MonitorThread()
 		wprintf(L"[ Process User     Memory Usage : %lf MByte ]  [ Process NonPaged Memory Usage : %lf KByte ]\n", m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024), m_pPDH->m_processNonPagedMemoryVal.doubleValue / 1024);
 		wprintf(L"[ TCP Retransmitted Avg   Count : %lf /sec  ]  [ TCP Segment Sent  Avg   Count : % lf / sec]\n", tcpretransmitsum / loopCnt, tcpsegmentsentsum / loopCnt);
 
-		// 연결 되었을 때만 모니터링 서버로 데이터 보내기
-		if (m_pMonitorClient->ConnectAlive())
-		{
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU, (int)m_pPDH->ProcessTotal());
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATE_TPS, m_UpdateTPS);
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
-			m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATEMSG_POOL, m_pJobPool->GetUseCnt());
-		}
-		else
-		{
-			if (m_pMonitorClient->ReConnect())
-			{
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU, (int)m_pPDH->ProcessTotal());
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATE_TPS, m_UpdateTPS);
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
-				m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATEMSG_POOL, m_pJobPool->GetUseCnt());
-			}
-		}
+		//// 연결 되었을 때만 모니터링 서버로 데이터 보내기
+		//if (m_pMonitorClient->ConnectAlive())
+		//{
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU, (int)m_pPDH->ProcessTotal());
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATE_TPS, m_UpdateTPS);
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
+		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATEMSG_POOL, m_pJobPool->GetUseCnt());
+		//}
+		//else
+		//{
+		//	if (m_pMonitorClient->ReConnect())
+		//	{
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_CPU, (int)m_pPDH->ProcessTotal());
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_MEM, (int)(m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024)));
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SESSION, m_CurSessionCnt);
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PLAYER, m_pUserPool->GetUseCnt());
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATE_TPS, m_UpdateTPS);
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_PACKET_POOL, static_cast<INT>(CMessage::m_pMessagePool->GetUseCnt()));
+		//		m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_UPDATEMSG_POOL, m_pJobPool->GetUseCnt());
+		//	}
+		//}
 
 
 		tcpretranslog = m_pPDH->m_TCPReTransmitVal.doubleValue;

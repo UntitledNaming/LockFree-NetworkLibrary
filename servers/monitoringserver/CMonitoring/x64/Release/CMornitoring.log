@@ -1,0 +1,21 @@
+﻿  CMessage.cpp
+  Ring_Buffer.cpp
+  DBTLS.cpp
+  CPUUsage.cpp
+  LogClass.cpp
+  ProcessMonitor.cpp
+  TextParser.cpp
+  CLanClient.cpp
+  CLanServer.cpp
+  CNetServer.cpp
+  CSession.cpp
+  CAgent.cpp
+  CMonAgentsMgr.cpp
+  CMonitor.cpp
+  CMornitoring.cpp
+  CUser.cpp
+  코드를 생성하고 있습니다.
+  Previous IPDB not found, fall back to full compilation.
+  All 1460 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  코드를 생성했습니다.
+  CMornitoring.vcxproj -> C:\Users\sdj53\Documents\GitHub\LockFree-NetworkLibrary\servers\monitoringserver\x64\Release\CMonitoring.exe
