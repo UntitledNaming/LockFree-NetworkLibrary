@@ -1,0 +1,53 @@
+# ── Visual Studio / C++ 빌드 산출물 ──
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# 빌드 중간 파일
+*.obj
+*.o
+*.tlog
+*.log
+*.pdb
+*.idb
+*.ilk
+*.exe
+*.dll
+*.lib
+*.exp
+*.pch
+*.ipch
+*.iobj
+*.ipdb
+*.lastbuildstate
+*.tmp
+*.tmp_proj
+*.res
+*.aps
+*.opendb
+*.bak
+
+# Visual Studio 설정/캐시
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.opendb
+*.opensdf
+*.sdf
+*.cachefile
+
+# 기타
+ipch/
+[Tt]est[Rr]esult*/
+*.dbmdl

@@ -961,7 +961,11 @@ void ChatServer::MonitorThread()
 		wprintf(L"[ Process User     Memory Usage : %lf MByte ]  [ Process NonPaged Memory Usage : %lf KByte ]\n", m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024), m_pPDH->m_processNonPagedMemoryVal.doubleValue / 1024);
 		wprintf(L"[ TCP Retransmitted Avg   Count : %lf /sec  ]  [ TCP Segment Sent  Avg   Count : % lf / sec]\n", tcpretransmitsum / loopCnt, tcpsegmentsentsum / loopCnt);
 
+<<<<<<< HEAD
 		//// ì—°ê²° ë˜ì—ˆì„ ë•Œë§Œ ëª¨ë‹ˆí„°ë§ ì„œë²„ë¡œ ë°ì´í„° ë³´ë‚´ê¸°
+=======
+		//// ¿¬°á µÇ¾úÀ» ¶§¸¸ ¸ð´ÏÅÍ¸µ ¼­¹ö·Î µ¥ÀÌÅÍ º¸³»±â
+>>>>>>> b17dc349eb3a104d943577d5b3db8b045e0a1bae
 		//if (m_pMonitorClient->ConnectAlive())
 		//{
 		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);

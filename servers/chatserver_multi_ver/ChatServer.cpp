@@ -164,7 +164,11 @@ void ChatServer::Mem_Init(INT userMAX, WCHAR* bindip, WCHAR* serverip, INT serve
 		}
 	}
 
+<<<<<<< HEAD
 	//// ëª¨ë‹ˆí„°ë§ ì„œë²„ì— ì—°ê²°
+=======
+	//// ¸ð´ÏÅÍ¸µ ¼­¹ö¿¡ ¿¬°á
+>>>>>>> b17dc349eb3a104d943577d5b3db8b045e0a1bae
 	//if (!m_pMonitorClient->Connect(serverip, serverport))
 	//	__debugbreak();
 
@@ -319,7 +323,7 @@ void ChatServer::NonUserTimeOut()
 		tick = timeGetTime();
 		if (tick - it->second >= df_TIMEOUT1)
 		{
-			Disconnect(it->first);
+			CNetServer::Disconnect(it->first);
 			LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"UpdateThread  NonUserTimeout / SessionID : %llu / TimeOut : %d ", it->first, tick - it->second);
 			continue;
 		}
@@ -383,6 +387,8 @@ void ChatServer::AcquireSectorExclusiveLock(WORD eXpos, WORD eYpos, WORD iXpos, 
 			AcquireSRWLockExclusive(&m_Sector[iYpos][iXpos].s_lock);
 			AcquireSRWLockExclusive(&m_Sector[eYpos][eXpos].s_lock);
 		}
+		else
+			__debugbreak();
 	}
 }
 
@@ -609,7 +615,7 @@ void ChatServer::SectorMoveProc(CMessage* pMessage, UINT64 sessionid)
 		// LoginProc ì²˜ë¦¬ ì „ì— ë©”ì„¸ì§€ ë¨¼ì € ì˜¨ ê²½ìš°ëŠ” ìƒëŒ€ë°© ëŠê¸°
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"SectorMoveRequest::UserMap Not Exist NonUserMap Exist Error... / UniqID : %lld ", sessionid);
 
-		Disconnect(sessionid);
+		CNetServer::Disconnect(sessionid);
 		return;
 	}
 
@@ -959,7 +965,11 @@ void ChatServer::MonitorThread()
 		wprintf(L"[ Process User     Memory Usage : %lf MByte ]  [ Process NonPaged Memory Usage : %lf KByte ]\n", m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024), m_pPDH->m_processNonPagedMemoryVal.doubleValue / 1024);
 		wprintf(L"[ TCP Retransmitted Avg   Count : %lf /sec  ]  [ TCP Segment Sent  Avg   Count : % lf / sec]\n", tcpretransmitsum / loopCnt, tcpsegmentsentsum / loopCnt);
 
+<<<<<<< HEAD
 		//// ì—°ê²° ë˜ì—ˆì„ ë•Œë§Œ ëª¨ë‹ˆí„°ë§ ì„œë²„ë¡œ ë°ì´í„° ë³´ë‚´ê¸°
+=======
+		//// ¿¬°á µÇ¾úÀ» ¶§¸¸ ¸ð´ÏÅÍ¸µ ¼­¹ö·Î µ¥ÀÌÅÍ º¸³»±â
+>>>>>>> b17dc349eb3a104d943577d5b3db8b045e0a1bae
 		//if (m_pMonitorClient->ConnectAlive())
 		//{
 		//	m_pMonitorClient->SendMonitorData(dfMONITOR_DATA_TYPE_CHAT_SERVER_RUN, 1);
