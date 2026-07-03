@@ -70,6 +70,8 @@ public:
 	~CMemoryPool()
 	{
 		// Free에서 소멸자 호출 안했으니 소멸자 호출해주고 메모리 풀 노드 지우기
+
+		Node* tempTop;
 		Node* newTop;
 		Node* realTop = (Node*)((UINT64)m_pTopNode & BITMASK);
 
@@ -98,7 +100,8 @@ public:
 		newNode->s_poolD = m_iOriginID;
 
 		//객체 생성자 호출
-		new(&newNode->s_data) T;
+		if(m_bPlacementNew == false)
+			new(&newNode->s_data) T;
 
 		//기존 TopNode에 연결
 		newNode->s_pNext = m_pTopNode;
@@ -124,7 +127,8 @@ public:
 			newNode->s_poolD = m_iOriginID;
 
 			//객체 생성자 호출
-			new(&newNode->s_data) T;
+			if (m_bPlacementNew == false)
+				new(&newNode->s_data) T;
 
 			retCnt = InterlockedIncrement(&m_iTopCnt);
 
@@ -143,7 +147,6 @@ public:
 		}
 
 		m_iCapacity += Num;
-		wprintf(L"MemoryPool Capacity Up : %d \n", m_iCapacity);
 	}
 
 	//Alloc에서 아웃파라미터로 노드 포인터 줄 것임
@@ -155,7 +158,8 @@ public:
 		newNode->s_poolD = m_iOriginID;
 
 		//객체 생성자 호출
-		new(&newNode->s_data) T;
+		if (m_bPlacementNew == false)
+			new(&newNode->s_data) T;
 
 		InterlockedIncrement(&m_iCapacity);
 		InterlockedIncrement(&m_iUseCnt);
@@ -249,6 +253,9 @@ public:
 
 		InterlockedIncrement(&m_iUseCnt);
 		
+		if (&real->s_data == nullptr)
+			__debugbreak();
+
 		return &(real->s_data);
 	}
 

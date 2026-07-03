@@ -239,21 +239,6 @@ void ChatServer::Thread_Destroy()
 	}
 }
 
-void ChatServer::TypeInsert(JOB* pJob, UINT64 type)
-{
-	pJob->s_ptr = (CMessage*)((UINT64)pJob->s_ptr | (type << 47));
-}
-
-UINT64 ChatServer::TypeErase(JOB* pJob)
-{
-	UINT64 type;
-	type = (UINT64)pJob->s_ptr >> 47;
-
-	pJob->s_ptr = (CMessage*)((UINT64)pJob->s_ptr & PTR_BITMASK);
-
-	return type;
-}
-
 UINT64 ChatServer::SumResMsgTPS()
 {
 	return m_ResLoginTPS + m_ResChatMsgTPS + m_ResMoveTPS;
@@ -290,7 +275,6 @@ void ChatServer::OnRecv(UINT64 SessionID, CMessage* pMessage)
 	job->s_Type = en_Recv;
 	job->s_ptr = pMessage;
 	pMessage->AddRef();
-
 
 	m_pUpdateJobQ->Enqueue(job);
 }
@@ -442,7 +426,6 @@ BOOL ChatServer::SectorRemove(CUser* pUser)
 		}
 	}
 
-
 	return false;
 }
 
@@ -456,11 +439,10 @@ BOOL ChatServer::SectorRangeCheck(WORD xpos, WORD ypos)
 
 void ChatServer::LoginProc(CMessage* pMessage, UINT64 sessionid)
 {
-	if (m_UserMap.size() > m_UserMaxCnt)
+	if (m_UserMap.size() >= m_UserMaxCnt)
 	{
 		LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"LoginRequest::UserMax / UniqID : %llu ", sessionid);
 		Disconnect(sessionid);
-
 		return;
 	}
 
@@ -690,7 +672,6 @@ void ChatServer::HeartBeatProc(CMessage* pMessage, UINT64 sessionid)
 
 void ChatServer::JoinProc(UINT64 sessionID)
 {
-	//유저 껍데기 자료 구조에 현재 시간 측정해서 insert
 	m_NonUserMap.insert(std::pair<UINT64, DWORD>(sessionID, timeGetTime()));
 }
 
@@ -902,8 +883,6 @@ void ChatServer::AuthReqProc(UINT64 sessionID, CMessage* pMessage)
 			m_pRedisClient->commit();
 			return;
 		});
-
-
 
 	m_pRedisClient->commit();
 }

@@ -152,10 +152,12 @@ void CMonitor::StopServer()
 
 void CMonitor::Mem_Init(const CHAR* DBip, INT DBport)
 {
+	std::string schema("logdb");
+
 	m_pUserPool = new CMemoryPool<CUser>;
 	m_pMonitorPool = new CMemoryPool<MONITOR_DATA>;
 	m_pDBQueue = new LFQueue<MONITOR_DATA*>;
-	m_pDBTLS = new DBTLS(DBip, DBport);
+	m_pDBTLS = new DBTLS(DBip, DBport,schema);
 	m_pAgentMgr = new CMonAgentsMgr;
 	m_pPDH = new ProcessMonitor;
 	m_EndFlag = false;
@@ -181,6 +183,7 @@ void CMonitor::ServerLoginProc(UINT64 sessionID, CMessage* pMessage)
 	ReleaseSRWLockShared(&m_UserMapLock);
 
 	pUser->m_ServerNo = serverno;
+	pUser->m_recvTime = timeGetTime();
 }
 
 void CMonitor::DataUpdateProc(UINT64 sessionID, CMessage* pMessage)
@@ -201,6 +204,7 @@ void CMonitor::DataUpdateProc(UINT64 sessionID, CMessage* pMessage)
 	pUser = it->second;
 	ReleaseSRWLockShared(&m_UserMapLock);
 
+	pUser->m_recvTime = timeGetTime();
 
 	// DB 저장 스레드에게 저장 요청 보내기
 	DataEnqueue(timestamp, datavalue, pUser->m_ServerNo, dataType);
@@ -268,7 +272,6 @@ void CMonitor::DataInsert(MONITOR_DATA* pData)
 
 void CMonitor::DBInsert()
 {
-	// 10분동안 저장한 모든 데이터 타입 대해서 모은 데이터 Avg 계산 및 DB 저장
 	std::unordered_map<BYTE, DB_DATA*>::iterator it;
 	DB_DATA* pData;
 	for (it = m_DataMap.begin(); it != m_DataMap.end(); ++it)
@@ -309,7 +312,6 @@ void CMonitor::UserTimeOut()
 	CUser* pUser;
 	std::unordered_map<UINT64, CUser*>::iterator it;
 
-
 	AcquireSRWLockShared(&m_UserMapLock);
 	tick = timeGetTime();
 	it = m_UserMap.begin();
@@ -334,7 +336,7 @@ void CMonitor::UserTimeOut()
 void CMonitor::FrameThread()
 {
 	DWORD oldTick;          // DB 저장 이벤트 처리
-	DWORD OldTimeOutTick1;  // 40초 유저 타임아웃
+	DWORD OldTimeOutTick1;  // 30초 유저 타임아웃
 	DWORD curTick;
 
 	oldTick = timeGetTime();
@@ -409,7 +411,7 @@ void CMonitor::Monitor()
 		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NONPAGED_MEMORY, (INT)(m_pPDH->m_NonPagedMemoryVal.doubleValue / (1024 * 1024)), static_cast<INT>(time(NULL)));
 		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NETWORK_SEND, (INT)((m_pPDH->m_EtherNetSendVal1.doubleValue) / 1024), static_cast<INT>(time(NULL)));
 		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NETWORK_RECV, (INT)((m_pPDH->m_EtherNetRecvVal1.doubleValue) / 1024), static_cast<INT>(time(NULL)));
-		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_AVAILABLE_MEMORY, (INT)m_pPDH->m_AvailableMemoryVal.doubleValue, static_cast<INT>(time(NULL)));
+		m_pAgentMgr->SendServerData(MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_AVAILABLE_MEMORY, (INT)(m_pPDH->m_AvailableMemoryVal.doubleValue / (1024 * 1024)), static_cast<INT>(time(NULL)));
 
 		DataEnqueue(static_cast<INT>(time(NULL)), (INT)m_pPDH->ProcessorTotal(), MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_CPU_TOTAL);
 		DataEnqueue(static_cast<INT>(time(NULL)), (INT)(m_pPDH->m_NonPagedMemoryVal.doubleValue / (1024 * 1024)), MONITOR_SERVER_NO, dfMONITOR_DATA_TYPE_MONITOR_NONPAGED_MEMORY);

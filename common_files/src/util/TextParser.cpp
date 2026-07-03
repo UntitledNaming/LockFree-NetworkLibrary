@@ -6,6 +6,7 @@
 
 Parser::Parser()
 {
+
 }
 
 Parser::~Parser()
@@ -27,8 +28,6 @@ bool Parser::LoadFile(const char* FileName)
 		std::cout << "파일 읽기 실패" << std::endl;
 		return false;
 	}
-
-
 
 	fseek(fp, 0, SEEK_END);
 	FILESIZE = ftell(fp);
@@ -134,6 +133,14 @@ bool Parser::GetNextWord(char** chppBuffer, int* lpLength)
 		
 		else if (*_pRead == '"')
 		{
+			if (!Start)
+			{
+				Start = true;
+				_pRead++;
+				count++;
+				continue;
+			}
+
 			_pRead++;
 			count++;
 			break;
@@ -143,9 +150,17 @@ bool Parser::GetNextWord(char** chppBuffer, int* lpLength)
 		count++;
 	}
 
-	*chppBuffer = _pRead - count;
+	if (Start)
+	{
+		*chppBuffer = _pRead - count + 1;
 
-	*lpLength = count;
+		*lpLength = count - 2;
+	}
+	else
+	{
+		*chppBuffer = _pRead - count;
+		*lpLength = count;
+	}
 
 	return true;
 }
@@ -180,8 +195,6 @@ bool Parser::GetValue(const char* szName, int* pValue)
 				{
 					if (GetNextWord(&chpBuff, &iLength))
 					{
-
-						//문자열 아닌 경우
 						memset(chWord, 0, 256);
 						memcpy(chWord, chpBuff, iLength);
 						*pValue = atoi(chWord);
@@ -226,23 +239,12 @@ bool Parser::GetValue(const char* szName, st_Msg* pMsg)
 				{
 					if (Parser::GetNextWord(&chpBuff, &iLength))
 					{
-						// " 문자 발견할 때 까지 이동
-						memset(chWord, 0, 256);
-						memcpy(chWord, chpBuff, iLength);
 
-						if (strcmp(chWord, "\"") == 0)
-						{
-							if (GetNextWord(&chpBuff, &iLength))
-							{
-								//찾은 문자열의 주소를 아웃파라미터에 담아서 외부에 넘김.
-								memcpy(pMsg->s_ptr, chpBuff, iLength-1); // 맨뒤 " 붙은 것 제거
-								*(pMsg->s_ptr + iLength - 1) = NULL;
-								pMsg->s_len = iLength;
-								return true;
-							}
-
-						}
-
+						//찾은 문자열의 주소를 아웃파라미터에 담아서 외부에 넘김.
+						memcpy(pMsg->s_ptr, chpBuff, iLength); // 맨뒤 " 붙은 것 제거
+						*(pMsg->s_ptr + iLength) = NULL;
+						pMsg->s_len = iLength;
+						return true;
 					}
 				}
 			}

@@ -130,11 +130,12 @@ bool CLanClient::ReConnect()
 	// 세션 초기화
 	Session_Init(sock);
 
+	OnEnterJoinServer();
+
 	// Recv IO 등록 작업
 	if (!RecvPost())
 		return false;
 
-	OnEnterJoinServer();
 
 	return true;
 }
@@ -261,7 +262,7 @@ bool CLanClient::CreateAndSetSocket(SOCKET& outParam)
 
 	if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char*)&so_linger, sizeof(so_linger)) == SOCKET_ERROR)
 	{
-		LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CNetLibrary::Linger Option Set Error :%d ", WSAGetLastError());
+		LOG(L"CLanClient", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanClient::Linger Option Set Error :%d ", WSAGetLastError());
 		return false;
 	}
 
@@ -465,7 +466,6 @@ void CLanClient::Release(int refCnt)
 		return;
 	
 
-	//SendArray에 있는 직렬화 버퍼 반납.(아마 없을 것으로 보임)
 	for (int i = 0; i < m_pSession->s_SendMsgCnt; i++)
 	{
 		CMessage::Free(m_pSession->s_SendArray[i]);
@@ -519,14 +519,7 @@ void CLanClient::RecvIOProc(DWORD cbTransferred)
 			break;
 		}
 
-		//네트워크 헤더 추출시 체크섬 제외하고 추출
 		retPeekHeader = m_pSession->s_RecvQ.Peek((char*)&header, sizeof(LANHEADER));
-
-		if (retPeekHeader == 0)
-		{
-			__debugbreak();
-			break;
-		}
 
 
 		//수신 링버퍼에 남은게 네트워크 헤더 + payload 크기 보다 작으면 그냥 peek만 해서 네트워크 헤더 보고 나가는 것임.
@@ -541,11 +534,6 @@ void CLanClient::RecvIOProc(DWORD cbTransferred)
 
 		//페이로드 추출
 		retPeekPayload = m_pSession->s_RecvQ.Peek(pPacket->GetWritePos(), header.s_len);
-		if (retPeekPayload == 0)
-		{
-			__debugbreak();
-			break;
-		}
 
 		pPacket->MoveWritePos(retPeekPayload);
 

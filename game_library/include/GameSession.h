@@ -24,7 +24,6 @@ public:
 
 	UINT16                 m_GroupID;
 	SHORT                  m_SendFlag;
-	SHORT                  m_ContentsType;
 	INT                    m_SendMsgCnt;
 	LONG                   m_DCFlag;
 	alignas(16)LONGLONG    m_RefCnt;

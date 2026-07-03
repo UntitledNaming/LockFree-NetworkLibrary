@@ -45,7 +45,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Config 정보
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	std::string                              m_IP;                                            // 서버 IP
+	std::wstring                             m_IP;                                            // 서버 IP
 	INT                                      m_Port;                                          // 서버 Port
 	INT                                      m_MaxSessionCnt;                                 // 최대 세션 갯수 설정
 	INT                                      m_CreateWorkerCnt;                               // 생성 워커 스레드 갯수
@@ -102,7 +102,7 @@ public:
 	bool          Run();                                                                      // 게임 라이브러리 작동 함수
 	void          Stop();                                                                     // 게임 라이브러리 멤버 정리 및 스레드 정리
 		          																	          
-	bool          Attach(CGroup* pContents, std::wstring contentsType, UINT groupframe, BOOL shared = FALSE);          // 그룹관리 벡터에 등록할 함수
+	bool          Attach(CGroup* pContents, std::wstring& contentsType, UINT groupframe, BOOL shared = FALSE);          // 그룹관리 벡터에 등록할 함수
 
 private:
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -34,14 +34,13 @@ CLanServer::~CLanServer()
 bool CLanServer::Start(WCHAR* SERVERIP, int SERVERPORT, int numberOfCreateThread, int numberOfRunningThread, int maxNumOfSession, int SendSleep, int SendTHFL, bool OffNagle)
 {
 	// Config 파일에서 얻어온 정보 네트워크 라이브러리 멤버 세팅
-	m_IP = *SERVERIP;
+	m_IP = SERVERIP;
 	m_Port = SERVERPORT;
 	m_MaxSessionCnt = maxNumOfSession;
 	m_CreateWorkerCnt = numberOfCreateThread;
 	m_ConcurrentCnt = numberOfRunningThread;
 	m_SendFrame = SendSleep;
 	m_SendThFL = SendTHFL;
-
 
 	Mem_Init();
 
@@ -188,32 +187,23 @@ void CLanServer::WorkerThread()
 	LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"WorkerThread  Start... : %d ", GetCurrentThreadId());
 
 
-	timeBeginPeriod(1);
-
-	BOOL  retval;
-	DWORD err;
-
 	bool ESC = false;
-
-	int log = 0;
-	int loop = 0;
-
-	char* temprpos = nullptr;
 
 	while (!ESC)
 	{
+		BOOL  retval;
+		DWORD err;
 		DWORD       cbTransferred = -1;
 		OVERLAPPED* pOverlapped = nullptr;     // IO에 사용된 Overlapped 구조체 주소값 or Task Type
 		CSession* pSession = nullptr;
-		INT         sum = 0;                   //체크섬 계산
 
 		retval = GetQueuedCompletionStatus(m_IOCP, &cbTransferred, (PULONG_PTR)&pSession, (LPOVERLAPPED*)&pOverlapped, INFINITE);
 
 
-		//false 인 상황(IOCP 완료 통지 큐에서 디큐잉이 안된 경우, IOCP 핸들이 CloseHandle로 인해 닫힌 경우)
+		//false 인 상황
 		if (retval == false)
 		{
-			//IOCP가 닫히거나 IOCP 완료 통지 큐에서 디큐잉에 실패할 때 처리
+
 			if (pOverlapped == nullptr)
 			{
 				err = GetLastError();
@@ -296,7 +286,11 @@ void CLanServer::AcceptThread()
 
 		//Overlapped IO로 작동시키기 위해 소켓 송신 버퍼 0으로 설정
 		int sendBufferSize = 0;
-		setsockopt(client_socket, SOL_SOCKET, SO_SNDBUF, (char*)&sendBufferSize, sizeof(sendBufferSize));
+		if (setsockopt(client_socket, SOL_SOCKET, SO_SNDBUF, (char*)&sendBufferSize, sizeof(sendBufferSize)) < 0)
+		{
+			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CNetLibrary::Socket Send Buffer Resize Error :%d ", WSAGetLastError());
+			break;
+		}
 
 		linger so_linger;
 		so_linger.l_onoff = 1;  // linger 옵션 사용
@@ -304,7 +298,8 @@ void CLanServer::AcceptThread()
 
 		if (setsockopt(client_socket, SOL_SOCKET, SO_LINGER, (char*)&so_linger, sizeof(so_linger)) == SOCKET_ERROR)
 		{
-			LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CNetLibrary::Linger Option Set Error :%d ", WSAGetLastError());
+			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CNetLibrary::Linger Option Set Error :%d ", WSAGetLastError());
+			break;
 		}
 
 
@@ -369,7 +364,8 @@ void CLanServer::SendThread()
 				continue;
 
 			// Send 플래그 및 SendQ 체크 시 보내면 안되는 상황에서 세션 포기
-			if (m_SessionTable[i].m_SendFlag != 0 || m_SessionTable[i].m_SendQ.GetUseSize() == 0)
+			if (m_SessionTable[i].m_SendFlag != 0 
+				|| m_SessionTable[i].m_SendQ.GetUseSize() == 0)
 			{
 				Release(&m_SessionTable[i],  InterlockedDecrement64(&m_SessionTable[i].m_RefCnt));
 				continue;
@@ -423,7 +419,7 @@ void CLanServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool Nagle)
 		if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
 		{
 			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
-			__debugbreak();
+			return;
 		}
 		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanLibrary::Start()_Nagle On Complete...");
 	}
@@ -434,7 +430,7 @@ void CLanServer::Net_Init(WCHAR* SERVERIP, int SERVERPORT, bool Nagle)
 		if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
 		{
 			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
-			__debugbreak();
+			return;
 		}
 		LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_SYSTEM, L"CLanLibrary::Start()_Nagle Off Complete...");
 	}
@@ -752,7 +748,6 @@ bool CLanServer::SessionInvalid(CSession* pSession, UINT64 SessionID)
 
 bool CLanServer::Release(CSession* pSession, long long retIOCount)
 {
-	CMessage* peek = nullptr;
 	st_IOFLAG check;
 	check.Cnt = 0;
 	check.Flag = 0;
@@ -803,16 +798,6 @@ void CLanServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 		//네트워크 헤더 추출시 체크섬 제외하고 추출
 		retPeekHeader = pSession->m_RecvQ.Peek((char*)&header, sizeof(LANHEADER));
 
-		if (retPeekHeader == 0)
-		{
-			//peek 해봤는데 0이 나온것은 빼내려고 하는 데이터 크기(헤더크기) 보다 수신 링버퍼가 사용중인 데이터가 더 적은 상황임
-			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"WorkerThread RecQ.Peek RecvRingBuffer UseSize Not Enough Error / Session ID : %lld ", pSession->m_SessionID);
-			Disconnect(pSession->m_SessionID);
-			CMessage::Free(pPacket);
-			break;
-		}
-
-
 		//수신 링버퍼에 남은게 네트워크 헤더 + payload 크기 보다 작으면 그냥 peek만 해서 네트워크 헤더 보고 나가는 것임.
 		if (usesize < header.s_len + sizeof(LANHEADER))
 		{
@@ -827,13 +812,6 @@ void CLanServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 
 		// 수신 링버퍼에서 체크섬 및 페이로드 추출 후 직렬화 버퍼에 저장
 		retPeekPayload = pSession->m_RecvQ.Peek(pPacket->GetWritePos(), header.s_len);
-		if (retPeekPayload == 0)
-		{
-			LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"WorkerThread RecQ.Peek PayLoad Error / Session ID : %lld", pSession->m_SessionID);
-			Disconnect(pSession->m_SessionID);
-			CMessage::Free(pPacket);
-			break;
-		}
 
 		pPacket->MoveWritePos(retPeekPayload);
 

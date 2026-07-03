@@ -23,6 +23,7 @@ private:
 	Node*                  m_pTail;
 	LONG                   m_size;
 	UINT64                 m_HeadCnt;
+	UINT64                 m_TailCnt;
 
 	static CMemoryPool<Node>*     m_pMemoryPool;
 
@@ -43,6 +44,7 @@ public:
 		//멤버 변수 초기화
 		m_size = size;
 		m_HeadCnt = 0;
+		m_TailCnt = 0;
 
 		if (m_pMemoryPool == nullptr)
 			m_pMemoryPool = new CMemoryPool<Node>(size);
@@ -53,7 +55,7 @@ public:
 		dmyNode->_next = nullptr;
 
 		m_pHead = (Node*)((UINT64)dmyNode | (InterlockedIncrement64((volatile __int64*)&m_HeadCnt) << 47));
-		m_pTail = dmyNode;
+		m_pTail = (Node*)((UINT64)dmyNode | (InterlockedIncrement64((volatile __int64*)&m_TailCnt) << 47));
 
 	}
 	~LFQueue()
@@ -66,33 +68,45 @@ public:
 	{
 		m_size = 0;
 		m_HeadCnt = 0;
+		m_TailCnt = 0;
 	}
 
 	void Enqueue(T InputParam)
 	{
-		DWORD    curID = GetCurrentThreadId();
 		Node*    newNode;
 		Node*    localTail;
 		Node*    localTailNext;
+		Node*    localRealTail;
+		UINT64   retCnt;
+
 
 		//신규 노드 생성
 		newNode = m_pMemoryPool->Alloc();
 		newNode->_data = InputParam;
 		newNode->_next = (Node*)0xFFFFFFFFFFFFFFFF;
 		
-
+		retCnt = InterlockedIncrement(&m_TailCnt);
 
 		//사전 작업
 		while (1)
 		{
 			localTail = m_pTail;
-			localTailNext = localTail->_next;
+			localRealTail = (Node*)((UINT64)localTail & BITMASK);
+			localTailNext = localRealTail->_next;
 
-			if ((localTailNext == (Node*)0xFFFFFFFFFFFFFFFF) || (localTailNext == nullptr) )
+			if (localTailNext == nullptr)
 				break;
 
+			if (localTailNext == (Node*)0xFFFFFFFFFFFFFFFF)
+				continue;
+
+			localTailNext = (Node*)((UINT64)localTailNext | (retCnt << 47));
+
 			//next가 nullptr이 아니라면 tail을 바꾸자.
-			InterlockedCompareExchange64((__int64*)&m_pTail, (__int64)localTailNext, (__int64)localTail);
+			if (InterlockedCompareExchange64((__int64*)&m_pTail, (__int64)localTailNext, (__int64)localTail) == (__int64)localTail)
+			{
+				retCnt = InterlockedIncrement(&m_TailCnt);
+			}
 
 		}
 
@@ -100,11 +114,14 @@ public:
 		while (1)
 		{
 			localTail = m_pTail;
+			localRealTail = (Node*)((UINT64)localTail & BITMASK);
+
 
 			//_tail->next 원자적으로 변경 시도
-			if (InterlockedCompareExchange64((__int64*)&m_pTail->_next, (__int64)newNode, (__int64)nullptr) == (__int64)nullptr)
+			if (InterlockedCompareExchange64((__int64*)&localRealTail->_next, (__int64)newNode, (__int64)nullptr) == (__int64)nullptr)
 			{
 				newNode->_next = nullptr;
+				newNode = (Node*)((UINT64)newNode | (retCnt << 47));
 
 				//성공하면 tail도 원자적으로 변경
 				InterlockedCompareExchange64((__int64*)&m_pTail, (__int64)newNode, (__int64)localTail);
@@ -120,42 +137,54 @@ public:
 
 	bool Dequeue(T& OutputParam)
 	{
-		DWORD    curID = GetCurrentThreadId();
 		Node*    localHead = nullptr;
 		Node*    localHeadNext = nullptr;
 		Node*    realHead = nullptr;
 		Node*    realHeadNext = nullptr;
 		Node*    localTail;
+		Node*    localRealTail;
 		Node*    localTailNext;
-		UINT64   retCnt;
+		UINT64   retCntHead;
+		UINT64   retCntTail;
 
+		retCntTail = InterlockedIncrement(&m_TailCnt);
 
 		//사전 작업
 		while (1)
 		{
 			localTail = m_pTail;
-			localTailNext = localTail->_next;
+			localRealTail = (Node*)((UINT64)localTail & BITMASK);
+			localTailNext = localRealTail->_next;
 
-			if ((localTailNext == (Node*)0xFFFFFFFFFFFFFFFF) || (localTailNext == nullptr))
+			if ((localTailNext == nullptr))
 				break;
 
+			if (localTailNext == (Node*)0xFFFFFFFFFFFFFFFF)
+				continue;
+
+			localTailNext = (Node*)((UINT64)localTailNext | (retCntTail << 47));
+
 			//next가 nullptr이 아니라면 tail을 바꾸자.
-			InterlockedCompareExchange64((__int64*)&m_pTail, (__int64)localTailNext, (__int64)localTail);
+			if (InterlockedCompareExchange64((__int64*)&m_pTail, (__int64)localTailNext, (__int64)localTail) == (__int64)localTail)
+			{
+				retCntTail = InterlockedIncrement(&m_TailCnt);
+
+			}
 
 		}
 
-		retCnt = InterlockedIncrement(&m_HeadCnt);
+		retCntHead = InterlockedIncrement(&m_HeadCnt);
 
 		while (1)
 		{
 			localHead = m_pHead;
 			realHead = (Node*)((UINT64)localHead & BITMASK);
 			realHeadNext = realHead->_next;
-			if (realHeadNext == nullptr || realHeadNext == (Node*)0xFFFFFFFFFFFFFFFF)
+			if (realHeadNext == nullptr)
 				return false;
 
 
-			localHeadNext = (Node*)((UINT64)realHeadNext | (retCnt << 47));
+			localHeadNext = (Node*)((UINT64)realHeadNext | (retCntHead << 47));
 
 			if (InterlockedCompareExchange64((volatile __int64*)&m_pHead, (__int64)localHeadNext, (__int64)localHead) != (UINT64)localHead)
 				continue;

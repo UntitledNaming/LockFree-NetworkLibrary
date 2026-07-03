@@ -35,8 +35,7 @@ Stable IOCP-based network library designed without session lock
    - 로그인 서버
    - 모니터링 서버
      
-10. tests
-   - zero copy on / off 테스트
+
 
 < 특징 요약 >
 1. 세션 Lock 제거
@@ -54,7 +53,7 @@ Stable IOCP-based network library designed without session lock
    - 네트워크 로직 처리
   
 
-< 서버 구동 및 테스트 방법 : Release >
+< 서버 구동 및 테스트 방법 : Release 빌드 >
 
 0. Mysql 설치
    - 폴더 경로 : C:\Program Files에 설치되어야 함.

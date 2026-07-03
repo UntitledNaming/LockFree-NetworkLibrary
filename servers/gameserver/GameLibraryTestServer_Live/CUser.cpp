@@ -21,7 +21,6 @@ void CUser::Clear(UINT64 uniqId, INT64 accountNo)
 	m_accountNo = accountNo;
 	m_timeOut = 0;
 	m_recvTime = timeGetTime();
-
 }
 
 void CUser::Init()

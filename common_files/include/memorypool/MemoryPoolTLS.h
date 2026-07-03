@@ -65,7 +65,7 @@ public:
 		}
 
 		//멤버 변수 초기화
-		m_iBKTCapacity = iBucketNum;
+		m_iBKTCapacity = 0;
 		m_iUseCnt = 0;
 
 
@@ -185,7 +185,8 @@ public:
 			newNode->s_pNext = nullptr;
 
 			//객체 생성자 호출
-			new(&newNode->s_data) U;
+			if(m_bPlacementNew == false)
+				new(&newNode->s_data) U;
 
 			newNode->s_pNext = pBucket->s_Top;
 			pBucket->s_Top = newNode;
@@ -233,11 +234,14 @@ public:
 		if (ret == nullptr)
 		{
 			ret = new CSubPool(this);
-			TlsSetValue(m_iTlsIndex, ret);
 			retindex = InterlockedIncrement(&m_SubPoolIndex);
 			if (retindex >= SUBPOOL_MAX)
-				__debugbreak();
+			{
+				delete ret;
+				return nullptr;
+			}
 
+			TlsSetValue(m_iTlsIndex, ret);
 			m_SubPoolArray[retindex].s_ptr = ret;
 			m_SubPoolArray[retindex].s_ThreadId = GetCurrentThreadId();
 		}
@@ -264,12 +268,14 @@ public:
 		{
 			//다른 스레드에서 Alloc한게 내 스레드에서 먼저 Free 호출 될 수 있음.
 			ret = new CSubPool(this);
-			TlsSetValue(m_iTlsIndex, ret);
 
 			retindex = InterlockedIncrement(&m_SubPoolIndex);
 			if (retindex >= SUBPOOL_MAX)
-				__debugbreak();
-
+			{
+				delete ret;
+				return false;
+			}
+			TlsSetValue(m_iTlsIndex, ret);
 			m_SubPoolArray[retindex].s_ptr = ret;
 			m_SubPoolArray[retindex].s_ThreadId = GetCurrentThreadId();
 
@@ -318,14 +324,9 @@ public:
 		U* Alloc()
 		{
 			Node* temp;
-			INT AllocCnt;
-			INT FreeCnt;
-
 
 			if (m_iAlloc->s_Top == nullptr)
 			{
-				AllocCnt = m_AllocCnt;
-				FreeCnt = m_FreeCnt;
 
 				m_parent->g_pCaseBucketPool->Free(m_iAlloc);
 
@@ -334,6 +335,7 @@ public:
 				{
 					m_iAlloc = m_parent->BucketAlloc();
 				}
+
 			}
 
 			m_iAlloc->s_Cnt--;
@@ -389,7 +391,7 @@ public:
 				m_iRet->s_Cnt++;
 				newNode->s_pNext = m_iRet->s_Top;
 				m_iRet->s_Top = newNode;
-
+				m_FreeCnt++;
 
 				return true;
 			}

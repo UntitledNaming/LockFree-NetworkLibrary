@@ -144,7 +144,7 @@
     <ClCompile Include="..\..\..\common_files\src\util\TextParser.cpp" />
     <ClCompile Include="..\..\..\game_library\src\CGameLibrary.cpp" />
     <ClCompile Include="..\..\..\game_library\src\CGroup.cpp" />
-    <ClCompile Include="..\..\..\game_library\src\CSession.cpp" />
+    <ClCompile Include="..\..\..\game_library\src\GameSession.cpp" />
     <ClCompile Include="..\..\..\network_library\src\CLanClient.cpp" />
     <ClCompile Include="CAuth.cpp" />
     <ClCompile Include="CEcho.cpp" />

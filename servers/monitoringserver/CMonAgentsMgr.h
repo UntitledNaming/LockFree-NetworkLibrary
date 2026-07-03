@@ -27,7 +27,7 @@ private:
 
 	virtual void  OnRecv(UINT64 SessionID, CMessage* pMessage) override;
 
-	        void  ToolLoginProc(UINT64 sessionID, CMessage* pMessage);
+	void  ToolLoginProc(UINT64 sessionID, CMessage* pMessage);
 
 			void  AgentInsert(UINT64 sessionID, CAgent* pUser);
 

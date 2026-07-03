@@ -39,6 +39,7 @@ void CMonAgentsMgr::RunAgentsManager(INT MAXAGENTCNT, WCHAR* SERVERIP, INT SERVE
 	// 네트워크 라이브러리 작동
 	Start(SERVERIP, SERVERPORT, numberOfCreateThread, numberOfRunningThread, maxNumOfSession, SendSleep, SendTHFL, packetCode, fixedkey, OffNagle);
 
+
 }
 
 void CMonAgentsMgr::StopAgentsManager()
@@ -100,36 +101,29 @@ void CMonAgentsMgr::OnClientLeave(UINT64 SessionID)
 {
 	CAgent* pAgent = nullptr;
 
-	AcquireSRWLockExclusive(&m_nonAgentMapLock);
 	AcquireSRWLockExclusive(&m_agentMapLock);
-
-	// 유저 자료구조 먼저 찾아보고 제거
 	std::unordered_map<UINT64, CAgent*>::iterator iton;
 	iton = m_agentMap.find(SessionID);
 	if (iton == m_agentMap.end())
 	{
-		// 유저 자료구조에 없으면 NonUser 자료구조 찾음.
+		ReleaseSRWLockExclusive(&m_agentMapLock);
+
+		AcquireSRWLockExclusive(&m_nonAgentMapLock);
 		std::unordered_map<UINT64, DWORD>::iterator itNon;
 		itNon = m_nonAgentMap.find(SessionID);
 		if (itNon == m_nonAgentMap.end())
 		{
 			__debugbreak();
 		}
-
 		m_nonAgentMap.erase(itNon);
-
-		ReleaseSRWLockExclusive(&m_agentMapLock);
 		ReleaseSRWLockExclusive(&m_nonAgentMapLock);
 		return;
 	}
 
 	pAgent = iton->second;
 	m_agentMap.erase(iton);
-
 	ReleaseSRWLockExclusive(&m_agentMapLock);
-	ReleaseSRWLockExclusive(&m_nonAgentMapLock);
 
-	//풀에 반납
 	m_pAgentPool->Free(pAgent);
 
 }
@@ -212,8 +206,6 @@ void CMonAgentsMgr::ToolLoginProc(UINT64 sessionID, CMessage* pMessage)
 void CMonAgentsMgr::AgentInsert(UINT64 sessionID, CAgent* pUser)
 {
 	AcquireSRWLockExclusive(&m_nonAgentMapLock);
-	AcquireSRWLockExclusive(&m_agentMapLock);
-
 	std::unordered_map<UINT64, DWORD>::iterator itNon;
 	itNon = m_nonAgentMap.find(sessionID);
 	if (itNon == m_nonAgentMap.end())
@@ -222,17 +214,17 @@ void CMonAgentsMgr::AgentInsert(UINT64 sessionID, CAgent* pUser)
 	}
 
 	m_nonAgentMap.erase(itNon);
-	m_agentMap.insert(std::pair<UINT64, CAgent*>(sessionID, pUser));
-
-	ReleaseSRWLockExclusive(&m_agentMapLock);
 	ReleaseSRWLockExclusive(&m_nonAgentMapLock);
 
+	AcquireSRWLockExclusive(&m_agentMapLock);
+	m_agentMap.insert(std::pair<UINT64, CAgent*>(sessionID, pUser));
+	ReleaseSRWLockExclusive(&m_agentMapLock);
 }
 
 void CMonAgentsMgr::FrameThread()
 {
 
-	DWORD OldTimeOutTick1; //2초  타임아웃
+	DWORD OldTimeOutTick1; //3초  타임아웃
 	DWORD OldTimeOutTick2; //40초 타임아웃
 	DWORD curTick;
 
@@ -275,7 +267,7 @@ void CMonAgentsMgr::NonAgentTimeOut()
 		if (tick - it->second >= df_AGENTSMANAGER_NONAGENT_TIMEOUT)
 		{
 			Disconnect(it->first);
-			LOG(L"Login", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"FrameThread  NonAgentTimeout / SessionID : %lld / TimeOut : %d ", it->first, tick - it->second);
+			LOG(L"CMonAgentsMgr", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"FrameThread  NonAgentTimeout / SessionID : %lld / TimeOut : %d ", it->first, tick - it->second);
 			continue;
 		}
 	}
@@ -287,7 +279,6 @@ void CMonAgentsMgr::AgentTimeOut()
 	DWORD tick;
 	CAgent* pAgent;
 	std::unordered_map<UINT64, CAgent*>::iterator it;
-
 
 	AcquireSRWLockShared(&m_agentMapLock);
 	tick = timeGetTime();
@@ -303,7 +294,7 @@ void CMonAgentsMgr::AgentTimeOut()
 			Disconnect(it->first);
 			pAgent->m_timeOut = true;
 
-			LOG(L"LoginServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"FrameThread  AgentTimeout / SessionID : %lld / TimeOut : %lld ...", pAgent->m_uniqID, tick - pAgent->m_recvTime);
+			LOG(L"CMonAgentsMgr", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"FrameThread  AgentTimeout / SessionID : %lld / TimeOut : %lld ...", pAgent->m_uniqID, tick - pAgent->m_recvTime);
 			continue;
 		}
 	}
