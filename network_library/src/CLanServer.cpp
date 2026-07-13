@@ -865,10 +865,6 @@ void CLanServer::ReleaseProc(CSession* pSession)
 {
 	CMessage* peek = nullptr;
 
-	/*
-	* 실제 Release 작업
-	*/
-
 	//SendArray에 있는 직렬화 버퍼 반납.(SendPost 내부에서 Release될 수 있음)
 	for (int i = 0; i < pSession->m_SendMsgCnt; i++)
 	{
