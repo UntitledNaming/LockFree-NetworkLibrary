@@ -820,7 +820,7 @@ void ChatServer::UpdateThread()
 		{
 			//Deq하는 스레드가 1개라서 size가 0보다 크면 Enq 스레드에서 큐에 노드를 넣었는데 없을 수 없음.
 			if (!m_pUpdateJobQ->Dequeue(job))
-				__debugbreak();
+				break;
 
 
 			switch (job->s_Type)

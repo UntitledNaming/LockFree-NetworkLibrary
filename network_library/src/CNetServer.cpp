@@ -346,7 +346,7 @@ void CNetServer::AcceptThread()
 		{
 			//네이글 끄고 싶을 때
 			int flag = 1;
-			if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
+			if (setsockopt(client_socket, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
 			{
 				LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CNetLibrary::Nagle Error :%d ", WSAGetLastError());
 				break;
@@ -356,7 +356,7 @@ void CNetServer::AcceptThread()
 		{
 			//네이글 키고 싶을 때
 			int flag = 0;
-			if (setsockopt(m_Listen, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
+			if (setsockopt(client_socket, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int)) == -1)
 			{
 				LOG(L"CLanLibrary", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"CLanLibrary::Start()_Nagle Error :%d ", WSAGetLastError());
 				break;

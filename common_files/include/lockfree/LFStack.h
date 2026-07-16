@@ -47,19 +47,23 @@ public:
 
 	void Clear()
 	{
+		T temp;
+		while (Pop(temp))
+		{
+
+		}
+
 		m_pTopNode = nullptr;
 		m_size = 0;
-		m_topCnt = 0;
 	}
 
 	void Push(T InputData)
 	{
 		//메모리 로그 준비
-		DWORD    curID = GetCurrentThreadId();
 		Node*    newNode = m_pMemoryPool->Alloc();
 		Node*    t;
 		Node*    real;
-		UINT64   retCnt = InterlockedIncrement(&m_topCnt);
+		UINT64   retCnt = InterlockedIncrement64((long long*)&m_topCnt);
 
 		newNode->data = InputData;
 
@@ -83,13 +87,13 @@ public:
 	bool Pop(T& Data)
 	{
 		//메모리 로그 준비
-		DWORD curID = GetCurrentThreadId();
+		DWORD retSize;
 
 		Node* t;
 		Node* real;
 		Node* newTopNode;
 
-		UINT64 retCnt = InterlockedIncrement(&m_topCnt);
+		UINT64 retCnt = InterlockedIncrement64((long long*)&m_topCnt);
 
 
 		do {
@@ -115,13 +119,13 @@ public:
 			__debugbreak();
 
 
-		InterlockedDecrement64((volatile LONG64*) & m_size);
+		retSize = InterlockedDecrement64((volatile LONG64*) & m_size);
 
 		return true;
 	}
 	bool IsEmpty()
 	{
-		if (m_pTopNode == nullptr)
+		if (m_size == 0)
 			return true;
 
 		return false;
@@ -135,6 +139,3 @@ private:
 	UINT64                              m_topCnt;
 	CMemoryPool<Node>*                  m_pMemoryPool;
 };
-
-
-

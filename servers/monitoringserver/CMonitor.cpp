@@ -378,7 +378,7 @@ void CMonitor::DBUpdate()
 			while (m_pDBQueue->GetUseSize() > 0)
 			{
 				if (!m_pDBQueue->Dequeue(pdata))
-					__debugbreak();
+					break;
 
 				DataInsert(pdata);
 				m_pMonitorPool->Free(pdata);

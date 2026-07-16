@@ -57,7 +57,7 @@ public:
 		m_pTopNode = nullptr;
 		m_iUseCnt = 0;
 		m_iTopCnt = 0;
-
+		m_iCapacity = 0;
 
 
 		for (int i = 0; i < iBlockNum; i++)
@@ -246,7 +246,7 @@ public:
 		//기존 Top노드 메모리 풀과 분리했으니 추가 작업하던지 바로 반환
 		if (m_bPlacementNew == true)
 		{
-			new(&(t->s_data)) T;
+			new(&(real->s_data)) T;
 		}
 
 		//어차피 노드 생성할 때 생성자 이미 1번 호출해서 false일때 생각할 필요 없음.
@@ -306,8 +306,6 @@ public:
 	}
 
 
-
 };
 
 #endif
- 

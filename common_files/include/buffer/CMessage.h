@@ -4,8 +4,8 @@ class CMessage
 public:
 	enum en_Message
 	{
-		eBuffer_Default = 500, // 직렬화 버퍼 기본 사이즈
-		eBuffer_Max = 10000,
+		eBuffer_Default = 1000,   // 직렬화 버퍼 기본 사이즈
+		eBuffer_Max     = 10000,
 	};
 
 	CMessage();

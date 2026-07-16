@@ -867,7 +867,7 @@ void ChatServer::AuthReqProc(UINT64 sessionID, CMessage* pMessage)
 			// 토큰이 다르면 해당 세션 연결 끊기
 			else
 			{
-				LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"AuthProc TokenInvalid ... / UniqID : %lld / AccountNo : %lld / RedisToken : %s / User Token : %s ", sessionID, accountNo, value, token);
+				LOG(L"ChatServer", en_LOG_LEVEL::dfLOG_LEVEL_ERROR, L"AuthProc TokenInvalid ... / UniqID : %lld / AccountNo : %lld / RedisToken : %hs / User Token : %hs ", sessionID, accountNo, value.c_str(), token.c_str());
 				CMessage::Free(pMessage);
 				Disconnect(sessionID);
 			}
@@ -954,7 +954,7 @@ void ChatServer::UpdateThread()
 		{
 			//Deq하는 스레드가 1개라서 size가 0보다 크면 Enq 스레드에서 큐에 노드를 넣었는데 없을 수 없음.
 			if (!m_pUpdateJobQ->Dequeue(job))
-				__debugbreak();
+				break;
 
 
 			switch (job->s_Type)
@@ -1166,7 +1166,7 @@ void ChatServer::AuthThread()
 		{
 			//Deq하는 스레드가 1개라서 size가 0보다 크면 Enq 스레드에서 큐에 노드를 넣었는데 없을 수 없음.
 			if (!m_pAuthJobQ->Dequeue(job))
-				__debugbreak();
+				break;
 
 
 			switch (job->s_Type)

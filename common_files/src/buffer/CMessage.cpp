@@ -281,16 +281,27 @@ CMessage& CMessage::operator=(CMessage& clSrcMessage)
 
 CMessage& CMessage::operator<<(BYTE byValue)
 {
+	// 버퍼에 넣기전 크기 체크
+	if (m_iWritePos + sizeof(BYTE) > m_iAllocPtr + m_iBufferSize)
+	{
+		m_iError = true;
+		return *this;
+	}
 	*(BYTE*)m_iWritePos = byValue;
 	m_iWritePos += sizeof(BYTE);
 	m_iDataSize += sizeof(BYTE);
-
 
 	return *this;
 }
 
 CMessage& CMessage::operator<<(char chValue)
 {
+	if (m_iWritePos + sizeof(char) > m_iAllocPtr + m_iBufferSize)
+	{
+		m_iError = true;
+		return *this;
+	}
+
 	*(char*)m_iWritePos = chValue;
 	m_iWritePos += sizeof(char);
 	m_iDataSize += sizeof(char);
@@ -300,6 +311,12 @@ CMessage& CMessage::operator<<(char chValue)
 
 CMessage& CMessage::operator<<(short shValue)
 {
+	if (m_iWritePos + sizeof(short) > m_iAllocPtr + m_iBufferSize)
+	{
+		m_iError = true;
+		return *this;
+	}
+
 	*(short*)m_iWritePos = shValue;
 	m_iWritePos += sizeof(short);
 	m_iDataSize += sizeof(short);
@@ -309,6 +326,12 @@ CMessage& CMessage::operator<<(short shValue)
 
 CMessage& CMessage::operator<<(WORD wValue)
 {
+	if (m_iWritePos + sizeof(WORD) > m_iAllocPtr + m_iBufferSize)
+	{
+		m_iError = true;
+		return *this;
+	}
+
 	*(WORD*)m_iWritePos = wValue;
 	m_iWritePos += sizeof(WORD);
 	m_iDataSize += sizeof(WORD);
@@ -318,6 +341,12 @@ CMessage& CMessage::operator<<(WORD wValue)
 
 CMessage& CMessage::operator<<(int iValue)
 {
+	if (m_iWritePos + sizeof(int) > m_iAllocPtr + m_iBufferSize)
+	{
+		m_iError = true;
+		return *this;
+	}
+
 	*(int*)m_iWritePos = iValue;
 	m_iWritePos += sizeof(int);
 	m_iDataSize += sizeof(int);
@@ -327,6 +356,12 @@ CMessage& CMessage::operator<<(int iValue)
 
 CMessage& CMessage::operator<<(DWORD lValue)
 {
+	if (m_iWritePos + sizeof(DWORD) > m_iAllocPtr + m_iBufferSize)
+	{
+		m_iError = true;
+		return *this;
+	}
+
 	*(DWORD*)m_iWritePos = lValue;
 	m_iWritePos += sizeof(DWORD);
 	m_iDataSize += sizeof(DWORD);
@@ -336,6 +371,12 @@ CMessage& CMessage::operator<<(DWORD lValue)
 
 CMessage& CMessage::operator<<(float fValue)
 {
+	if (m_iWritePos + sizeof(float) > m_iAllocPtr + m_iBufferSize)
+	{
+		m_iError = true;
+		return *this;
+	}
+
 	*(float*)m_iWritePos = fValue;
 	m_iWritePos += sizeof(float);
 	m_iDataSize += sizeof(float);
@@ -345,6 +386,12 @@ CMessage& CMessage::operator<<(float fValue)
 
 CMessage& CMessage::operator<<(__int64 iValue)
 {
+	if (m_iWritePos + sizeof(__int64) > m_iAllocPtr + m_iBufferSize)
+	{
+		m_iError = true;
+		return *this;
+	}
+
 	*(__int64*)m_iWritePos = iValue;
 	m_iWritePos += sizeof(__int64);
 	m_iDataSize += sizeof(__int64);
@@ -354,6 +401,13 @@ CMessage& CMessage::operator<<(__int64 iValue)
 
 CMessage& CMessage::operator<<(unsigned long long  iValue)
 {
+	if (m_iWritePos + sizeof(unsigned long long) > m_iAllocPtr + m_iBufferSize)
+	{
+		m_iError = true;
+		return *this;
+	}
+
+
 	*(unsigned long long*)m_iWritePos = iValue;
 	m_iWritePos += sizeof(unsigned long long);
 	m_iDataSize += sizeof(unsigned long long);
@@ -363,6 +417,12 @@ CMessage& CMessage::operator<<(unsigned long long  iValue)
 
 CMessage& CMessage::operator<<(double iValue)
 {
+	if (m_iWritePos + sizeof(double) > m_iAllocPtr + m_iBufferSize)
+	{
+		m_iError = true;
+		return *this;
+	}
+
 	*(double*)m_iWritePos = iValue;
 	m_iWritePos += sizeof(double);
 	m_iDataSize += sizeof(double);
