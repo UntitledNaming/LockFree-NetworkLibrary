@@ -50,7 +50,7 @@ LockFree-NetworkLibrary
 네트워크 코어는 같은 IOCP 구조가 헤더 처리만 다르게 두 벌 존재합니다.
 
 - `CLanServer` — LAN용. 헤더는 길이 정보(`LANHEADER`)만 있고 암호화·체크섬이 없습니다. 내부 서버 간 통신, 모니터링 서버가 사용합니다.
-- `CNetServer` — 외부(Net)용. 헤더(`NETHEADER`)에 패킷 코드·길이·랜덤 키·체크섬이 있고, 페이로드를 인코딩(난독화)하고 수신 시 체크섬을 검증합니다. 로그인·채팅 서버가 상속합니다.
+- `CNetServer` — 외부(Net)용. 헤더(`NETHEADER`)에 패킷 코드·길이·랜덤 키·체크섬이 있고, 페이로드를 인코딩(난독화)하고 수신 시 디코딩 하여 체크섬을 통해 인코딩 정합성을 검증합니다. 로그인·채팅 서버가 상속합니다.
 
 주요 구성 요소:
 
@@ -70,7 +70,7 @@ LockFree-NetworkLibrary
 - **GameSession**: 네트워크 세션에 그룹 소속(그룹 ID)을 더한 세션입니다.
 - **IUser**: 컨텐츠 유저의 기반 인터페이스입니다.
 
-이 게임 라이브러리(`CGameLibrary` / `CGroup` / `GameSession` / `IUser`)는 P4 MMORPG 월드 서버의 기반으로 사용됩니다. P4는 `FieldGroup`·`AuthGroup`이 `CGroup`을 상속하고 `CUser`가 `IUser`를 상속하는 방식으로 이 구조를 그대로 이어받습니다. 이 레포의 게임(에코) 서버는 게임 라이브러리를 검증하기 위한 서버이며, P4의 직접 전신이 아닙니다.
+이 게임 라이브러리(`CGameLibrary` / `CGroup` / `GameSession` / `IUser`)는 P4 MMORPG 월드 서버의 기반으로 사용됩니다. P4는 `FieldGroup`·`AuthGroup`이 `CGroup`을 상속하고 `CUser`가 `IUser`를 상속하는 방식으로 이 구조를 그대로 이어받습니다. 이 레포의 게임(에코) 서버는 게임 라이브러리를 검증하기 위한 서버입니다.
 
 ## 5. 공통 모듈
 
@@ -98,4 +98,4 @@ LockFree-NetworkLibrary
 - **객체 재사용**: 세션·메시지·링버퍼·노드를 풀/재사용 구조로 관리해 반복 할당·해제 비용과 경합을 줄입니다.
 - **모니터링 분리**: 지표 수집을 별도 모니터링 서버와 클라이언트로 분리해, 각 서버는 지표를 보내기만 하고 수집·집계는 한곳에서 처리합니다.
 
-> 코드 흐름의 상세는 `docs/Code_Flow.md`, 각 구조를 그렇게 잡은 이유는 `docs/Design_Rationale.md`를 참고하세요.
+> 코드 흐름의 상세는 `docs/Code_Flow.md`, 각 구조를 그렇게 잡은 이유는 `docs/Design.md`를 참고하세요.

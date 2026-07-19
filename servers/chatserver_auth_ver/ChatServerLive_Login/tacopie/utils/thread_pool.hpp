@@ -106,14 +106,6 @@ public:
   //!
   void set_nb_threads(std::size_t nb_threads);
 
-  //!
-  //! Query if given thread id belongs to one of the worker threads.
-  //!
-  //! This can be useful to debug and detect when Redis commands are being 
-  //! sent in the context of the worker thread instead of application context.
-  //!
-  bool is_worker_thread_id(const std::thread::id& id);
-
 private:
   //!
   //! worker main loop

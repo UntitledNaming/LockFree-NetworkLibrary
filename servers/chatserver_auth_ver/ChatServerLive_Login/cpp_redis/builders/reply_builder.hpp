@@ -34,103 +34,80 @@ namespace cpp_redis {
 
 namespace builders {
 
-/**
- * class coordinating the several builders and the builder factory to build all the replies returned by redis server
- *
- */
+//!
+//! class coordinating the several builders and the builder factory to build all the replies returned by redis server
+//!
 class reply_builder {
 public:
-/**
- * ctor
- *
- */
-  reply_builder();
-/**
- * dtor
- *
- */
-  ~reply_builder() = default;
+  //! ctor
+  reply_builder(void);
+  //! dtor
+  ~reply_builder(void) = default;
 
-/**
- * copy ctor
- *
- */
+  //! copy ctor
   reply_builder(const reply_builder&) = delete;
-/**
- * assignment operator
- *
- */
+  //! assignment operator
   reply_builder& operator=(const reply_builder&) = delete;
 
 public:
-/**
- * add data to reply builder
- * data is used to build replies that can be retrieved with get_front later on if reply_available returns true
- *
- * @param data data to be used for building replies
- * @return current instance
- *
- */
+  //!
+  //! add data to reply builder
+  //! data is used to build replies that can be retrieved with get_front later on if reply_available returns true
+  //!
+  //! \param data data to be used for building replies
+  //! \return current instance
+  //!
   reply_builder& operator<<(const std::string& data);
 
-/**
- * similar as get_front, store reply in the passed parameter
- *
- * @param reply reference to the reply object where to store the first available reply
- *
- */
+  //!
+  //! similar as get_front, store reply in the passed parameter
+  //!
+  //! \param reply reference to the reply object where to store the first available reply
+  //!
   void operator>>(reply& reply);
 
-/**
- * @return the first available reply
- *
- */
-  const reply& get_front() const;
+  //!
+  //! \return the first available reply
+  //!
+  const reply& get_front(void) const;
 
-/**
- * pop the first available reply
- *
- */
-  void pop_front();
+  //!
+  //! pop the first available reply
+  //!
+  void pop_front(void);
 
-/**
- * @return whether a reply is available
- *
- */
-  bool reply_available() const;
+  //!
+  //! \return whether a reply is available
+  //!
+  bool reply_available(void) const;
 
-/**
- * reset the reply builder to its initial state (clear internal buffer and stages)
- *
- */
-  void reset();
+  //!
+  //! reset the reply builder to its initial state (clear internal buffer and stages)
+  //!
+  void reset(void);
 
 private:
-/**
- * build reply using m_buffer content
- *
- * @return whether the reply has been fully built or not
- *
- */
-  bool build_reply();
+  //!
+  //! build reply using m_buffer content
+  //!
+  //! \return whether the reply has been fully built or not
+  //!
+  bool build_reply(void);
 
 private:
-/**
- * buffer to be used to build data
- *
- */
+  //!
+  //! buffer to be used to build data
+  //!
   std::string m_buffer;
 
-/**
- * current builder used to build current reply
- *
- */
+  //!
+  //! current builder used to build current reply
+  //!
   std::unique_ptr<builder_iface> m_builder;
 
-/**
- * queue of available (built) replies
- *
- */
+  //!
+  //! queue of available (built) replies
+  //!
   std::deque<reply> m_available_replies;
 };
 

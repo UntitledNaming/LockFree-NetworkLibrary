@@ -345,16 +345,17 @@ void CLoginServer::OnRecv(UINT64 SessionID, CMessage* pMessage)
 void CLoginServer::LoginRequest(CMessage* pMessage, UINT64 sessionid)
 {
 	CUser* pUser = nullptr;
-	BYTE   Status;
-	INT64  AccountNo;
+	BYTE   Status = 0;
+	INT64  AccountNo = 0;
 	DWORD  startTime;
 	DWORD  endTime;
 
-	CHAR          SessionKey[SESSION_KEY_MAX];
-	WCHAR         ID[ID_MAX];
-	WCHAR         NICK[NICK_MAX];
-	WCHAR         IP[IP_LEN ];
-	SERVERINFO*   OutInfo;
+	CHAR          SessionKey[SESSION_KEY_MAX] = {};
+	WCHAR         ID[ID_MAX] = {};
+	WCHAR         NICK[NICK_MAX] = {};
+	WCHAR         IP[IP_LEN] = {};
+	WCHAR         OutServerIP[IP_LEN] = {};
+	SERVERINFO*   OutInfo = nullptr;
 
 
 	// 처리 시간 start
@@ -403,6 +404,9 @@ void CLoginServer::LoginRequest(CMessage* pMessage, UINT64 sessionid)
 		Disconnect(sessionid);
 		return;
 	}
+
+	// OutServerIP에 ip 정보 복사
+	wcsncpy_s(OutServerIP, IP_LEN, OutInfo->s_ServerIP.c_str(), _TRUNCATE);
 
 	// DB 통신
 	GetDBData(ID, NICK, AccountNo);
@@ -671,7 +675,7 @@ void CLoginServer::MonitorThread()
 		wprintf(L"[ MessagePool             Count :  %lld ]\n", CMessage::m_pMessagePool->GetUseCnt());
 		wprintf(L"[ Login Complte            TPS  :  %d]\n\n", m_LoginComTPS);
 		wprintf(L"[ Accept Total             TPS  :  %lld]\n\n", m_AcceptTotal);
-		wprintf(L"[ CPU Usage : T[%f%] U[%f%] K[%f%]]\n", processtotalsum / loopCnt, processusersum / loopCnt, processkernelsum / loopCnt);
+		wprintf(L"[ CPU Usage : T[%f%%] U[%f%%] K[%f%%]]\n", processtotalsum / loopCnt, processusersum / loopCnt, processkernelsum / loopCnt);
 		wprintf(L"[ Available        Memory Usage : %lf MByte ] [ NonPagedMemory Usage : %lf MByte ]\n", m_pPDH->m_AvailableMemoryVal.doubleValue / (1024 * 1024), m_pPDH->m_NonPagedMemoryVal.doubleValue / (1024 * 1024));
 		wprintf(L"[ Process User     Memory Usage : %lf MByte ]  [ Process NonPaged Memory Usage : %lf KByte ]\n", m_pPDH->m_processUserMemoryVal.doubleValue / (1024 * 1024), m_pPDH->m_processNonPagedMemoryVal.doubleValue / 1024);
 		wprintf(L"[ TCP Retransmitted Avg   Count : %lf /sec  ]  [ TCP Segment Sent  Avg   Count : % lf / sec]\n", tcpretransmitsum / loopCnt, tcpsegmentsentsum / loopCnt);

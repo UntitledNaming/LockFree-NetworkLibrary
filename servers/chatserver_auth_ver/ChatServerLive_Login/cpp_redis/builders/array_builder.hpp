@@ -20,8 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPP_REDIS_BUILDERS_ARRAY_BUILDER_HPP_
-#define CPP_REDIS_BUILDERS_ARRAY_BUILDER_HPP_
+#pragma once
 
 #include <cpp_redis/builders/builder_iface.hpp>
 #include <cpp_redis/builders/integer_builder.hpp>
@@ -29,116 +28,89 @@
 
 namespace cpp_redis {
 
-	namespace builders {
+namespace builders {
 
-/**
- * builder to build redis array replies
- *
- */
-		class array_builder : public builder_iface {
-		public:
-/**
- * ctor
- *
- */
-				array_builder();
+//!
+//! builder to build redis array replies
+//!
+class array_builder : public builder_iface {
+public:
+  //! ctor
+  array_builder(void);
+  //! dtor
+  ~array_builder(void) = default;
 
-/**
- * dtor
- *
- */
-				~array_builder() override = default;
+  //! copy ctor
+  array_builder(const array_builder&) = delete;
+  //! assignment operator
+  array_builder& operator=(const array_builder&) = delete;
 
-/**
- * copy ctor
- *
- */
-				array_builder(const array_builder &) = delete;
+public:
+  //!
+  //! take data as parameter which is consumed to build the reply
+  //! every bytes used to build the reply must be removed from the buffer passed as parameter
+  //!
+  //! \param data data to be consumed
+  //! \return current instance
+  //!
+  builder_iface& operator<<(std::string& data);
 
-/**
- * assignment operator
- *
- */
-				array_builder &operator=(const array_builder &) = delete;
+  //!
+  //! \return whether the reply could be built
+  //!
+  bool reply_ready(void) const;
 
-		public:
-/**
- * take data as parameter which is consumed to build the reply
- * every bytes used to build the reply must be removed from the buffer passed as parameter
- *
- * @param data data to be consumed
- * @return current instance
- *
- */
-				builder_iface &operator<<(std::string &data) override;
+  //!
+  //! \return reply object
+  //!
+  reply get_reply(void) const;
 
-/**
- * @return whether the reply could be built
- *
- */
-				bool reply_ready() const override;
+private:
+  //!
+  //! take data as parameter which is consumed to determine array size
+  //! every bytes used to build size is removed from the buffer passed as parameter
+  //!
+  //! \param buffer data to be consumer
+  //! \return true if the size could be found
+  //!
+  bool fetch_array_size(std::string& buffer);
 
-/**
- * @return reply object
- *
- */
-				reply get_reply() const override;
+  //!
+  //! take data as parameter which is consumed to build an array row
+  //! every bytes used to build row is removed from the buffer passed as parameter
+  //!
+  //! \param buffer data to be consumer
+  //! \return true if the row could be built
+  //!
+  bool build_row(std::string& buffer);
 
-		private:
-/**
- * take data as parameter which is consumed to determine array size
- * every bytes used to build size is removed from the buffer passed as parameter
- *
- * @param buffer data to be consumer
- * @return true if the size could be found
- *
- */
-				bool fetch_array_size(std::string &buffer);
+private:
+  //!
+  //! builder used to fetch the array size
+  //!
+  integer_builder m_int_builder;
 
-/**
- * take data as parameter which is consumed to build an array row
- * every bytes used to build row is removed from the buffer passed as parameter
- *
- * @param buffer data to be consumer
- * @return true if the row could be built
- *
- */
-				bool build_row(std::string &buffer);
+  //!
+  //! built array size
+  //!
+  uint64_t m_array_size;
 
-		private:
-/**
- * builder used to fetch the array size
- *
- */
-				integer_builder m_int_builder;
+  //!
+  //! current builder used to build current row
+  //!
+  std::unique_ptr<builder_iface> m_current_builder;
 
-/**
- * built array size
- *
- */
-				uint64_t m_array_size;
+  //!
+  //! whether the reply is ready or not
+  //!
+  bool m_reply_ready;
 
-/**
- * current builder used to build current row
- *
- */
-				std::unique_ptr<builder_iface> m_current_builder;
+  //!
+  //! reply to be built (or built)
+  //!
+  reply m_reply;
+};
 
-/**
- * whether the reply is ready or not
- *
- */
-				bool m_reply_ready;
-
-/**
- * reply to be built (or built)
- *
- */
-				reply m_reply;
-		};
-
-	} // namespace builders
+} // namespace builders
 
 } // namespace cpp_redis
-
-#endif

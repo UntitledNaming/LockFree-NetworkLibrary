@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\ThirdParty\mysql\include;$(SolutionDir)..\..\..\common_files\include\buffer;$(SolutionDir)..\..\..\clients\include;$(SolutionDir)..\..\..\common_files\include\list;$(SolutionDir)..\..\..\network_library\include;$(SolutionDir)..\..\..\protocol\include;$(SolutionDir)..\..\..\common_files\include\lockfree;$(SolutionDir)..\..\..\common_files\include\memorypool;$(SolutionDir)..\..\..\common_files\include\dbtls;$(SolutionDir)..\..\..\common_files\include\util;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\ThirdParty\mysql\include;$(SolutionDir);$(SolutionDir)..\..\..\common_files\include\buffer;$(SolutionDir)..\..\..\clients\include;$(SolutionDir)..\..\..\common_files\include\list;$(SolutionDir)..\..\..\network_library\include;$(SolutionDir)..\..\..\protocol\include;$(SolutionDir)..\..\..\common_files\include\lockfree;$(SolutionDir)..\..\..\common_files\include\memorypool;$(SolutionDir)..\..\..\common_files\include\dbtls;$(SolutionDir)..\..\..\common_files\include\util;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -130,6 +130,7 @@
       <ConformanceMode>true</ConformanceMode>
       <Optimization>Custom</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -36,6 +36,9 @@ void CEcho::OnClientLeave(UINT64 sessionID)
 {
 	CUser* pUser = nullptr;
 	std::unordered_map<UINT64, CUser*>::iterator it = m_EchoUser.find(sessionID);
+	if (it == m_EchoUser.end())
+		__debugbreak();
+
 	pUser = it->second;
 	m_EchoUser.erase(sessionID);
 

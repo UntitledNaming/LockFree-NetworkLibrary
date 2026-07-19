@@ -87,8 +87,6 @@ public:
 	bool Pop(T& Data)
 	{
 		//메모리 로그 준비
-		DWORD retSize;
-
 		Node* t;
 		Node* real;
 		Node* newTopNode;
@@ -119,7 +117,7 @@ public:
 			__debugbreak();
 
 
-		retSize = InterlockedDecrement64((volatile LONG64*) & m_size);
+		InterlockedDecrement64((volatile LONG64*) & m_size);
 
 		return true;
 	}

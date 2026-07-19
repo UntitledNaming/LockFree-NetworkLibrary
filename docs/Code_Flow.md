@@ -132,22 +132,8 @@
 
 ---
 
-## 8. FastIO vs Direct IO 송신 흐름
 
-- 목적: 메시지 크기에 따라 최적 송신 방식이 달라짐을 실측으로 확인한다.
-- 관련 파일: `docs/servertest_results/ZeroCopy Test/테스트 고찰.txt`, 라이브러리 측 `AcceptThread`의 송신 버퍼 설정
-- 관련 클래스: 별도 클래스 없음(소켓 옵션 + 측정)
-- 관련 함수: `AcceptThread()`의 `setsockopt(SO_SNDBUF)`, `SendPost()`의 `WSASend`
-- 처리 순서(측정):
-  1. 소켓 송신 버퍼를 0(중첩 IO/제로카피)과 비0(커널 버퍼 복사) 사이에서 토글해, 작은 메시지와 큰 메시지에서 각각 `WSASend` 리턴 시간과 GQCS 처리량(TPS)을 측정한다.
-  2. 결과: 작은 메시지는 커널 버퍼로 복사하는 FastIO가 유리하고(복사 비용 < 중첩 IO의 IRP 생성·페이지 잠금 비용), 큰 메시지는 복사 비용이 커져 유저 버퍼를 직접 잠그는 Direct IO가 유리하다.
-- 설계 의도: "중첩 IO가 항상 빠르다"는 통념을 실험으로 확인하고, 메시지 크기가 송신 방식 선택의 기준임을 데이터로 보인다.
-- 관련 테스트: `docs/Test_Report.md`의 FastIO/Direct IO 절.
-- 확인 필요: 라이브러리 본체는 송신 버퍼 0으로 고정되어 있어, 값을 토글하며 측정한 별도 테스트 프로그램은 이 레포에 코드로 포함되어 있지 않다(측정 자료 기준).
-
----
-
-## 9. 채팅 서버 흐름 (싱글/멀티 비교)
+## 8. 채팅 서버 흐름 (싱글/멀티 비교)
 
 - 목적: 네트워크 라이브러리 위에 섹터 기반 채팅 컨텐츠를 올려 검증하고, 컨텐츠 처리의 싱글/멀티 방식을 비교한다.
 - 관련 파일: `servers/chatserver/ChatServer.*`(싱글), `servers/chatserver_multi_ver/*`(멀티)
@@ -163,7 +149,7 @@
 
 ---
 
-## 10. 로그인 / 인증 흐름
+## 9. 로그인 / 인증 흐름
 
 - 목적: 계정 인증 후 세션 토큰을 발급하고, 접속할 서버 라우팅 정보를 응답한다.
 - 관련 파일: `servers/loginserver/.../CLoginServer.cpp`, `servers/chatserver_auth_ver/.../ChatServer.cpp`, `common_files/.../DBTLS.h`, `redis/`
@@ -181,7 +167,7 @@
 
 ---
 
-## 11. 모니터링 서버 흐름
+## 10. 모니터링 서버 흐름
 
 - 목적: 각 서버의 지표를 한곳에 모아 저장·관찰한다.
 - 관련 파일: `servers/monitoringserver/*`, `clients/.../CMonitorClient.*`, `common_files/.../ProcessMonitor.*`
@@ -197,7 +183,7 @@
 
 ---
 
-## 12. 게임 라이브러리 / 게임 서버 흐름
+## 11. 게임 라이브러리 / 게임 서버 흐름
 
 - 목적: 네트워크 코어 위에 그룹·프레임 시스템을 얹은 게임 라이브러리를 검증한다.
 - 관련 파일: `game_library/*`, `servers/gameserver/*`
@@ -213,7 +199,7 @@
 
 ---
 
-## 13. 더미 클라이언트 / 부하 테스트 흐름
+## 12. 더미 클라이언트 / 부하 테스트 흐름
 
 - 목적: 다수 접속·송수신을 만들어 서버 안정성과 측정 공정성을 검증한다.
 - 관련 파일: `dummy/`(실행 파일·로그·설정), 관찰 기록 `docs/servertest_results/ZeroCopy Test/테스트 고찰.txt`
@@ -223,7 +209,7 @@
   2. 한 클라이언트 스레드가 수백 개 소켓의 수신을 다 처리하지 못하면 TCP 수신 버퍼가 차고, window size가 0이 되어 서버 송신이 완료 통지를 받지 못해 서버 처리량이 떨어진다.
   3. 이 병목은 서버가 아니라 측정 클라이언트 쪽이며, 측정 환경을 보정해야 결과가 신뢰된다.
 - 설계 의도: 측정 도구 자체의 병목까지 데이터로 확인해 측정의 공정성을 확보한다.
-- 관련 테스트: FastIO/Direct IO 측정, 더미 recv 병목 분석(`docs/Troubleshooting.md`).
+- 관련 자료: 측정 관찰 기록(`docs/servertest_results/ZeroCopy Test/테스트 고찰.txt`), `docs/Test_Report.md`.
 - 확인 필요: 더미 클라이언트 소스가 이 레포에 없어, 관련 흐름은 측정 문서의 관찰 기록 기준이다.
 
 > 각 흐름을 그렇게 설계한 이유는 `docs/Design_Rationale.md`, 측정 결과·수치는 `docs/Test_Report.md`, 문제 해결 과정은 `docs/Troubleshooting.md`를 참고하세요.

@@ -31,80 +31,60 @@ namespace cpp_redis {
 
 namespace builders {
 
-/**
- * builder to build redis simple string replies
- *
- */
+//!
+//! builder to build redis simplestring replies
+//!
 class simple_string_builder : public builder_iface {
 public:
-/**
- * ctor
- *
- */
-  simple_string_builder();
-/**
- * dtor
- *
- */
-  ~simple_string_builder() override = default;
+  //! ctor
+  simple_string_builder(void);
+  //! dtor
+  ~simple_string_builder(void) = default;
 
-/**
- * copy ctor
- *
- */
+  //! copy ctor
   simple_string_builder(const simple_string_builder&) = delete;
-/**
- * assignment operator
- *
- */
+  //! assignment operator
   simple_string_builder& operator=(const simple_string_builder&) = delete;
 
 public:
-/**
- * take data as parameter which is consumed to build the reply
- * every bytes used to build the reply must be removed from the buffer passed as parameter
- *
- * @param data data to be consumed
- * @return current instance
- *
- */
-  builder_iface& operator<<(std::string& data) override;
+  //!
+  //! take data as parameter which is consumed to build the reply
+  //! every bytes used to build the reply must be removed from the buffer passed as parameter
+  //!
+  //! \param data data to be consumed
+  //! \return current instance
+  //!
+  builder_iface& operator<<(std::string& data);
 
-/**
- * @return whether the reply could be built
- *
- */
-  bool reply_ready() const override;
+  //!
+  //! \return whether the reply could be built
+  //!
+  bool reply_ready(void) const;
 
-/**
- * @return reply object
- *
- */
-  reply get_reply() const override;
+  //!
+  //! \return reply object
+  //!
+  reply get_reply(void) const;
 
-/**
- * @return the parsed simple string
- *
- */
-  const std::string& get_simple_string() const;
+  //!
+  //! \return the parsed simple string
+  //!
+  const std::string& get_simple_string(void) const;
 
 private:
-/**
- * parsed simple string
- *
- */
+  //!
+  //! parsed simple string
+  //!
   std::string m_str;
 
-/**
- * whether the reply is ready or not
- *
- */
+  //!
+  //! whether the reply is ready or not
+  //!
   bool m_reply_ready;
 
-/**
- * reply to be built
- *
- */
+  //!
+  //! reply to be built
+  //!
   reply m_reply;
 };
 

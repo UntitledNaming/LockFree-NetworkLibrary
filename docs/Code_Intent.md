@@ -29,15 +29,15 @@
 |---|---|---|
 | `Start` | Mem_Init → Net_Init → Thread_Create | 메모리·자료구조가 준비되기 전에 네트워크가 열리면 안 되므로 순서를 함수 이름으로 고정 |
 | `Mem_Init` | IOCP 생성(concurrent=러닝 스레드 수), 세션 배열/인덱스 LFStack 초기화 | concurrent 값을 워커 수와 분리 지정 — 블로킹 시 대기 스레드가 이어받는 IOCP의 이점을 살리기 위한 명시적 튜닝 지점 |
-| `Net_Init` | WSAStartup/socket/bind/listen | 소켓 준비만 담당. listen backlog는 접속 폭주 대응(트러블슈팅 §7)과 연결되는 지점 |
-| `Thread_Create` / `Thread_Destroy` | 워커 N + Accept 1 + (옵션) Send 1 생성/join | Send 스레드를 플래그로 옵션화 — 즉시 송신판과 프레임 송신판을 같은 코어에서 선택 가능하게(`Design_Rationale.md` §13) |
+| `Net_Init` | WSAStartup/socket/bind/listen(backlog=`SOMAXCONN`) | 소켓 준비만 담당. listen backlog는 접속 폭주 대응(트러블슈팅 §2)과 연결되는 지점 |
+| `Thread_Create` / `Thread_Destroy` | 워커 N + Accept 1 + (옵션) Send 1 생성/join | Send 스레드를 플래그로 옵션화 — 즉시 송신판과 프레임 송신판을 같은 코어에서 선택 가능하게(`Design_Rationale.md` §11) |
 | `Stop` | 리슨 소켓부터 닫고 전 세션 Disconnect → IOCP 닫기 → 스레드 정리 | 새 유입 차단 → 기존 정리 → 인프라 해체의 종료 순서를 강제 |
 
 Accept/수신:
 
 | 함수 | 하는 일 | 이렇게 작성한 의도 |
 |---|---|---|
-| `AcceptThread` | accept → max 검사 → `OnConnectionRequest` → 소켓 옵션(SNDBUF=0/nagle/linger) → 인덱스 Pop → 세션ID 발급 → Init → IOCP 등록 → `OnClientJoin` → RecvPost → Release | SNDBUF=0은 Direct IO 실험의 전제, linger(RST)는 TIME_WAIT 누적을 피하려는 서버 측 종료 정책. 마지막 Release는 "세션을 쓰면 반드시 반납"의 규칙을 Accept 스레드에도 동일 적용 |
+| `AcceptThread` | accept → max 검사 → `OnConnectionRequest` → 소켓 옵션(SNDBUF=0/nagle/linger) → 인덱스 Pop → 세션ID 발급 → Init → IOCP 등록 → `OnClientJoin` → RecvPost → Release | SNDBUF=0은 커널 송신 버퍼를 거치지 않는 중첩 송신 설계, linger(RST)는 TIME_WAIT 누적을 피하려는 서버 측 종료 정책. 마지막 Release는 "세션을 쓰면 반드시 반납"의 규칙을 Accept 스레드에도 동일 적용 |
 | `WorkerThread` | GQCS 루프. pOverlapped 값으로 RELEASE(PQCS)/Recv 완료/Send 완료 분기 | PQCS의 통지 값(작은 정수)은 주소 대역과 겹치지 않는다는 사실을 이용해, 별도 타입 필드 없이 Overlapped 포인터 하나로 분기 — 완료 처리 경로에 조회 비용을 추가하지 않으려는 선택 |
 | `RecvIOProc` | writePos 이동 → 루프: 헤더 Peek → 패킷 코드/길이 검증 → 체크섬+페이로드를 CMessage로 복사 → 디코딩 → 체크섬 검증 → `OnRecv` → 반납 → RecvPost 재등록 | 검증 실패를 두 종류로 구분: 상대방 이상(연결 끊기) vs 서버 로직 모순(크래시로 격리). "조용히 넘어가는 서버"를 만들지 않으려는 방침 |
 | `RecvPost` | 수신 링버퍼의 write 구간을 WSABUF 2개(wrap 대응)로 세팅해 WSARecv 1건 등록 | 링버퍼 경계에서 복사 없이 받기 위해 두 구간을 그대로 커널에 넘긴다. Recv 1건 제한은 메시지 처리 순서 보장 때문 |
@@ -52,7 +52,7 @@ Accept/수신:
 | `SendThread` (옵션) | Sleep(SendFrame)마다 전 세션 순회, 세션 확보 후 SendPost | TCP 재전송 폭증을 프레임 버퍼링으로 눌렀던 판. 세션 확보(SessionInvalid)를 생략하면 확보 전 세션 교체로 빈 송신(ZeroByteSend)이 나올 수 있어 생략하지 않는다 |
 | `SendPacketAll` | 전 세션 SendPacket | 브로드캐스트 편의 API |
 
-세션 수명(이 라이브러리의 심장, `Design_Rationale.md` §12):
+세션 수명(이 라이브러리의 심장, `Design_Rationale.md` §10):
 
 | 함수 | 하는 일 | 이렇게 작성한 의도 |
 |---|---|---|
@@ -70,7 +70,7 @@ CNetServer와 같은 골격에서 헤더가 `LANHEADER`(len만)이고 암호화/
 
 ### 1.3 `CLanClient.h/.cpp`
 
-내부망 클라이언트 코어(모니터링 클라이언트의 부모). 소켓 생성 → connect → IOCP 등록 → recv 등록 순서를 지키는 것이 10045(WSAEOPNOTSUPP) 트러블슈팅의 결론이며, 이 순서가 코드에 고정되어 있다.
+내부망 클라이언트 코어(모니터링 클라이언트의 부모). 소켓 생성 → connect → IOCP 등록 → recv 등록 순서를 지키는 것이 10045(WSAEOPNOTSUPP)를 피하는 핵심이며(3-way handshake 성립 후 수신 등록), 이 순서가 코드에 고정되어 있다.
 
 ### 1.4 `CSession.h/.cpp`
 
@@ -197,7 +197,7 @@ CNetServer와 같은 골격에서 헤더가 `LANHEADER`(len만)이고 암호화/
 
 | 항목 | 내용 |
 |---|---|
-| 더미 클라이언트 소스 | 레포에 EXE/로그만 존재. select readset 버그 수정 지점의 코드 근거는 측정 문서(`docs/servertest_results/ZeroCopy Test/테스트 고찰.txt`) 기준 |
+| 더미 클라이언트 소스 | 레포에 EXE/로그만 존재. 부하 측정 관련 관찰은 측정 문서(`docs/servertest_results/ZeroCopy Test/테스트 고찰.txt`) 기준 |
 | `Release`의 `retIOCount` 인자 | 미사용 잔재 — 발표·면접에서 "판정은 128bit CAS"로 설명 |
 | 모니터링 서버 DB 적재 | CMonitor 서버의 집계→DB 저장 경로 상세 미정독 |
 | `myList.h` 사용처 | 한정적 — 미사용이면 정리 후보 |

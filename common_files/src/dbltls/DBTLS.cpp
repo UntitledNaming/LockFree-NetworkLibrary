@@ -27,7 +27,7 @@ DBTLS::DBTLS(const CHAR* DBip, INT DBPort, std::string& schema)
 
 DBTLS::~DBTLS()
 {
-	for (int i = 0; i < m_DBQArrayIdx; i++)
+	for (int i = 0; i <= m_DBQArrayIdx; i++)
 	{
 		delete m_DBQueryAry[i];
 	}

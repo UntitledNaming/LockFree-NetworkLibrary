@@ -23,7 +23,7 @@
 #pragma once
 
 #ifdef _WIN32
-#include <winsock2.h>
+#include <Winsock2.h>
 #endif /* _WIN32 */
 
 namespace tacopie {
