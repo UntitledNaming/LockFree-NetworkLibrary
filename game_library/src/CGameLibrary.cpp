@@ -1100,9 +1100,7 @@ void CGameLibrary::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 		if (header.s_checksum != (sum % 256))
 		{
 			LOG(L"GameLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CGameLibrary::WorkerThread RecvIO CheckSum Error / Session ID : %llu ...", pSession->m_SessionID);
-			Disconnect(pSession->m_SessionID);
-			CMessage::Free(pPacket);
-			break;
+			__debugbreak();
 		}
 
 		UINT16 id = pSession->m_GroupID;

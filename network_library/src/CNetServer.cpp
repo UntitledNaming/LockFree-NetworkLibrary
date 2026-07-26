@@ -929,9 +929,7 @@ void CNetServer::RecvIOProc(CSession* pSession, DWORD cbTransferred)
 		if (header.s_checksum != (sum % 256))
 		{
 			LOG(L"CNetLibrary", en_LOG_LEVEL::dfLOG_LEVEL_DEBUG, L"CNetServer::WorkerThread RecvIO CheckSum Error / Session ID : %llu ...", pSession->m_SessionID);
-			Disconnect(pSession->m_SessionID);
-			CMessage::Free(pPacket);
-			break;
+			__debugbreak();
 		}
 
 		OnRecv(pSession->m_SessionID, pPacket);
